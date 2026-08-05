@@ -1,0 +1,58 @@
+[
+  {
+    "id": "quant",
+    "name": "Quant Mutual Fund",
+    "sifName": "QSIF",
+    "logo": "/images/amcs/quant.png",
+    "description": "Quant Mutual Fund's Specialised Investment Fund offering"
+  },
+  {
+    "id": "sbi",
+    "name": "SBI Mutual Fund",
+    "sifName": "Magnum SIF",
+    "logo": "/images/amcs/sbi.png",
+    "description": "SBI Mutual Fund's Magnum Specialised Investment Fund"
+  },
+  {
+    "id": "edelweiss",
+    "name": "Edelweiss Mutual Fund",
+    "sifName": "Altiva SIF",
+    "logo": "/images/amcs/edelweiss.png",
+    "description": "Edelweiss Mutual Fund's Altiva Specialised Investment Fund"
+  },
+  {
+    "id": "tata",
+    "name": "Tata Mutual Fund",
+    "sifName": "Titanium SIF",
+    "logo": "/images/amcs/tata.png",
+    "description": "Tata Mutual Fund's Titanium Specialised Investment Fund"
+  },
+  {
+    "id": "iti",
+    "name": "ITI Mutual Fund",
+    "sifName": "Diviniti SIF",
+    "logo": "/images/amcs/diviniti sif-iti.png",
+    "description": "ITI Mutual Fund's Diviniti Specialised Investment Fund"
+  },
+  {
+    "id": "icici",
+    "name": "ICICI Prudential Mutual Fund",
+    "sifName": "iSIF",
+    "logo": "/images/amcs/isif.png",
+    "description": "ICICI Prudential Mutual Fund's iSIF Specialised Investment Fund"
+  },
+  {
+    "id": "bandhan",
+    "name": "Bandhan Mutual Fund",
+    "sifName": "Arudha SIF",
+    "logo": "/images/amcs/arudha.png",
+    "description": "Bandhan Mutual Fund's Arudha Specialised Investment Fund"
+  },
+  {
+    "id": "wealth",
+    "name": "The Wealth Company Mutual Fund",
+    "sifName": "WSIF",
+    "logo": "/images/amcs/wsif-logo.png",
+    "description": "The Wealth Company Mutual Fund's WSIF Specialised Investment Fund"
+  }
+]

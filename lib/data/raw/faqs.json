@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "question": "Can I diversify across multiple SIFs?",
+    "answer": "Yes. The Rs 10 lakh minimum investment can be split across various strategies within the same AMC, allowing for deeper diversification."
+  },
+  {
+    "id": 2,
+    "question": "How do I know which SIF is right for me?",
+    "answer": "This depends on your personal profile, financial goals and asset allocation. SIF Insight helps match the right strategy to your personal financial situation."
+  },
+  {
+    "id": 3,
+    "question": "How liquid are SIFs? Can I redeem anytime?",
+    "answer": "Yes, SIFs provide mutual-fund-style liquidity. However, exit loads (if any) vary by scheme. Investors should review the scheme information document (SID)."
+  },
+  {
+    "id": 4,
+    "question": "Are SIF strategies new?",
+    "answer": "SIFs as a category is new but the long-short strategies used in SIFs have prevailed in AIF CAT-3 for over a decade."
+  },
+  {
+    "id": 5,
+    "question": "Who manages a SIF?",
+    "answer": "SIFs are managed by SEBI-regulated Asset Management Companies (AMCs). Experienced fund managers and research teams build and rebalance portfolios using data-driven strategies."
+  }
+]

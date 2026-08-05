@@ -1,0 +1,395 @@
+@import "tailwindcss";
+
+/* ============================================================
+   LEDGER — SIF Insights design tokens
+   Dark research terminal, editorial manners.
+   Rules: no shadows. no blur. hairline is the only border.
+   Radius is semantic: 999px interactive / 0 content / 160-400px one-corner arc.
+   ============================================================ */
+
+@theme {
+  /* --- Ground & structure — WARM PAPER, light editorial -------
+     The logo's deep-blue wordmark and gold serif need a light ground;
+     on light it sits natively with NO plate behind it. Never reintroduce
+     a chip/plate behind the logo. -------------------------------- */
+  --color-ground: oklch(0.976 0.005 85); /* warm off-white paper */
+  --color-surface: oklch(1 0 0); /* white panel, lifts off the paper */
+  --color-surface-2: oklch(0.955 0.007 85); /* recessed / nested */
+  --color-hairline: oklch(0.898 0.008 85); /* the only border */
+
+  /* The contrasting block. On a light ground this is DARK — it is what
+     inverse tiles and the numbers band are built from. */
+  --color-chip: oklch(0.195 0.012 265);
+
+  /* --- Text --------------------------------------------------- */
+  --color-ink: oklch(0.19 0.011 265); /* headings, near-black */
+  --color-body: oklch(0.475 0.014 265); /* paragraphs */
+  --color-muted: oklch(0.55 0.014 265); /* meta, captions — 4.5:1 on white */
+
+  /* --- Accent (deep aqua). Lightness is set by CONTRAST, not taste:
+     it must clear 4.5:1 on BOTH --color-ground and --color-accent-wash. -- */
+  --color-accent: oklch(0.5 0.1 195);
+  --color-accent-dim: oklch(0.42 0.09 195);
+  --color-accent-wash: oklch(0.955 0.022 195); /* pale aqua tint surface */
+
+  /* --- Semantics — must never share a hue. Darkened for light. - */
+  --color-gain: oklch(0.515 0.14 152);
+  --color-loss: oklch(0.545 0.185 26);
+  --color-flat: oklch(0.55 0.012 265);
+  --color-pending: oklch(0.535 0.022 265);
+
+  /* --- Risk band ramp (1 low → 5 high) ------------------------ */
+  --color-risk-1: oklch(0.62 0.1 165);
+  --color-risk-2: oklch(0.645 0.125 120);
+  --color-risk-3: oklch(0.665 0.145 85);
+  --color-risk-4: oklch(0.61 0.165 50);
+  --color-risk-5: oklch(0.545 0.195 28);
+
+  /* --- Type --------------------------------------------------- */
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
+
+  /* --- Motion: ONE curve, TWO durations ----------------------- */
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --duration-micro: 200ms;
+  --duration-reveal: 700ms;
+
+  /* --- Layout ------------------------------------------------- */
+  --container-shell: 1240px;
+}
+
+/* ============================================================
+   Base
+
+   MUST stay inside @layer base. Unlayered rules outrank the whole
+   Tailwind utility layer — an unlayered `p { text-wrap: pretty }`
+   silently kills `truncate` / `text-nowrap` on every <p> on the site,
+   because text-wrap and white-space share the text-wrap-mode longhand.
+   ============================================================ */
+
+/* Canvas cross-fade, used by HeroCanvas once WebGL mounts. */
+@keyframes fadeCanvas {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  /* Fluid root size — the reference's core structural trick. Every rem
+     (all Tailwind spacing) becomes viewport-relative, so the composition
+     breathes instead of stepping at breakpoints. Clamped so it stays sane
+     on ultrawide and small screens. 1rem = 16px at 1440px. */
+  html {
+    font-size: clamp(15px, 1.1111vw, 19px);
+  }
+
+  *,
+  *::before,
+  *::after {
+    /* Non-negotiable: elevation is surface tint + hairline, never shadow.
+       Note this also disables Tailwind's `ring-*` utilities, which compile
+       to box-shadow. Use `outline-*` instead — same geometry, follows radius. */
+    box-shadow: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ground);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 30px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings: tight leading against the body's loose 1.76. That contrast
+     is load-bearing for the calm read — do not compress it. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    color: var(--color-ink);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus uses outline, never box-shadow. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-ground);
+  }
+}
+
+@layer components {
+  /* The serif-italic word swap. Exactly one word per display headline.
+     Optical size bump because serifs read smaller at the same em. */
+  em.swap {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.04em;
+    letter-spacing: 0;
+  }
+
+  /* ============================================================
+     Tinted translucent glass — interactive surfaces only.
+
+     This is a DELIBERATE exception to two house rules (no blur, no
+     shadow), made on explicit client instruction. It is scoped to
+     buttons and pills; content surfaces stay flat with hairlines.
+
+     The inset top highlight is what separates "glass" from "a tint" —
+     it reads as light catching a bevelled edge. Because @layer
+     components sorts after @layer base, it legitimately overrides the
+     global box-shadow reset without !important.
+     ============================================================ */
+  /* ============================================================
+     LIQUID GLASS — a lens, not a frosted sheet.
+
+     The distinction drives every number here. Glassmorphism is opaque
+     frost: heavy blur, flat tint, one hairline. Liquid glass is a thick
+     transparent SOLID — you see through it nearly clearly, and the
+     read comes from how light behaves at its edges:
+
+       · blur drops from 25px to 4px  (a lens is clear; frost is not)
+       · saturation and brightness rise — glass concentrates light
+       · a bright specular rim on the top edge, dimmer on the bottom,
+         which is what makes it read as a rounded bevel with thickness
+       · a soft lift beneath, so it floats above the page
+       · a gloss sheen over the upper half (the ::before below)
+
+     Do NOT hand-write -webkit-backdrop-filter: Lightning CSS collapses
+     the pair and emits ONLY the prefixed form, leaving the unprefixed
+     property unset in Chrome. Declare it once; the compiler prefixes it.
+     ============================================================ */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    backdrop-filter: blur(4px) saturate(220%) brightness(1.08);
+    box-shadow:
+      /* the bevel: light catches the top rim, bounces off the bottom */
+      inset 0 1.5px 0.5px -0.5px oklch(1 0 0 / 0.95),
+      inset 0 -1.5px 0.5px -0.5px oklch(1 0 0 / 0.5),
+      inset 1.5px 0 0.5px -0.5px oklch(1 0 0 / 0.55),
+      inset -1.5px 0 0.5px -0.5px oklch(1 0 0 / 0.55),
+      /* inner body: the thickness of the glass itself */
+      inset 0 0 12px 0 oklch(1 0 0 / 0.28),
+      /* lift */
+      0 4px 14px -4px oklch(0.35 0.02 85 / 0.22),
+      0 1px 2px 0 oklch(0.35 0.02 85 / 0.1);
+    transition:
+      background-color var(--duration-micro) var(--ease-out-quint),
+      border-color var(--duration-micro) var(--ease-out-quint),
+      box-shadow var(--duration-micro) var(--ease-out-quint);
+  }
+
+  /* The gloss. A real lens is brightest across its upper curve and falls
+     away before the midline — a full-height gradient reads as a flat
+     sheet instead. pointer-events:none so it never eats a click. */
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.6) 0%,
+      oklch(1 0 0 / 0.14) 38%,
+      oklch(1 0 0 / 0) 58%
+    );
+  }
+
+  /* Pressed: the lens flattens against the page — the lift collapses and
+     the rim dims, which is what "pressing glass down" actually looks like. */
+  .glass:active {
+    box-shadow:
+      inset 0 1px 0.5px -0.5px oklch(1 0 0 / 0.7),
+      inset 0 0 10px 0 oklch(1 0 0 / 0.2),
+      0 1px 3px -1px oklch(0.35 0.02 85 / 0.18);
+  }
+
+  .glass-primary {
+    background-color: color-mix(in oklch, var(--color-accent) 30%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-accent) 45%, transparent);
+  }
+  .glass-primary:hover {
+    background-color: color-mix(in oklch, var(--color-accent) 42%, transparent);
+    border-color: color-mix(in oklch, var(--color-accent) 62%, transparent);
+  }
+
+  /* Ghost: 30% white frost. On warm paper a pure-white border would vanish,
+     so the edge is drawn in ink at low alpha and the highlight does the rest. */
+  .glass-ghost {
+    background-color: oklch(1 0 0 / 0.3);
+    border: 1px solid color-mix(in oklch, var(--color-ink) 16%, transparent);
+  }
+  .glass-ghost:hover {
+    background-color: oklch(1 0 0 / 0.55);
+    border-color: color-mix(in oklch, var(--color-accent) 48%, transparent);
+  }
+
+  .glass-inverse {
+    background-color: color-mix(in oklch, var(--color-chip) 72%, transparent);
+    border: 1px solid oklch(1 0 0 / 0.22);
+    box-shadow:
+      inset 0 1px 0 oklch(1 0 0 / 0.22),
+      0 6px 20px -6px oklch(0.2 0.02 265 / 0.35);
+  }
+  /* The gloss is tuned for dark text on a light lens. On the inverse (dark)
+     lens it would wash out light text instead, so it is dialled right back
+     and the rim carries the bevel on its own. Not in use today — this is
+     here so the variant is not a trap for whoever reaches for it. */
+  .glass-inverse::before {
+    background: linear-gradient(
+      180deg,
+      oklch(1 0 0 / 0.16) 0%,
+      oklch(1 0 0 / 0.04) 40%,
+      oklch(1 0 0 / 0) 60%
+    );
+  }
+
+  .glass-inverse:hover {
+    background-color: color-mix(in oklch, var(--color-chip) 88%, transparent);
+  }
+
+  /* Selected state for filter pills. */
+  .glass-active {
+    background-color: color-mix(in oklch, var(--color-accent) 45%, transparent);
+    border: 1px solid color-mix(in oklch, var(--color-accent) 68%, transparent);
+  }
+
+  /* All figures align in columns. */
+  .tabular {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+/* ============================================================
+   Marquee — track must be duplicated exactly twice for -50% to loop
+   ============================================================ */
+
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 40s linear infinite;
+}
+
+.marquee-host:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   Reduced motion — collapse everything, stop marquees.
+   Content must never depend on motion to become visible.
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .marquee-track {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   No-JS safety net.
+
+   Motion v12 serialises a variant's `hidden` state into the SERVER render,
+   so every <Reveal> ships as style="opacity:0". With JS disabled that
+   blanks the page — the exact failure the old site had. This forces every
+   revealed block visible when scripting is off. Unlayered + !important so
+   it beats the inline style.
+   ============================================================ */
+
+/* Do NOT add `noscript { display: contents }` here. When scripting is
+   ENABLED the browser treats noscript content as raw text, so overriding
+   the UA's `display: none` prints the stylesheet source onto the page. */
+
+/* ============================================================
+   Dead-runtime safety net.
+
+   The no-JS net above covers scripting being OFF. This covers the other
+   half: scripting is ON and the reveal logic is correct, but a service it
+   depends on is dead, so Motion never leaves the `hidden` variant and the
+   page is blank with a fully populated DOM.
+
+   Two such services, each able to fail on its own: requestAnimationFrame
+   (Motion's whole animation loop — measured at 0 frames in 1000ms in a
+   backgrounded pane while setTimeout fired 20 times) and
+   IntersectionObserver (nothing is ever marked in-view).
+
+   Neither can be rescued from JS that itself waits on them, so the escape
+   lives in CSS, which needs no frames and no observer. RevealGuard probes
+   both and stamps the class only on demonstrated failure. Unlayered +
+   !important so it beats Motion's inline styles.
+   ============================================================ */
+html.reveals-forced [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  /* Motion draws a line by animating pathLength, which it renders as
+     stroke-dasharray/stroke-dashoffset. Resetting only the three properties
+     above would rescue every block on the page and still leave chart lines
+     invisible. */
+  stroke-dasharray: none !important;
+  stroke-dashoffset: 0 !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ground);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}

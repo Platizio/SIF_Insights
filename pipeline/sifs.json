@@ -1,0 +1,276 @@
+{
+  "sourceUrl": "https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
+  "format": "Semicolon-delimited: Scheme Code;ISIN;ISIN;Scheme Name;NAV;Date. Match by Scheme Code (col 0); NAV is 2nd-last field, Date is last.",
+  "codes": [
+    {
+      "code": "SIF-3",
+      "name": "qsif Equity Long Short Fund - Growth Option - Regular Plan",
+      "amcId": "quant",
+      "amc": "Quant Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-7",
+      "name": "qsif Hybrid Long-Short Fund - Growth Option - Regular Plan",
+      "amcId": "quant",
+      "amc": "Quant Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-11",
+      "name": "Altiva Hybrid Long-Short Fund - Regular Plan - Growth",
+      "amcId": "edelweiss",
+      "amc": "Edelweiss Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-13",
+      "name": "Magnum Hybrid Long Short Fund - Regular Plan - Growth",
+      "amcId": "sbi",
+      "amc": "SBI Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-21",
+      "name": "Diviniti Equity Long Short Fund - Regular Plan Growth Option",
+      "amcId": "iti",
+      "amc": "ITI Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-25",
+      "name": "qsif Equity Ex-Top 100 Long-Short Fund - Growth Option - Regular Plan",
+      "amcId": "quant",
+      "amc": "Quant Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-29",
+      "name": "Titanium Hybrid Long-Short Fund Regular Plan Growth",
+      "amcId": "tata",
+      "amc": "Tata Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-34",
+      "name": "iSIF Equity Ex-Top 100 Long-Short Fund - Growth",
+      "amcId": "icici",
+      "amc": "ICICI Prudential Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-35",
+      "name": "iSIF Hybrid Long-Short Fund - Growth",
+      "amcId": "icici",
+      "amc": "ICICI Prudential Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-40",
+      "name": "Arudha Hybrid Long-Short Fund-Regular Plan-Growth",
+      "amcId": "bandhan",
+      "amc": "Bandhan Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-55",
+      "name": "DynaSIF Equity Long - Short Fund - Regular Plan - Growth Option",
+      "amcId": "dynasif",
+      "amc": "DynaSIF",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-62",
+      "name": "Arudha Equity Long-Short Fund-Regular Plan-Growth",
+      "amcId": "bandhan",
+      "amc": "Bandhan Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-80",
+      "name": "Apex Hybrid Long-Short Fund - Regular - Growth",
+      "amcId": "apex",
+      "amc": "Apex",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-87",
+      "name": "DynaSIF Active Asset Allocator Long-Short Fund - Regular Plan - Growth Option",
+      "amcId": "dynasif",
+      "amc": "DynaSIF",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-93",
+      "name": "qsif Active Asset Allocator Long-Short Fund - Growth Option - Regular Plan",
+      "amcId": "quant",
+      "amc": "Quant Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-96",
+      "name": "Sapphire Equity Long-Short SIF - Growth",
+      "amcId": "sapphire",
+      "amc": "Sapphire",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-102",
+      "name": "Titanium Equity Long-Short Fund Regular Growth",
+      "amcId": "tata",
+      "amc": "Tata Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-105",
+      "name": "WSIF Equity Ex-Top 100 Long-Short Fund - Regular Growth",
+      "amcId": "wealth",
+      "amc": "The Wealth Company Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-111",
+      "name": "WSIF Equity Long-Short Fund - Regular Growth",
+      "amcId": "wealth",
+      "amc": "The Wealth Company Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-114",
+      "name": "Arthaya Equity Long Short Fund - Regular Plan - Growth Option",
+      "amcId": "arthaya",
+      "amc": "Arthaya",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-117",
+      "name": "qsif Sector Rotation Long-Short Fund - Growth Option - RegularPlan",
+      "amcId": "quant",
+      "amc": "Quant Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-122",
+      "name": "Altiva Equity Ex- Top 100 Long - Short Fund - Regular Plan - Growth",
+      "amcId": "edelweiss",
+      "amc": "Edelweiss Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-124",
+      "name": "iSIF Active Asset Allocator Long-Short Fund - Growth",
+      "amcId": "icici",
+      "amc": "ICICI Prudential Mutual Fund",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-126",
+      "name": "iSIF Equity Long-Short Fund - Growth",
+      "amcId": "icici",
+      "amc": "ICICI Prudential Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-128",
+      "name": "RedHex Hybrid Long-Short Fund - Regular - Growth",
+      "amcId": "redhex",
+      "amc": "RedHex",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-136",
+      "name": "Platinum Hybrid Long-Short Fund - Regular Plan - Growth",
+      "amcId": "platinum",
+      "amc": "Platinum",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-138",
+      "name": "Prism Hybrid Long-Short Fund - Regular Plan- Growth Option",
+      "amcId": "prism",
+      "amc": "Prism",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-143",
+      "name": "DynaSIF Equity Ex-Top 100 Long - Short Fund - Regular Plan - Growth Option",
+      "amcId": "dynasif",
+      "amc": "DynaSIF",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-146",
+      "name": "INFINITY HYBRID LONG-SHORT FUND-REGULAR - GROWTH",
+      "amcId": "infinity",
+      "amc": "Infinity",
+      "category": "hybrid",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-150",
+      "name": "Summit Equity Long-Short Fund - Regular Plan - Growth",
+      "amcId": "summit",
+      "amc": "Summit",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    }
+  ]
+}
