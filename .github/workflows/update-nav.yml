@@ -1,8 +1,12 @@
 name: Update SIF NAV
 
-# The 24h scheduler. Runs after AMFI publishes NAV (evening IST) on business
-# days, appends the day's observation to each scheme's series, and commits —
-# which triggers the host to rebuild and redeploy.
+# The 24h scheduler. AMCs update SIF NAV on the AMFI Latest NAV portal by
+# 23:00 IST on every business day, so this runs at 23:30 IST — after the filing
+# window closes, while still inside the same IST day. Anything earlier risks
+# picking up the previous business day's values.
+#
+# It appends the day's observation to each scheme's series and commits, which
+# triggers the host to rebuild and redeploy.
 #
 # If the source format drifts or one of the 30 scheme codes stops resolving,
 # fetch_nav.py exits non-zero and this job FAILS (GitHub emails the repo owner)
@@ -10,7 +14,7 @@ name: Update SIF NAV
 
 on:
   schedule:
-    - cron: '30 13 * * 1-5'   # 13:30 UTC = 19:00 IST, Mon–Fri
+    - cron: '0 18 * * 1-5'    # 18:00 UTC = 23:30 IST, Mon–Fri
   workflow_dispatch: {}        # manual "Run workflow" button
 
 permissions:

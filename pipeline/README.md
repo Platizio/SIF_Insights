@@ -9,7 +9,7 @@ imports that JSON, which is what keeps DESIGN_CONTRACT §1.13 true — every num
 on the site traces to `@/lib/data`.
 
 ```
-GitHub Actions cron (19:00 IST, Mon–Fri)
+GitHub Actions cron (23:30 IST, Mon–Fri)
   → python pipeline/fetch_nav.py      # fetch → validate 30 codes → upsert → export
   → npx tsc --noEmit                  # the data must typecheck before it lands
   → git commit + push                 # host rebuilds and redeploys
@@ -81,12 +81,26 @@ Edit `sifs.json`. A code that stops resolving fails the daily job loudly rather
 than silently dropping a scheme. If the scheme set itself changes, update
 `lib/data/raw/schemes.json` too — that is where identity lives.
 
-## Deploying
+## The schedule
 
-The repo is not yet under version control. To run the scheduler:
+`.github/workflows/update-nav.yml` runs `0 18 * * 1-5` — **18:00 UTC = 23:30
+IST, Monday to Friday**.
 
-1. `git init`, commit, and push to GitHub.
-2. Settings → Actions → General → Workflow permissions → **Read and write**.
-3. Connect the repo to a host that redeploys on push (Vercel suits Next.js 16).
-4. Actions → **Update SIF NAV** → *Run workflow* to prove the loop before
-   waiting for 19:00 IST.
+**Why 23:30 IST.** AMCs update SIF NAV on the AMFI Latest NAV portal *by 23:00
+IST on every business day*. Running before that window closes picks up the
+previous business day's values, which is how the schedule was originally set
+(19:00 IST) and why it was moved. 23:30 leaves a 30-minute margin and still
+lands inside the same IST day, so the observation is filed under the date it
+belongs to.
+
+GitHub's cron is best-effort — scheduled jobs commonly start 5–20 minutes late.
+A slip past midnight IST is harmless: the NAV still carries AMFI's own date, so
+it is recorded against the correct business day either way.
+
+Run it on demand any time from Actions → **Update SIF NAV** → *Run workflow*.
+
+## Deployed
+
+- Repo: `github.com/Platizio/SIF_Insights` (Actions needs *Read and write*
+  workflow permissions so the job can push its data commit).
+- Host: Vercel, redeploying on every push — including the nightly data commit.
