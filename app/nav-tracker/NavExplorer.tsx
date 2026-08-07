@@ -8,6 +8,7 @@ import { Delta, RiskBand, Section, Shell } from "@/components/primitives";
 import { cn } from "@/lib/cn";
 import {
   amcById,
+  formatExpense,
   formatInr,
   formatNav,
   formatUpdated,
@@ -279,11 +280,7 @@ function FundDetail({ strategy }: { strategy: Strategy }) {
         <Disclosure
           label="Expense ratio"
           tabular
-          value={
-            strategy.expenseRatio === null
-              ? null
-              : `${strategy.expenseRatio.toFixed(2)}%`
-          }
+          value={formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
         />
         <Disclosure label="Exit load" tabular value={strategy.exitLoad} />
         <Disclosure label="Redemption" value={strategy.redemptionFrequency} />

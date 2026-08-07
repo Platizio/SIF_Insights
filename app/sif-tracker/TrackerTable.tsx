@@ -31,6 +31,7 @@ import { DUR, EASE, EXIT } from "@/lib/motion";
 import {
   amcById,
   amcs,
+  formatExpense,
   formatInr,
   formatNav,
   formatUpdated,
@@ -61,9 +62,9 @@ import {
 
    The filters split into two blocks because the data does. AMFI's feed
    covers all 30 schemes; the disclosure fields — risk band, expense,
-   exit load, redemption — exist for the 13 whose scheme information
+   exit load, redemption — exist only for the schemes whose information
    documents we have captured. Those four controls therefore range over
-   13 schemes, and the block says so above the pills rather than
+   that subset, and the block says so above the pills rather than
    quietly dropping 17 rows when you touch one. The "Disclosures"
    control in the first block makes those 17 directly reachable.
    ============================================================ */
@@ -957,11 +958,19 @@ function Field({
   );
 }
 
-function Percent({ value }: { value: number | null }) {
+/** `cap` true renders the figure as a ceiling — ISIDs quote the maximum
+    permissible TER, not the ratio the scheme currently charges. */
+function Percent({
+  value,
+  cap = null,
+}: {
+  value: number | null;
+  cap?: boolean | null;
+}) {
   if (value === null) return <NotCaptured />;
   return (
     <span className="tabular text-[13px] leading-[20px] text-ink">
-      {value.toFixed(2)}%
+      {formatExpense(value, cap)}
     </span>
   );
 }
@@ -1097,7 +1106,7 @@ function Row({ strategy, index, idPrefix, checked, onToggle }: RowProps) {
           </td>
 
           <td className="px-4 py-4 text-right align-top">
-            <Percent value={strategy.expenseRatio} />
+            <Percent value={strategy.expenseRatio} cap={strategy.expenseRatioIsCap} />
           </td>
 
           <td className="px-4 py-4 align-top">
@@ -1207,7 +1216,7 @@ function StackedCard({
                   <Field value={strategy.exitLoad} tabular />
                 </MiniRow>
                 <MiniRow label="Expense">
-                  <Percent value={strategy.expenseRatio} />
+                  <Percent value={strategy.expenseRatio} cap={strategy.expenseRatioIsCap} />
                 </MiniRow>
                 <MiniRow label="Redemption">
                   <Field value={strategy.redemptionFrequency} />
@@ -1565,7 +1574,7 @@ const PROPERTIES: { label: string; render: (s: Strategy) => ReactNode }[] = [
   },
   {
     label: "Expense ratio",
-    render: (s) => <Percent value={s.expenseRatio} />,
+    render: (s) => <Percent value={s.expenseRatio} cap={s.expenseRatioIsCap} />,
   },
   {
     label: "Exit load",

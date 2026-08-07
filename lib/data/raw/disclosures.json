@@ -10,8 +10,7 @@
       "benchmark": "NIFTY 500 Total Return Index (TRI)",
       "redemptionFrequency": "Daily",
       "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-7": {
       "overview": "A balanced approach combining equity long-short strategies with fixed income allocation, providing diversification across asset classes while maintaining hedge fund-style flexibility.",
@@ -22,8 +21,7 @@
       "benchmark": "NIFTY 50 HYBRID COMPOSITE DEBT 50:50 INDEX",
       "redemptionFrequency": "Twice a week (Tuesday & Wednesday)",
       "taxation": "Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-11": {
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
@@ -62,8 +60,7 @@
       "benchmark": "NIFTY 50 (TRI INDEX)",
       "redemptionFrequency": "Daily",
       "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-25": {
       "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
@@ -74,8 +71,7 @@
       "benchmark": "NIFTY 500 Total Return Index (TRI)",
       "redemptionFrequency": "Daily",
       "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-29": {
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
@@ -86,8 +82,7 @@
       "benchmark": "CRISIL Hybrid 50+50 - Moderate Index (TRI)",
       "redemptionFrequency": "Once a month -First working day",
       "taxation": "Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-34": {
       "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
@@ -112,8 +107,7 @@
       "benchmark": "CRISIL Hybrid 50+50 Moderate Index",
       "redemptionFrequency": "Twice a week (Monday & Wednesday)",
       "taxation": "Debt STCG- as per Tax Slab upto 12 months ; Equity LTCG – 12.5% (holding >24 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-40": {
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
@@ -166,8 +160,7 @@
       "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily",
       "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-111": {
       "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
@@ -178,8 +171,7 @@
       "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily",
       "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available",
-      "expenseRatioIsCap": true
+      "dividend": "Growth & IDCW options available"
     },
     "SIF-122": {
       "overview": null,

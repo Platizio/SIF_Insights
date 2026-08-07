@@ -388,6 +388,26 @@ export function formatPct(value: number): string {
   return `${sign}${Math.abs(value).toFixed(2)}%`;
 }
 
+/**
+ * An expense ratio, shown for what it actually is.
+ *
+ * ISIDs quote the MAXIMUM permissible TER, not the ratio a scheme currently
+ * charges — the charged figure is published on the AMC's own site and moves.
+ * Printing a cap as a bare percentage would state a fee the investor may not
+ * be paying, so a known cap renders as a ceiling.
+ *
+ * `isCap` null means we do not know which the figure is (it predates the ISID
+ * reads), and an unknown must not be dressed up as either.
+ */
+export function formatExpense(
+  ratio: number | null,
+  isCap: boolean | null,
+): string | null {
+  if (ratio === null) return null;
+  const pct = `${ratio.toFixed(2)}%`;
+  return isCap ? `Up to ${pct}` : pct;
+}
+
 /** "Risk Band 5" -> 5. Null when the scheme's band is not captured. */
 export function riskBandNumber(riskBand: string | null): number | null {
   if (!riskBand) return null;

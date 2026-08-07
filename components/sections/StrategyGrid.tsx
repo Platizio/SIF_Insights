@@ -18,6 +18,7 @@ import { cn } from "@/lib/cn";
 import { DUR, EASE } from "@/lib/motion";
 import {
   amcById,
+  formatExpense,
   formatInr,
   formatNav,
   formatUpdated,
@@ -244,7 +245,7 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
         <DisclosureRow label="Expense">
           <DisclosureValue
             value={
-              strategy.expenseRatio === null ? null : `${strategy.expenseRatio}%`
+              formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)
             }
           />
         </DisclosureRow>

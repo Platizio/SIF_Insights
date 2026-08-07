@@ -20,6 +20,7 @@ import { cn } from "@/lib/cn";
 import {
   amcById,
   amcs,
+  formatExpense,
   formatInr,
   formatUpdated,
   getNav,
@@ -425,7 +426,7 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
             <Disclosure label="Expense ratio">
               {strategy.expenseRatio === null ? null : (
                 <span className="tabular">
-                  {strategy.expenseRatio.toFixed(2)}%
+                  {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
                 </span>
               )}
             </Disclosure>

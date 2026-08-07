@@ -17,6 +17,7 @@ import {
 } from "@/components/primitives";
 import {
   amcById,
+  formatExpense,
   formatInr,
   formatNav,
   formatUpdated,
@@ -654,7 +655,9 @@ function StrategyDetail({ strategy }: { strategy: Strategy }) {
             {strategy.expenseRatio === null ? (
               <NotCaptured />
             ) : (
-              <span className="tabular">{strategy.expenseRatio}%</span>
+              <span className="tabular">
+                {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
+              </span>
             )}
           </DetailRow>
           <DetailRow label="Exit load">
