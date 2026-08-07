@@ -143,10 +143,16 @@ formatUpdated(iso)
 `Strategy` fields: `id, amcId, name, category, type, amfiSchemeCode, overview, minInvestment (number, 1000000), expenseRatio (number, 2.25), exitLoad, riskBand ("Risk Band 5"), benchmark, redemptionFrequency, taxation, dividend`.
 
 ### Data truths you must honour
-- **8 of 13 funds have live NAV. 5 are `null`** → render `<PendingBadge />`, never a fake number.
-- **`iti-equity` NAV is ₹948.29 — ~1000× every other fund.** Never put absolute NAVs on a shared axis or bar scale. Compare by **percentage change** only.
+
+> ⚠️ **The counts in this section are stale — `DATA_MIGRATION.md` supersedes them.**
+> It is 30 schemes across 17 houses, all 30 priced, and every scheme now carries a
+> dated NAV series. Read that file's REVISION 2 banner before relying on anything
+> numeric here. The rules below still hold; the figures they quote do not.
+
+- **All 30 schemes have a live NAV.** `<PendingBadge />` is now unreachable in practice — keep it, but never a fake number.
+- **`iti-equity` is ~₹943 and `franklin-*` ~₹1,022 — ~100× every other fund.** Never put absolute NAVs on a shared axis or bar scale. Compare by **percentage change** only.
 - **Debt category is genuinely empty** → "Launching soon", not a hidden tab.
-- Risk bands really vary: most are Band 5, but `edelweiss-hybrid` and `sbi-hybrid` are Band 1, `bandhan-hybrid` is Band 2. Don't flatten this — the variation is the interesting part.
+- Risk bands really vary — don't flatten this, the variation is the interesting part. **Verified against the schemes' own ISIDs (2026-08-06):** `edelweiss-hybrid` (SIF-11) and `sbi-hybrid` (SIF-13) are **Band 2**; `bandhan-hybrid` (SIF-40) is **Band 1**; `apex-*` (SIF-80) is Band 2. Most others are Band 5. *This line previously stated Band 1 for edelweiss/sbi and Band 2 for bandhan — an exact swap of the last two — and that error had propagated into the live site. Take band values from `@/lib/data`, never from this file.*
 - AMC logos are at `/amc/{id}.png` (already resolved on the `Amc` object as `.logo`). They are colourful PNGs on transparent — render them at a **consistent ~28px optical height**, and desaturate/normalise them (`grayscale` + `opacity`, lifting on hover) so the strip reads as one typographic rule, not a sponsor page.
 
 ---
