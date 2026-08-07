@@ -1,4 +1,5 @@
 import schemesRaw from "./raw/schemes.json";
+import disclosuresRaw from "./raw/disclosures.json";
 import historyRaw from "./raw/nav-history.json";
 import faqsRaw from "./raw/faqs.json";
 import nfoRaw from "./raw/nfo-news.json";
@@ -27,7 +28,11 @@ export type Strategy = {
   amfiSchemeCode: string;
   isin: string | null;
 
-  /** True only for schemes whose disclosures we have actually researched. */
+  /**
+   * True only for schemes whose disclosures we have actually researched.
+   * DERIVED from the presence of a `disclosures.json` entry, not stored — a
+   * separate flag could disagree with the data it describes.
+   */
   disclosuresCaptured: boolean;
 
   overview: string | null;
@@ -35,6 +40,13 @@ export type Strategy = {
   minInvestment: number | null;
   /** Percent. e.g. 2.25 */
   expenseRatio: number | null;
+  /**
+   * True when `expenseRatio` is the ISID's MAXIMUM permissible TER rather than
+   * the ratio actually charged. ISIDs quote the cap; the charged figure lives
+   * on the AMC's own site. Anywhere the number is shown as fact, this must
+   * qualify it.
+   */
+  expenseRatioIsCap: boolean | null;
   exitLoad: string | null;
   /** e.g. "Risk Band 5" */
   riskBand: string | null;
@@ -42,6 +54,8 @@ export type Strategy = {
   redemptionFrequency: string | null;
   taxation: string | null;
   dividend: string | null;
+  /** True where a second agent re-read the source document and confirmed it. */
+  disclosuresVerified: boolean;
 };
 
 export type Amc = {
@@ -92,11 +106,36 @@ export type Faq = { id: number; question: string; answer: string };
    Source
    ============================================================ */
 
-type RawScheme = Omit<Strategy, "category"> & {
+/**
+ * schemes.json carries identity and price only — the exact surface the nightly
+ * NAV pipeline rewrites. Researched terms live in disclosures.json, which only
+ * changes when someone reads an ISID, so the two files can never collide.
+ */
+type RawScheme = {
+  id: string;
+  amcId: string;
+  name: string;
   category: string;
+  type: string;
+  amfiSchemeCode: string;
+  isin: string | null;
   nav: number;
   navAsOf: string;
 };
+
+type RawDisclosure = Partial<{
+  overview: string | null;
+  minInvestment: number | null;
+  expenseRatio: number | null;
+  expenseRatioIsCap: boolean;
+  exitLoad: string | null;
+  riskBand: string | null;
+  benchmark: string | null;
+  redemptionFrequency: string | null;
+  taxation: string | null;
+  dividend: string | null;
+  verified: boolean;
+}>;
 
 const source = schemesRaw as {
   source: string;
@@ -105,6 +144,10 @@ const source = schemesRaw as {
   schemes: RawScheme[];
   amcs: Omit<Amc, "logo">[];
 };
+
+/** Keyed by AMFI scheme code, matching nav-history.json. */
+const disclosures = (disclosuresRaw as { disclosures: Record<string, RawDisclosure> })
+  .disclosures;
 
 /** Where the numbers come from. Surfaced in the UI, not just in code. */
 export const navSource = source.source;
@@ -149,25 +192,34 @@ export const amcById = new Map(amcs.map((a) => [a.id, a]));
    Schemes
    ============================================================ */
 
-export const strategies: Strategy[] = source.schemes.map((s) => ({
-  id: s.id,
-  amcId: s.amcId,
-  name: s.name,
-  category: s.category as Category,
-  type: s.type,
-  amfiSchemeCode: s.amfiSchemeCode,
-  isin: s.isin,
-  disclosuresCaptured: s.disclosuresCaptured,
-  overview: s.overview,
-  minInvestment: s.minInvestment,
-  expenseRatio: s.expenseRatio,
-  exitLoad: s.exitLoad,
-  riskBand: s.riskBand,
-  benchmark: s.benchmark,
-  redemptionFrequency: s.redemptionFrequency,
-  taxation: s.taxation,
-  dividend: s.dividend,
-}));
+export const strategies: Strategy[] = source.schemes.map((s) => {
+  /* No entry means nothing has been researched for this scheme. Every field
+     then resolves to null and the UI renders "Not captured" — which is the
+     honest state, not a gap to be filled with defaults. */
+  const d: RawDisclosure = disclosures[s.amfiSchemeCode] ?? {};
+
+  return {
+    id: s.id,
+    amcId: s.amcId,
+    name: s.name,
+    category: s.category as Category,
+    type: s.type,
+    amfiSchemeCode: s.amfiSchemeCode,
+    isin: s.isin,
+    disclosuresCaptured: s.amfiSchemeCode in disclosures,
+    disclosuresVerified: d.verified === true,
+    overview: d.overview ?? null,
+    minInvestment: d.minInvestment ?? null,
+    expenseRatio: d.expenseRatio ?? null,
+    expenseRatioIsCap: d.expenseRatioIsCap ?? null,
+    exitLoad: d.exitLoad ?? null,
+    riskBand: d.riskBand ?? null,
+    benchmark: d.benchmark ?? null,
+    redemptionFrequency: d.redemptionFrequency ?? null,
+    taxation: d.taxation ?? null,
+    dividend: d.dividend ?? null,
+  };
+});
 
 export const strategiesByCategory: Record<Category, Strategy[]> = {
   equity: strategies.filter((s) => s.category === "equity"),
@@ -292,6 +344,8 @@ export const stats = {
   liveNavCount: strategies.filter((s) => getNav(s.id).status === "live").length,
   /** How many schemes we hold the full disclosure set for. */
   disclosedCount: strategies.filter((s) => s.disclosuresCaptured).length,
+  /** Of those, how many a second reader confirmed against the source document. */
+  disclosuresVerifiedCount: strategies.filter((s) => s.disclosuresVerified).length,
   mandateCount: mandates.length,
   /** Total published NAVs held across every scheme. */
   navObservations: Object.values(seriesByStrategy).reduce(

@@ -12,17 +12,7 @@
       "amfiSchemeCode": "SIF-122",
       "isin": "INF754K30136",
       "nav": 11.0149,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": null,
-      "minInvestment": 1000000,
-      "expenseRatio": 2.1,
-      "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or before 90 days from date of allotment; Nil after 90 days. Units issued on IDCW reinvestment and bonus units are not subject to exit load.",
-      "riskBand": "Risk Band 5",
-      "benchmark": "Nifty 500 TRI",
-      "redemptionFrequency": "Daily (open-ended; units offered for redemption/switch-out on each business day at NAV based prices; redemption proceeds dispatched within 3 working days)",
-      "taxation": "Equity-oriented treatment for resident individuals: LTCG 12.5% on gains above Rs. 1,25,000; STCG 20%; dividend/IDCW taxed at applicable slab rates. Rates are base rates, increased by applicable surcharge and cess. Nil in the hands of the Mutual Fund.",
-      "dividend": "Growth Option and IDCW Option available under each Plan; IDCW Option has Reinvestment, Payout & Transfer facility. Default Option is Growth; default IDCW facility is Reinvestment. IDCW payment within seven working days from record date. (This scheme is the Growth option.)"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "dynasif-dynasif-equity-ex-top-100-long-short",
@@ -33,17 +23,7 @@
       "amfiSchemeCode": "SIF-143",
       "isin": "INF579M30133",
       "nav": 10.8441,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "icici-equity",
@@ -54,17 +34,7 @@
       "amfiSchemeCode": "SIF-34",
       "isin": "INF109K30034",
       "nav": 10.37,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.1,
-      "exitLoad": "0.5% if redeemed within 3 months from the date of allotment of units; no exit load payable if redeemed after 3 months from the date of allotment",
-      "riskBand": "Risk Band 5",
-      "benchmark": "BSE 500 TRI",
-      "redemptionFrequency": "Daily (open ended - redemption/switch-out on each business day at NAV based prices)",
-      "taxation": "Classified as an \"equity oriented fund\". LTCG 12.5% without indexation on gains exceeding Rs. 1.25 lakhs (u/s 112A); STCG (held not more than 12 months) 20% (u/s 111A); both where STT is paid on transfer. IDCW taxable at applicable slab rates. STT applies at applicable rates. Rates exclude surcharge and cess.",
-      "dividend": "Growth and IDCW (Income Distribution cum Capital Withdrawal) options available under both Regular and Direct Plans; IDCW sub-options: Payout and Re-investment. Default option: Growth; default IDCW sub-option: Re-investment."
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "quant-equity-ex-top100",
@@ -75,17 +45,7 @@
       "amfiSchemeCode": "SIF-25",
       "isin": "INF966L30183",
       "nav": 11.4175,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "15 Days / 1%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "NIFTY 500 Total Return Index (TRI)",
-      "redemptionFrequency": "Daily",
-      "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "wealth-equity-ex-top100",
@@ -96,17 +56,7 @@
       "amfiSchemeCode": "SIF-105",
       "isin": "INF2F0030015",
       "nav": 10.883,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "No exit load",
-      "riskBand": "Risk Band 5",
-      "benchmark": "Nifty 500 TRI",
-      "redemptionFrequency": "Daily",
-      "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "arthaya-arthaya-equity-long-short",
@@ -117,17 +67,7 @@
       "amfiSchemeCode": "SIF-114",
       "isin": "INF582M30012",
       "nav": 10.17,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "bandhan-equity",
@@ -138,17 +78,7 @@
       "amfiSchemeCode": "SIF-62",
       "isin": "INF194K30358",
       "nav": 10.547,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or within 30 days from date of allotment; Nil after 30 days. Entry Load: Not Applicable.",
-      "riskBand": "Risk Band 5",
-      "benchmark": "NIFTY 500 Total Return Index (TRI)",
-      "redemptionFrequency": "Daily (only on business days), or at such frequency as may be decided by the AMC subject to SEBI approval",
-      "taxation": "Equity-oriented: LTCG (holding &gt;12 months) 12.5% u/s 112A; STCG (&lt;12 months) 20% u/s 111A; IDCW taxed at investor slab rates plus surcharge and cess; STT applicable. Tax at strategy/SIF level: NIL.",
-      "dividend": "Growth Option and IDCW (Income Distribution cum capital withdrawal) Option available under both Regular and Direct Plans. IDCW offers Daily/Weekly (reinvestment only), Fortnightly, Monthly, Quarterly, Half yearly, Annual & Periodic frequencies, each with Payout/Reinvestment/Transfer of IDCW. Default option is Growth. This scheme is the Regular Plan - Growth option."
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "iti-equity",
@@ -159,17 +89,7 @@
       "amfiSchemeCode": "SIF-21",
       "isin": "INF00XX30019",
       "nav": 942.2018,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "6 months/ 0.5%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "NIFTY 50 (TRI INDEX)",
-      "redemptionFrequency": "Daily",
-      "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "dynasif-dynasif-equity-long-short",
@@ -180,17 +100,7 @@
       "amfiSchemeCode": "SIF-55",
       "isin": "INF579M30018",
       "nav": 10.7623,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "franklin-sapphire-equity-long-short-sif-growth",
@@ -201,17 +111,7 @@
       "amfiSchemeCode": "SIF-96",
       "isin": "INF090I30014",
       "nav": 1021.8935,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "invesco-summit-equity-long-short",
@@ -222,17 +122,7 @@
       "amfiSchemeCode": "SIF-150",
       "isin": "INF205K30014",
       "nav": 10.33,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "icici-isif-equity-long-short-fund-growth",
@@ -243,17 +133,7 @@
       "amfiSchemeCode": "SIF-126",
       "isin": "INF109K30075",
       "nav": 10.64,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "quant-equity",
@@ -264,17 +144,7 @@
       "amfiSchemeCode": "SIF-3",
       "isin": "INF966L30027",
       "nav": 11.0304,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A sophisticated equity strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "15 Days / 1%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "NIFTY 500 Total Return Index (TRI)",
-      "redemptionFrequency": "Daily",
-      "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "wealth-equity",
@@ -285,17 +155,7 @@
       "amfiSchemeCode": "SIF-111",
       "isin": "INF2F0030072",
       "nav": 10.763,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "No exit load",
-      "riskBand": "Risk Band 5",
-      "benchmark": "Nifty 500 TRI",
-      "redemptionFrequency": "Daily",
-      "taxation": "Equity STCG-20% (holding<12 months); Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "tata-titanium-equity-long-short-fund-regular-growth",
@@ -306,17 +166,7 @@
       "amfiSchemeCode": "SIF-102",
       "isin": "INF277K30070",
       "nav": 10.5485,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "quant-qsif-sector-rotation-long-short-fund-growth-option",
@@ -327,17 +177,7 @@
       "amfiSchemeCode": "SIF-117",
       "isin": "INF966L30308",
       "nav": 10.123,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "icici-isif-active-asset-allocator-long-short-fund-growth",
@@ -347,18 +187,8 @@
       "type": "Active Asset Allocator Long-Short",
       "amfiSchemeCode": "SIF-124",
       "isin": "INF109K30059",
-      "nav": 10.349,
-      "navAsOf": "2026-08-05",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "nav": 10.3447,
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "icici-hybrid",
@@ -369,17 +199,7 @@
       "amfiSchemeCode": "SIF-35",
       "isin": "INF109K30018",
       "nav": 10.6369,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "12 months / 1%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "CRISIL Hybrid 50+50 Moderate Index",
-      "redemptionFrequency": "Twice a week (Monday & Wednesday)",
-      "taxation": "Debt STCG- as per Tax Slab upto 12 months ; Equity LTCG – 12.5% (holding >24 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "dynasif-dynasif-active-asset-allocator-long-short",
@@ -389,18 +209,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-87",
       "isin": "INF579M30075",
-      "nav": 10.462,
-      "navAsOf": "2026-08-05",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "nav": 10.4813,
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "quant-qsif-active-asset-allocator-long-short-fund-growth-option",
@@ -411,17 +221,7 @@
       "amfiSchemeCode": "SIF-93",
       "isin": "INF966L30217",
       "nav": 11.5281,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "edelweiss-hybrid",
@@ -432,17 +232,7 @@
       "amfiSchemeCode": "SIF-11",
       "isin": "INF754K30052",
       "nav": 10.96,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2,
-      "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or before 90 days from date of allotment; Nil after 90 days. Units allotted on reinvestment of IDCW not subject to load.",
-      "riskBand": "Risk Band 2",
-      "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index (Total Return Index)",
-      "redemptionFrequency": "Twice a week (Every Monday & Every Wednesday; next business day if a non-business day). Subscription frequency is Daily.",
-      "taxation": "Hybrid (other than equity-oriented, not a Specified Mutual Fund): LTCG 12.5%, STCG at applicable slab rates. If equity-oriented: LTCG 12.5% on gains above Rs 1,25,000, STCG 20%. Dividend/IDCW taxed at applicable slab rates for resident investors (individuals and domestic companies/partnership firms alike); the NIL column refers to the Mutual Fund, which bears no tax. Rates are base rates, plus applicable surcharge and cess.",
-      "dividend": "Growth Option and IDCW Option available under each Plan; IDCW Option has Reinvestment, Payout & Transfer facility. Default Option is Growth; default IDCW facility is Reinvestment. IDCW payment within seven working days from record date. (This scheme is the Growth Option.)"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "apex-apex-hybrid-long-short",
@@ -453,17 +243,7 @@
       "amfiSchemeCode": "SIF-80",
       "isin": "INF209K30040",
       "nav": 10.6322,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": null,
-      "minInvestment": 1000000,
-      "expenseRatio": 2,
-      "exitLoad": "0.50% of applicable NAV for redemption/switch-out on or before 90 days from date of allotment; Nil after 90 days. No exit load on switch from Regular to Direct Plan of the same Investment Strategy.",
-      "riskBand": "Risk Band 2",
-      "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index",
-      "redemptionFrequency": "Twice a week (every Monday & Wednesday). If it falls on a non-business day, the immediate next business day.",
-      "taxation": null,
-      "dividend": "Growth Option and IDCW Option (Payout of IDCW & Reinvestment of IDCW) available under each Plan; Default Option is Growth. IDCW subject to availability of distributable surplus and at the discretion of the Trustees."
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "bandhan-hybrid",
@@ -474,17 +254,7 @@
       "amfiSchemeCode": "SIF-40",
       "isin": "INF194K30010",
       "nav": 10.355,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
-      "minInvestment": 1000000,
-      "expenseRatio": 1.33,
-      "exitLoad": "Nil (Entry Load: Nil; Exit Load: Nil)",
-      "riskBand": "Risk Band 1",
-      "benchmark": "CRISIL Hybrid 85+15 Conservative Index (Tier 1; Tier 2: NA)",
-      "redemptionFrequency": "Twice a week (Monday & Thursday)",
-      "taxation": "Debt STCG- as per Tax Slab upto 12 months ; Equity LTCG – 12.5% (holding >24 months)",
-      "dividend": "Growth and IDCW options available; IDCW offered as Payout and Reinvestment in Daily, Weekly, Fortnightly, Monthly, Quarterly, Half Yearly, Annual and Periodic frequencies (Regular and Direct plans)"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "hsbc-redhex-hybrid-long-short",
@@ -495,17 +265,7 @@
       "amfiSchemeCode": "SIF-128",
       "isin": "INF336L30015",
       "nav": 10.1237,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "jioblackrock-prism-hybrid-long-short",
@@ -516,17 +276,7 @@
       "amfiSchemeCode": "SIF-138",
       "isin": "INF22M030019",
       "nav": 10.0947,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "kotak-infinity-hybrid-long-short-fund-regular-growth",
@@ -537,17 +287,7 @@
       "amfiSchemeCode": "SIF-146",
       "isin": "INF174K30046",
       "nav": 10.2,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "sbi-hybrid",
@@ -558,17 +298,7 @@
       "amfiSchemeCode": "SIF-13",
       "isin": "INF200K30015",
       "nav": 10.4929,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations to generate alpha while managing risk through sophisticated hedging techniques.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "0.50% if redeemed on or before 15 days from date of allotment; 0.25% if redeemed after 15 days but on or before 1 month; Nil after 1 month. No exit load on switching between Plans within the Investment Strategy or on units issued on IDCW re-investment.",
-      "riskBand": "Risk Band 2",
-      "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index TRI",
-      "redemptionFrequency": "Two times a week (Monday & Thursday), or any lesser frequency as decided by the AMC",
-      "taxation": "Equity-oriented SIF treatment: LTCG (held over 12 months) 12.50% on gains exceeding Rs 1,25,000 per year, without indexation; STCG (held up to 12 months) 20%. IDCW income taxable in unitholder's hands at normal slab rates (20% for non-residents), TDS 10% on distributions above Rs 10,000. STT 0.001% on redemption of units. Fund/SIF income itself exempt u/s 10(23D).",
-      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct plans; IDCW offers Payout and Re-investment facilities (default option is Growth; within IDCW the default is Re-investment). IDCW amounts up to Rs 150 are compulsorily reinvested. IDCW dispatched within 7 working days from record date."
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "mirae-platinum-hybrid-long-short",
@@ -579,17 +309,7 @@
       "amfiSchemeCode": "SIF-136",
       "isin": "INF769K30019",
       "nav": 10.207,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": false,
-      "overview": null,
-      "minInvestment": null,
-      "expenseRatio": null,
-      "exitLoad": null,
-      "riskBand": null,
-      "benchmark": null,
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "quant-hybrid",
@@ -600,17 +320,7 @@
       "amfiSchemeCode": "SIF-7",
       "isin": "INF966L30084",
       "nav": 10.9221,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A balanced approach combining equity long-short strategies with fixed income allocation, providing diversification across asset classes while maintaining hedge fund-style flexibility.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "15 Days / 1%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "NIFTY 50 HYBRID COMPOSITE DEBT 50:50 INDEX",
-      "redemptionFrequency": "Twice a week (Tuesday & Wednesday)",
-      "taxation": "Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     },
     {
       "id": "tata-hybrid",
@@ -621,17 +331,7 @@
       "amfiSchemeCode": "SIF-29",
       "isin": "INF277K30013",
       "nav": 10.1898,
-      "navAsOf": "2026-08-06",
-      "disclosuresCaptured": true,
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
-      "minInvestment": 1000000,
-      "expenseRatio": 2.25,
-      "exitLoad": "12 months / 1%",
-      "riskBand": "Risk Band 5",
-      "benchmark": "CRISIL Hybrid 50+50 - Moderate Index (TRI)",
-      "redemptionFrequency": "Once a month -First working day",
-      "taxation": "Equity LTCG – 12.5% (holding >12 months)",
-      "dividend": "Growth & IDCW options available"
+      "navAsOf": "2026-08-06"
     }
   ],
   "amcs": [

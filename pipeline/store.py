@@ -102,9 +102,14 @@ def export_frontend(history: History, names: dict[str, str]) -> None:
 def _patch_schemes(series: dict[str, list], as_of: str | None) -> None:
     """Bring each scheme's latest NAV in schemes.json up to date with the feed.
 
-    Only `nav` / `navAsOf` are touched. Identity, disclosures and the AMC
-    mapping in that file are researched by hand and authoritative — the
-    pipeline must never overwrite them.
+    Only `nav` / `navAsOf` are touched. Identity and the AMC mapping in that
+    file are researched by hand and authoritative — the pipeline must never
+    overwrite them.
+
+    Researched scheme terms live in lib/data/raw/disclosures.json, which this
+    pipeline does not open at all. That separation is deliberate: this job
+    commits nightly and unattended, disclosure research lands whenever someone
+    reads an ISID, and when both wrote schemes.json the two collided on push.
     """
     if not os.path.exists(SCHEMES_PATH) or as_of is None:
         return
