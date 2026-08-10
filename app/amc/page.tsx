@@ -119,18 +119,43 @@ export default function AmcIndexPage() {
           <div className="mt-12 grid gap-12 lg:grid-cols-[460px_1fr] lg:gap-16">
             <div>
               <Rise>
-                <Eyebrow>What is missing</Eyebrow>
+                <Eyebrow>
+                  {undisclosedSchemes > 0 ? "What is missing" : "What is held"}
+                </Eyebrow>
                 <h2 className="mt-4 text-[22px] font-medium leading-[30px] text-ink">
-                  <span className="tabular">{undisclosedSchemes}</span> of{" "}
-                  <span className="tabular">{stats.strategyCount}</span> schemes
-                  have no disclosures captured.
+                  {undisclosedSchemes > 0 ? (
+                    <>
+                      <span className="tabular">{undisclosedSchemes}</span> of{" "}
+                      <span className="tabular">{stats.strategyCount}</span>{" "}
+                      schemes have no disclosures captured.
+                    </>
+                  ) : (
+                    <>
+                      All <span className="tabular">{stats.strategyCount}</span>{" "}
+                      schemes have their disclosures captured.
+                    </>
+                  )}
                 </h2>
                 <p className="mt-4 text-[15px] leading-[26px] text-body">
-                  Every scheme below has a live NAV. What most of them do not
-                  have is a minimum, an expense ratio, an exit load or a risk
-                  band — those live in each house&apos;s scheme information
-                  document, not in AMFI&apos;s feed. We mark the gap rather than
-                  filling it. Houses are ordered by the size of theirs.
+                  {undisclosedSchemes > 0 ? (
+                    <>
+                      Every scheme below has a live NAV. What most of them do
+                      not have is a minimum, an expense ratio, an exit load or a
+                      risk band — those live in each house&apos;s scheme
+                      information document, not in AMFI&apos;s feed. We mark the
+                      gap rather than filling it. Houses are ordered by the size
+                      of theirs.
+                    </>
+                  ) : (
+                    <>
+                      Every scheme below has a live NAV, and the minimum,
+                      expense ratio, exit load and risk band behind it were read
+                      from that scheme&apos;s own information document — AMFI&apos;s
+                      feed carries none of those fields. Where a document does
+                      not state one, it is marked not captured rather than
+                      filled in.
+                    </>
+                  )}
                 </p>
               </Rise>
 
