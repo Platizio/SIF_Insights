@@ -266,8 +266,10 @@ export function NavBoard({ embedded = false }: { embedded?: boolean }) {
             <Link href="/nav-tracker" className="underline">
               NAV tracker
             </Link>{" "}
-            for each scheme’s line and its change. Disclosures are not yet
-            captured for {notCaptured} of {stats.strategyCount} schemes.
+            for each scheme’s line and its change.{" "}
+            {notCaptured > 0
+              ? `Disclosures are not yet captured for ${notCaptured} of ${stats.strategyCount} schemes.`
+              : "Disclosures are captured for every scheme, read from its own information document."}
           </p>
         </Rise>
       </Shell>

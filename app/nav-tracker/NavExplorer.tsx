@@ -185,9 +185,16 @@ export function NavExplorer() {
               All {stats.strategyCount} schemes are listed, grouped by their{" "}
               {stats.mandateCount} mandates and alphabetical within each — never
               ranked by NAV, which would compare funds priced off different face
-              values. We hold the full disclosure set for {stats.disclosedCount}{" "}
-              of them; the rest show each field as not captured. Source: AMFI,{" "}
-              {formatUpdated(navLastUpdated)}.
+              values.{" "}
+              {stats.disclosedCount === stats.strategyCount ? (
+                <>We hold the full disclosure set for every one of them.</>
+              ) : (
+                <>
+                  We hold the full disclosure set for {stats.disclosedCount} of
+                  them; the rest show each field as not captured.
+                </>
+              )}{" "}
+              Source: AMFI, {formatUpdated(navLastUpdated)}.
             </p>
           </div>
 

@@ -69,10 +69,15 @@ export default function NavTrackerPage() {
                 <Rise delay={0.12}>
                   <p className="mt-6 max-w-[54ch] text-[17px] leading-[30px] text-body">
                     A single net asset value tells you very little about whether
-                    a scheme suits you — and for {notCaptured} of the{" "}
-                    {stats.strategyCount} schemes the disclosures behind it are
-                    not yet captured. Tell us your goals, horizon and risk
-                    comfort and we will walk you through what is on file.
+                    a scheme suits you.{" "}
+                    {notCaptured > 0 ? (
+                      <>
+                        For {notCaptured} of the {stats.strategyCount} schemes
+                        the disclosures behind it are not yet captured.{" "}
+                      </>
+                    ) : null}
+                    Tell us your goals, horizon and risk comfort and we will
+                    walk you through what is on file.
                   </p>
                 </Rise>
               </div>

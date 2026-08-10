@@ -208,9 +208,19 @@ export default function StrategiesPage() {
           <>
             Every SIF scheme currently offered in India — {stats.equityCount}{" "}
             equity, {stats.hybridCount} hybrid, no debt scheme yet — across{" "}
-            {stats.mandateCount} distinct long-short mandates. We hold the full
-            disclosure set for {stats.disclosedCount} of them; the rest publish a
-            NAV and nothing more, and are marked as such.
+            {stats.mandateCount} distinct long-short mandates.{" "}
+            {stats.disclosedCount === stats.strategyCount ? (
+              <>
+                We hold the full disclosure set for every one of them, read from
+                each scheme’s own information document.
+              </>
+            ) : (
+              <>
+                We hold the full disclosure set for {stats.disclosedCount} of
+                them; the rest publish a NAV and nothing more, and are marked as
+                such.
+              </>
+            )}
           </>
         }
         meta={[
