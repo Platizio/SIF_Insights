@@ -55,7 +55,7 @@
       "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct plans; IDCW offers Payout and Re-investment facilities (default option is Growth; within IDCW the default is Re-investment). IDCW amounts up to Rs 150 are compulsorily reinvested. IDCW dispatched within 7 working days from record date.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID, adjudicated against the document text"
     },
     "SIF-21": {
       "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
@@ -166,7 +166,7 @@
       "dividend": "Growth Option and IDCW (Income Distribution cum capital withdrawal) Option available under both Regular and Direct Plans. IDCW offers Daily/Weekly (reinvestment only), Fortnightly, Monthly, Quarterly, Half yearly, Annual & Periodic frequencies, each with Payout/Reinvestment/Transfer of IDCW. Default option is Growth. This scheme is the Regular Plan - Growth option.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID, adjudicated against the document text"
     },
     "SIF-80": {
       "overview": null,
@@ -300,7 +300,7 @@
       "dividend": "Growth Option and IDCW Option available under each Plan; IDCW Option has Reinvestment, Payout & Transfer facility. Default Option is Growth; default IDCW facility is Reinvestment. IDCW payment within seven working days from record date. (This scheme is the Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID, adjudicated against the document text"
     },
     "SIF-124": {
       "minInvestment": 1000000,
