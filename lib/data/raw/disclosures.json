@@ -33,15 +33,15 @@
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 2,
-      "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or before 90 days from date of allotment; Nil after 90 days. Units allotted on reinvestment of IDCW not subject to load.",
+      "exitLoad": "If units are redeemed/switched out on or before 90 days from the date of allotment: 0.50% of the applicable NAV. If redeemed/switched out after 90 days from the date of allotment: Nil.",
       "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index (Total Return Index)",
-      "redemptionFrequency": "Twice a week (Every Monday & Every Wednesday; next business day if a non-business day). Subscription frequency is Daily.",
-      "taxation": "Hybrid (other than equity-oriented, not a Specified Mutual Fund): LTCG 12.5%, STCG at applicable slab rates. If equity-oriented: LTCG 12.5% on gains above Rs 1,25,000, STCG 20%. Dividend/IDCW taxed at applicable slab rates for resident investors (individuals and domestic companies/partnership firms alike); the NIL column refers to the Mutual Fund, which bears no tax. Rates are base rates, plus applicable surcharge and cess.",
+      "redemptionFrequency": "Every Monday and every Wednesday of the week (next business day if Monday/Wednesday is a non-business day)",
+      "taxation": "Taxed as a non-equity-oriented (Hybrid) fund. For resident individuals: Long Term Capital Gains 12.5%, Short Term Capital Gains at applicable slab rates. Nil tax at the Mutual Fund level.",
       "dividend": "Growth Option and IDCW Option available under each Plan; IDCW Option has Reinvestment, Payout & Transfer facility. Default Option is Growth; default IDCW facility is Reinvestment. IDCW payment within seven working days from record date. (This scheme is the Growth Option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-13": {
       "overview": "A hybrid long-short strategy that combines equity and debt allocations to generate alpha while managing risk through sophisticated hedging techniques.",
@@ -102,16 +102,16 @@
     "SIF-34": {
       "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
       "minInvestment": 1000000,
-      "expenseRatio": 2.1,
-      "exitLoad": "0.5% if redeemed within 3 months from the date of allotment of units; no exit load payable if redeemed after 3 months from the date of allotment",
+      "expenseRatio": 2.25,
+      "exitLoad": "1% of applicable Net Asset Value if the amount is redeemed or switched out within 12 months from allotment; NIL if redeemed or switched out after 12 months.",
       "riskBand": "Risk Band 5",
-      "benchmark": "BSE 500 TRI",
+      "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily (open ended - redemption/switch-out on each business day at NAV based prices)",
       "taxation": "Classified as an \"equity oriented fund\". LTCG 12.5% without indexation on gains exceeding Rs. 1.25 lakhs (u/s 112A); STCG (held not more than 12 months) 20% (u/s 111A); both where STT is paid on transfer. IDCW taxable at applicable slab rates. STT applies at applicable rates. Rates exclude surcharge and cess.",
       "dividend": "Growth and IDCW (Income Distribution cum Capital Withdrawal) options available under both Regular and Direct Plans; IDCW sub-options: Payout and Re-investment. Default option: Growth; default IDCW sub-option: Re-investment.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-35": {
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
@@ -131,15 +131,15 @@
       "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 1.33,
-      "exitLoad": "Nil (Entry Load: Nil; Exit Load: Nil)",
-      "riskBand": "Risk Band 1",
+      "exitLoad": "Entry Load: Nil; Exit Load: Nil",
+      "riskBand": null,
       "benchmark": "CRISIL Hybrid 85+15 Conservative Index (Tier 1; Tier 2: NA)",
       "redemptionFrequency": "Twice a week (Monday & Thursday)",
       "taxation": "Debt STCG- as per Tax Slab upto 12 months ; Equity LTCG – 12.5% (holding >24 months)",
       "dividend": "Growth and IDCW options available; IDCW offered as Payout and Reinvestment in Daily, Weekly, Fortnightly, Monthly, Quarterly, Half Yearly, Annual and Periodic frequencies (Regular and Direct plans)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-55": {
       "minInvestment": 1000000,
@@ -172,7 +172,7 @@
       "overview": null,
       "minInvestment": 1000000,
       "expenseRatio": 2,
-      "exitLoad": "0.50% of applicable NAV for redemption/switch-out on or before 90 days from date of allotment; Nil after 90 days. No exit load on switch from Regular to Direct Plan of the same Investment Strategy.",
+      "exitLoad": "0.50% of applicable NAV for redemption/switch-out on or before 90 days from the date of allotment; Nil for redemption/switch-out after 90 days from the date of allotment.",
       "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index",
       "redemptionFrequency": "Twice a week (every Monday & Wednesday). If it falls on a non-business day, the immediate next business day.",
@@ -180,7 +180,7 @@
       "dividend": "Growth Option and IDCW Option (Payout of IDCW & Reinvestment of IDCW) available under each Plan; Default Option is Growth. IDCW subject to availability of distributable surplus and at the discretion of the Trustees.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-87": {
       "minInvestment": 1000000,
