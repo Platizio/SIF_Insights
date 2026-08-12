@@ -1,7 +1,7 @@
 {
   "source": "AMFI — https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
   "fetchedAt": "2026-07-31",
-  "navAsOf": "2026-08-11",
+  "navAsOf": "2026-08-12",
   "schemes": [
     {
       "id": "edelweiss-altiva-equity-ex-top-100-long-short",
@@ -11,8 +11,8 @@
       "type": "Equity Ex-Top 100 Long-Short",
       "amfiSchemeCode": "SIF-122",
       "isin": "INF754K30136",
-      "nav": 11.1492,
-      "navAsOf": "2026-08-11"
+      "nav": 11.1623,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "dynasif-dynasif-equity-ex-top-100-long-short",
@@ -22,8 +22,8 @@
       "type": "Equity Ex-Top 100 Long-Short",
       "amfiSchemeCode": "SIF-143",
       "isin": "INF579M30133",
-      "nav": 10.8275,
-      "navAsOf": "2026-08-11"
+      "nav": 10.8532,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "icici-equity",
@@ -34,7 +34,7 @@
       "amfiSchemeCode": "SIF-34",
       "isin": "INF109K30034",
       "nav": 10.39,
-      "navAsOf": "2026-08-11"
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "quant-equity-ex-top100",
@@ -44,8 +44,8 @@
       "type": "Equity Ex-Top 100 Long-Short",
       "amfiSchemeCode": "SIF-25",
       "isin": "INF966L30183",
-      "nav": 11.4811,
-      "navAsOf": "2026-08-11"
+      "nav": 11.4284,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "wealth-equity-ex-top100",
@@ -55,8 +55,8 @@
       "type": "Equity Ex-Top 100 Long-Short",
       "amfiSchemeCode": "SIF-105",
       "isin": "INF2F0030015",
-      "nav": 10.8159,
-      "navAsOf": "2026-08-11"
+      "nav": 10.8247,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "arthaya-arthaya-equity-long-short",
@@ -66,8 +66,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-114",
       "isin": "INF582M30012",
-      "nav": 10.1124,
-      "navAsOf": "2026-08-11"
+      "nav": 10.1025,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "bandhan-equity",
@@ -77,8 +77,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-62",
       "isin": "INF194K30358",
-      "nav": 10.543,
-      "navAsOf": "2026-08-11"
+      "nav": 10.558,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "iti-equity",
@@ -88,8 +88,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-21",
       "isin": "INF00XX30019",
-      "nav": 939.6419,
-      "navAsOf": "2026-08-11"
+      "nav": 943.8333,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "dynasif-dynasif-equity-long-short",
@@ -99,8 +99,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-55",
       "isin": "INF579M30018",
-      "nav": 10.6982,
-      "navAsOf": "2026-08-11"
+      "nav": 10.6954,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "franklin-sapphire-equity-long-short-sif-growth",
@@ -110,8 +110,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-96",
       "isin": "INF090I30014",
-      "nav": 1020.514,
-      "navAsOf": "2026-08-11"
+      "nav": 1021.8108,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "invesco-summit-equity-long-short",
@@ -122,7 +122,7 @@
       "amfiSchemeCode": "SIF-150",
       "isin": "INF205K30014",
       "nav": 10.31,
-      "navAsOf": "2026-08-11"
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "icici-isif-equity-long-short-fund-growth",
@@ -132,8 +132,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-126",
       "isin": "INF109K30075",
-      "nav": 10.69,
-      "navAsOf": "2026-08-11"
+      "nav": 10.73,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "quant-equity",
@@ -143,8 +143,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-3",
       "isin": "INF966L30027",
-      "nav": 11.1241,
-      "navAsOf": "2026-08-11"
+      "nav": 11.0951,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "wealth-equity",
@@ -154,8 +154,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-111",
       "isin": "INF2F0030072",
-      "nav": 10.7043,
-      "navAsOf": "2026-08-11"
+      "nav": 10.6966,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "tata-titanium-equity-long-short-fund-regular-growth",
@@ -165,8 +165,8 @@
       "type": "Equity Long-Short",
       "amfiSchemeCode": "SIF-102",
       "isin": "INF277K30070",
-      "nav": 10.5371,
-      "navAsOf": "2026-08-11"
+      "nav": 10.5511,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "quant-qsif-sector-rotation-long-short-fund-growth-option",
@@ -176,8 +176,8 @@
       "type": "Sector Rotation Long-Short",
       "amfiSchemeCode": "SIF-117",
       "isin": "INF966L30308",
-      "nav": 10.159,
-      "navAsOf": "2026-08-11"
+      "nav": 10.2329,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "icici-isif-active-asset-allocator-long-short-fund-growth",
@@ -187,8 +187,8 @@
       "type": "Active Asset Allocator Long-Short",
       "amfiSchemeCode": "SIF-124",
       "isin": "INF109K30059",
-      "nav": 10.3873,
-      "navAsOf": "2026-08-10"
+      "nav": 10.4116,
+      "navAsOf": "2026-08-11"
     },
     {
       "id": "icici-hybrid",
@@ -198,8 +198,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-35",
       "isin": "INF109K30018",
-      "nav": 10.6572,
-      "navAsOf": "2026-08-11"
+      "nav": 10.653,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "dynasif-dynasif-active-asset-allocator-long-short",
@@ -209,8 +209,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-87",
       "isin": "INF579M30075",
-      "nav": 10.491,
-      "navAsOf": "2026-08-10"
+      "nav": 10.4833,
+      "navAsOf": "2026-08-11"
     },
     {
       "id": "quant-qsif-active-asset-allocator-long-short-fund-growth-option",
@@ -220,8 +220,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-93",
       "isin": "INF966L30217",
-      "nav": 11.5103,
-      "navAsOf": "2026-08-11"
+      "nav": 11.4615,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "edelweiss-hybrid",
@@ -231,8 +231,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-11",
       "isin": "INF754K30052",
-      "nav": 10.9829,
-      "navAsOf": "2026-08-11"
+      "nav": 10.985,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "apex-apex-hybrid-long-short",
@@ -242,8 +242,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-80",
       "isin": "INF209K30040",
-      "nav": 10.6195,
-      "navAsOf": "2026-08-11"
+      "nav": 10.619,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "bandhan-hybrid",
@@ -253,8 +253,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-40",
       "isin": "INF194K30010",
-      "nav": 10.367,
-      "navAsOf": "2026-08-11"
+      "nav": 10.37,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "hsbc-redhex-hybrid-long-short",
@@ -264,8 +264,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-128",
       "isin": "INF336L30015",
-      "nav": 10.1469,
-      "navAsOf": "2026-08-11"
+      "nav": 10.159,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "jioblackrock-prism-hybrid-long-short",
@@ -275,8 +275,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-138",
       "isin": "INF22M030019",
-      "nav": 10.1048,
-      "navAsOf": "2026-08-11"
+      "nav": 10.1265,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "kotak-infinity-hybrid-long-short-fund-regular-growth",
@@ -286,8 +286,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-146",
       "isin": "INF174K30046",
-      "nav": 10.209,
-      "navAsOf": "2026-08-11"
+      "nav": 10.216,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "sbi-hybrid",
@@ -297,8 +297,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-13",
       "isin": "INF200K30015",
-      "nav": 10.5009,
-      "navAsOf": "2026-08-11"
+      "nav": 10.5112,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "mirae-platinum-hybrid-long-short",
@@ -308,8 +308,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-136",
       "isin": "INF769K30019",
-      "nav": 10.205,
-      "navAsOf": "2026-08-11"
+      "nav": 10.212,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "quant-hybrid",
@@ -319,8 +319,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-7",
       "isin": "INF966L30084",
-      "nav": 11.0287,
-      "navAsOf": "2026-08-11"
+      "nav": 10.9603,
+      "navAsOf": "2026-08-12"
     },
     {
       "id": "tata-hybrid",
@@ -330,8 +330,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-29",
       "isin": "INF277K30013",
-      "nav": 10.1589,
-      "navAsOf": "2026-08-11"
+      "nav": 10.1635,
+      "navAsOf": "2026-08-12"
     }
   ],
   "amcs": [
