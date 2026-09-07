@@ -104,7 +104,11 @@ export default function AmcIndexPage() {
 
       <Section id="houses">
         <Shell>
-          <Group className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {/* A fourth column from 2xl. With the shell full-bleed, three cards on a
+              1920px screen are ~450px wide and mostly air; the card is a fixed
+              stack of a mark, a line of prose and three figures, so past a
+              point extra width only stretches the whitespace. */}
+          <Group className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {houses.map((house) => (
               <GroupItem key={house.amc.id} className="h-full">
                 <HouseCard house={house} />

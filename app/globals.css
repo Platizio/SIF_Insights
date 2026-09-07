@@ -12,25 +12,33 @@
      The logo's deep-blue wordmark and gold serif need a light ground;
      on light it sits natively with NO plate behind it. Never reintroduce
      a chip/plate behind the logo. -------------------------------- */
-  --color-ground: oklch(0.976 0.005 85); /* warm off-white paper */
-  --color-surface: oklch(1 0 0); /* white panel, lifts off the paper */
-  --color-surface-2: oklch(0.955 0.007 85); /* recessed / nested */
-  --color-hairline: oklch(0.898 0.008 85); /* the only border */
+  --color-ground: oklch(0.976 0.005 85);
+  /* warm off-white paper */
+  --color-surface: oklch(1 0 0);
+  /* white panel, lifts off the paper */
+  --color-surface-2: oklch(0.955 0.007 85);
+  /* recessed / nested */
+  --color-hairline: oklch(0.898 0.008 85);
+  /* the only border */
 
   /* The contrasting block. On a light ground this is DARK — it is what
      inverse tiles and the numbers band are built from. */
   --color-chip: oklch(0.195 0.012 265);
 
   /* --- Text --------------------------------------------------- */
-  --color-ink: oklch(0.19 0.011 265); /* headings, near-black */
-  --color-body: oklch(0.475 0.014 265); /* paragraphs */
-  --color-muted: oklch(0.55 0.014 265); /* meta, captions — 4.5:1 on white */
+  --color-ink: oklch(0.19 0.011 265);
+  /* headings, near-black */
+  --color-body: oklch(0.475 0.014 265);
+  /* paragraphs */
+  --color-muted: oklch(0.55 0.014 265);
+  /* meta, captions — 4.5:1 on white */
 
   /* --- Accent (deep aqua). Lightness is set by CONTRAST, not taste:
      it must clear 4.5:1 on BOTH --color-ground and --color-accent-wash. -- */
   --color-accent: oklch(0.5 0.1 195);
   --color-accent-dim: oklch(0.42 0.09 195);
-  --color-accent-wash: oklch(0.955 0.022 195); /* pale aqua tint surface */
+  --color-accent-wash: oklch(0.955 0.022 195);
+  /* pale aqua tint surface */
 
   /* --- Semantics — must never share a hue. Darkened for light. - */
   --color-gain: oklch(0.515 0.14 152);
@@ -56,7 +64,10 @@
   --duration-reveal: 700ms;
 
   /* --- Layout ------------------------------------------------- */
-  --container-shell: 1240px;
+  /* No container width token any more: <Shell> is full-bleed and carries a
+     responsive gutter instead of a max-width. Keeping a 1240px token here
+     would be a standing invitation to re-centre something against a column
+     that no longer exists. */
 }
 
 /* ============================================================
@@ -73,12 +84,14 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
 
 @layer base {
+
   /* Fluid root size — the reference's core structural trick. Every rem
      (all Tailwind spacing) becomes viewport-relative, so the composition
      breathes instead of stepping at breakpoints. Clamped so it stays sane
@@ -143,6 +156,7 @@
 }
 
 @layer components {
+
   /* The serif-italic word swap. Exactly one word per display headline.
      Optical size bump because serifs read smaller at the same em. */
   em.swap {
@@ -215,12 +229,10 @@
     border-radius: inherit;
     pointer-events: none;
     z-index: -1;
-    background: linear-gradient(
-      180deg,
-      oklch(1 0 0 / 0.6) 0%,
-      oklch(1 0 0 / 0.14) 38%,
-      oklch(1 0 0 / 0) 58%
-    );
+    background: linear-gradient(180deg,
+        oklch(1 0 0 / 0.6) 0%,
+        oklch(1 0 0 / 0.14) 38%,
+        oklch(1 0 0 / 0) 58%);
   }
 
   /* Pressed: the lens flattens against the page — the lift collapses and
@@ -236,6 +248,7 @@
     background-color: color-mix(in oklch, var(--color-accent) 30%, transparent);
     border: 1px solid color-mix(in oklch, var(--color-accent) 45%, transparent);
   }
+
   .glass-primary:hover {
     background-color: color-mix(in oklch, var(--color-accent) 42%, transparent);
     border-color: color-mix(in oklch, var(--color-accent) 62%, transparent);
@@ -247,6 +260,7 @@
     background-color: oklch(1 0 0 / 0.3);
     border: 1px solid color-mix(in oklch, var(--color-ink) 16%, transparent);
   }
+
   .glass-ghost:hover {
     background-color: oklch(1 0 0 / 0.55);
     border-color: color-mix(in oklch, var(--color-accent) 48%, transparent);
@@ -259,17 +273,16 @@
       inset 0 1px 0 oklch(1 0 0 / 0.22),
       0 6px 20px -6px oklch(0.2 0.02 265 / 0.35);
   }
+
   /* The gloss is tuned for dark text on a light lens. On the inverse (dark)
      lens it would wash out light text instead, so it is dialled right back
      and the rim carries the bevel on its own. Not in use today — this is
      here so the variant is not a trap for whoever reaches for it. */
   .glass-inverse::before {
-    background: linear-gradient(
-      180deg,
-      oklch(1 0 0 / 0.16) 0%,
-      oklch(1 0 0 / 0.04) 40%,
-      oklch(1 0 0 / 0) 60%
-    );
+    background: linear-gradient(180deg,
+        oklch(1 0 0 / 0.16) 0%,
+        oklch(1 0 0 / 0.04) 40%,
+        oklch(1 0 0 / 0) 60%);
   }
 
   .glass-inverse:hover {
@@ -298,6 +311,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-50%);
   }
@@ -319,6 +333,7 @@
    ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -383,13 +398,16 @@ html.reveals-forced [data-reveal] {
   width: 10px;
   height: 10px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--color-ground);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--color-hairline);
   border-radius: 999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-muted);
 }

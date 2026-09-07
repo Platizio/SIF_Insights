@@ -146,7 +146,7 @@ export function StrategyGrid({ embedded = false }: { embedded?: boolean }) {
           No debt SIFs have launched yet.
         </p>
 
-        <Stagger className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <Stagger className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
             {visible.map((strategy) => (
               <motion.div

@@ -156,7 +156,7 @@ function Videos() {
 
         {/* The lead video takes two columns; the remaining four fill the
             3-up grid exactly. Asymmetric by construction — never a 50/50. */}
-        <ul className="mt-16 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-16 grid list-none gap-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {VIDEOS.map((video, i) => (
             <li key={video.id} className={cn(i === 0 && "lg:col-span-2")}>
               <Rise delay={Math.min(i, 10) * 0.06} className="h-full">

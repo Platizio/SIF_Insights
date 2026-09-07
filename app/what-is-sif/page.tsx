@@ -158,9 +158,13 @@ function Definition() {
   return (
     <Section>
       <Shell>
-        {/* 460 / 120 / 660 — the framing column stays narrow so the
-            definition itself reads at a full editorial measure. */}
-        <div className="grid gap-14 xl:grid-cols-[460px_660px] xl:gap-x-[120px]">
+        {/* 460 / 120 / 660, CENTRED rather than widened.
+            This column is prose, and its blockquote is hand-split into three
+            LineReveal lines tuned to 660px — a fluid track would not rewrap
+            them, it would just strand them in a wider box. A paragraph cannot
+            use extra width without losing readability, so the honest fix for
+            the left-hugging is to centre the composition, not stretch it. */}
+        <div className="grid gap-14 xl:grid-cols-[460px_660px] xl:justify-center xl:gap-x-[120px]">
           <div>
             <Rise>
               <Eyebrow>Definition</Eyebrow>
@@ -225,8 +229,10 @@ function DefiningFeatures() {
   return (
     <Section>
       <Shell>
-        {/* 420 / 16 / 804 — the contract's named features grid. */}
-        <div className="grid gap-14 xl:grid-cols-[420px_804px] xl:gap-4">
+        {/* Fluid card track. The fixed 804px was cut to fit the old 1240px
+            shell and now strands the section on the left. A 2-up card grid
+            reflows cleanly at any width, so it takes the space. */}
+        <div className="grid gap-14 xl:grid-cols-[420px_1fr] xl:gap-16">
           <div className="xl:sticky xl:top-32 xl:self-start">
             <Rise>
               <Eyebrow>Features</Eyebrow>

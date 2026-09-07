@@ -135,7 +135,12 @@ export function CategoryComparison() {
         {COLUMN_HOVER_CSS}
       </style>
       <Shell>
-        <div className="grid gap-14 xl:grid-cols-[420px_804px] xl:gap-4">
+        {/* 804px was sized to land exactly inside the old 1240px shell; with
+            the shell full-bleed that left ~670px dead to the right and the
+            whole section hugged the left edge. The table track is now fluid —
+            five columns of comparison are the one thing here that genuinely
+            gets better with width. */}
+        <div className="grid gap-14 xl:grid-cols-[420px_1fr] xl:gap-16">
           {/* Framing column — stays with the table on the way down. Sticky sits
               on a plain div; the motion wrappers live inside it, so no
               transformed ancestor can break the stick. */}

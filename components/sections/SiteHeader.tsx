@@ -76,8 +76,13 @@ export function SiteHeader() {
       transition={{ duration: DUR.hero, ease: EASE.outQuart, delay: 0.2 }}
       className="sticky top-0 z-[200] bg-ground"
     >
-      <Shell className="grid h-16 grid-cols-[auto_1fr_auto] items-center min-[992px]:h-20">
-        <Logo className="h-7 min-[992px]:h-9" />
+      {/* 56/64px, down from 64/80. The header is sticky, so its height is
+          rent charged against every screen of the site for the whole visit —
+          on a 16:9 laptop the old 80px band took 7.4% of the viewport before
+          any content. The logo and CTA shrink with it so the proportions
+          hold rather than the row just getting tighter around them. */}
+      <Shell className="grid h-14 grid-cols-[auto_1fr_auto] items-center min-[992px]:h-16">
+        <Logo className="h-6 min-[992px]:h-7" />
 
         <nav
           aria-label="Primary"
@@ -94,7 +99,15 @@ export function SiteHeader() {
         </nav>
 
         <Magnetic className="hidden justify-self-end min-[992px]:block">
-          <Button href="/contact" variant="primary">
+          {/* Trimmed from the shared 15px/px-7/py-3.5 so the CTA sits inside a
+              64px band with air around it. tailwind-merge resolves these
+              against Button own classes, so this is an override, not a
+              duplicate. */}
+          <Button
+            href="/contact"
+            variant="primary"
+            className="px-5 py-2.5 text-[14px]"
+          >
             Book a consultation
           </Button>
         </Magnetic>

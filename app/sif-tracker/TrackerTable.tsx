@@ -275,6 +275,73 @@ const SCOPED_GROUPS: FilterGroup[] = [
 const GROUPS: FilterGroup[] = [...UNIVERSAL_GROUPS, ...SCOPED_GROUPS];
 
 /* ============================================================
+   Panel footnotes.
+
+   These carried the two long paragraphs that used to sit above the pills.
+   Collapsing the pills into menus would have meant deleting that prose or
+   leaving it stranded above a bar it no longer describes — so it moved to
+   the point of use instead. A caveat about the expense range belongs inside
+   the Expense menu; the reader meets it exactly when it matters.
+
+   Every figure is still derived, never asserted, so these sentences follow
+   the data the way the pill counts always have.
+   ============================================================ */
+
+/* True when every scheme has a captured information document. The scoping
+   caveat is then vacuous — "scoped to the 30 we hold, the other 0 are
+   excluded" — so it is not printed at all. This flips on its own the moment
+   a new scheme lands in the feed ahead of its documents, which is the normal
+   state of this dataset rather than an edge case. */
+const ALL_DISCLOSED = stats.disclosedCount === stats.strategyCount;
+
+const SCOPE_NOTE = ALL_DISCLOSED ? (
+  <>
+    From scheme information documents, which we currently hold for all{" "}
+    <span className="tabular text-ink">{stats.strategyCount}</span> schemes.
+  </>
+) : (
+  <>
+    Scoped to the{" "}
+    <span className="tabular text-ink">{stats.disclosedCount}</span> of{" "}
+    <span className="tabular">{stats.strategyCount}</span> schemes whose
+    information documents we hold, so counts here are out of{" "}
+    <span className="tabular">{stats.disclosedCount}</span>. The other{" "}
+    <span className="tabular">
+      {stats.strategyCount - stats.disclosedCount}
+    </span>{" "}
+    are excluded by this filter, not hidden.
+  </>
+);
+
+const UNIVERSAL_NOTES: Record<string, ReactNode> = {
+  category:
+    stats.debtCount === 0 ? (
+      <>
+        An option showing <span className="tabular">0</span> is listed rather
+        than hidden — no debt SIF has launched yet.
+      </>
+    ) : undefined,
+};
+
+const SCOPED_NOTES: Record<string, ReactNode> = {
+  expense: EXPENSE_RANGE ? (
+    <>
+      Every disclosed expense ratio currently sits between{" "}
+      <span className="tabular">{EXPENSE_RANGE.min.toFixed(2)}%</span> and{" "}
+      <span className="tabular">{EXPENSE_RANGE.max.toFixed(2)}%</span>.
+    </>
+  ) : undefined,
+  risk:
+    EMPTY_RISK_BANDS.length > 0 ? (
+      <>
+        No scheme discloses risk band{" "}
+        {formatList(EMPTY_RISK_BANDS.map(String))}.
+      </>
+    ) : undefined,
+};
+
+
+/* ============================================================
    Sort model.
 
    Two of the four keys are nullable, so the comparator pushes null
@@ -457,6 +524,11 @@ export function TrackerTable() {
       return { ...prev, [groupKey]: next };
     });
 
+  /* Clearing one group, from inside its own panel — distinct from Clear all,
+     which also resets the sort key and the compare selection. */
+  const clearGroup = (groupKey: string) =>
+    setSelections((prev) => ({ ...prev, [groupKey]: [] }));
+
   const togglePick = (id: string) =>
     setPicked((prev) =>
       prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id],
@@ -482,125 +554,117 @@ export function TrackerTable() {
         <div className="relative isolate">
           <GlassField />
 
-          <FilterBlock
-            uid={`${uid}-all`}
-            title={`Every scheme · ${stats.strategyCount}`}
-            groups={UNIVERSAL_GROUPS}
+          {/* One row of menus. Universal controls, then the disclosure-scoped
+              ones, then sort — separated by hairlines because the middle group
+              ranges over a smaller population and that distinction is the whole
+              reason the old layout used two titled blocks. */}
+          <div className="flex flex-wrap items-center gap-2">
+            {UNIVERSAL_GROUPS.map((group) => (
+              <FilterMenu
+                key={group.key}
+                uid={`${uid}-${group.key}`}
+                label={group.label}
+                options={group.options}
+                chosen={selections[group.key] ?? []}
+                onToggle={(id) => toggleFilter(group.key, id)}
+                onClear={() => clearGroup(group.key)}
+                footnote={UNIVERSAL_NOTES[group.key]}
+              />
+            ))}
+
+            <span
+              aria-hidden="true"
+              className="mx-1 hidden h-6 w-px bg-hairline sm:block"
+            />
+
+            {SCOPED_GROUPS.map((group) => (
+              <FilterMenu
+                key={group.key}
+                uid={`${uid}-${group.key}`}
+                label={group.label}
+                options={group.options}
+                chosen={selections[group.key] ?? []}
+                onToggle={(id) => toggleFilter(group.key, id)}
+                onClear={() => clearGroup(group.key)}
+                footnote={
+                  <>
+                    {SCOPE_NOTE}
+                    {SCOPED_NOTES[group.key] ? (
+                      <> {SCOPED_NOTES[group.key]}</>
+                    ) : null}
+                  </>
+                }
+              />
+            ))}
+
+            <span
+              aria-hidden="true"
+              className="mx-1 hidden h-6 w-px bg-hairline sm:block"
+            />
+
+            {/* Sort is single-select, so it takes radios and shows the current
+                key on the trigger rather than a count. */}
+            <FilterMenu
+              uid={`${uid}-sort`}
+              label={`Sorted by ${sort.label.toLowerCase()}`}
+              mode="single"
+              options={SORTS.map((o) => ({ id: o.id, label: o.label }))}
+              chosen={[sort.id]}
+              onToggle={(id) => setSortId(id)}
+              footnote={
+                <>
+                  Ties break on scheme name, so the order is the same every
+                  time. A scheme with no captured value for the key sorts last;
+                  it is never dropped.
+                </>
+              }
+            />
+          </div>
+
+          <ActiveFilters
+            groups={GROUPS}
             selections={selections}
             onToggle={toggleFilter}
-            note={
-              <>
-                AMFI&rsquo;s feed carries the house, category and mandate for
-                every scheme, so these four controls range over all{" "}
-                <span className="tabular">{stats.strategyCount}</span> and
-                nothing can drop out of sight here.
-                {stats.debtCount === 0 ? (
-                  <>
-                    {" "}
-                    Options showing <span className="tabular">(0)</span> are
-                    listed rather than hidden — no debt SIF has launched yet.
-                  </>
-                ) : null}
-              </>
-            }
+            onClearAll={clearAll}
           />
 
-          <FilterBlock
-            className="mt-12"
-            uid={`${uid}-disclosed`}
-            title={`Captured disclosures · ${stats.disclosedCount} of ${stats.strategyCount}`}
-            groups={SCOPED_GROUPS}
-            selections={selections}
-            onToggle={toggleFilter}
-            note={
+          {/* The one line that has to stay visible with every menu shut: which
+              controls see all thirty schemes and which see only thirteen. The
+              detail behind it now lives in each scoped panel's footnote. */}
+          <p className="mt-5 max-w-[86ch] text-[13px] leading-[20px] text-muted">
+            Asset manager, category, mandate and disclosures range over all{" "}
+            <span className="tabular">{stats.strategyCount}</span> schemes.
+            Risk band, expense, exit load and redemption come from scheme
+            information documents
+            {ALL_DISCLOSED ? (
               <>
-                Risk band, expense, exit load and redemption come from scheme
-                information documents, which we hold for{" "}
+                , which we currently hold for all{" "}
+                <span className="tabular">{stats.strategyCount}</span>
+              </>
+            ) : (
+              <>
+                , so they are scoped to the{" "}
                 <span className="tabular text-ink">
                   {stats.disclosedCount}
                 </span>{" "}
-                of the{" "}
-                <span className="tabular">{stats.strategyCount}</span> schemes.
-                These four controls are therefore scoped to those{" "}
-                <span className="tabular">{stats.disclosedCount}</span> and the
-                counts on each pill are out of{" "}
-                <span className="tabular">{stats.disclosedCount}</span>, not{" "}
-                <span className="tabular">{stats.strategyCount}</span>. The
-                other{" "}
+                we hold — the other{" "}
                 <span className="tabular">
                   {stats.strategyCount - stats.disclosedCount}
                 </span>{" "}
-                are excluded by these filters, not hidden: clear the filter, or
-                use{" "}
-                <span className="text-ink">Disclosures → Not captured</span>{" "}
-                above to list them.
-                {EXPENSE_RANGE ? (
-                  <>
-                    {" "}
-                    Every disclosed expense ratio currently sits between{" "}
-                    <span className="tabular">
-                      {EXPENSE_RANGE.min.toFixed(2)}%
-                    </span>{" "}
-                    and{" "}
-                    <span className="tabular">
-                      {EXPENSE_RANGE.max.toFixed(2)}%
-                    </span>
-                    .
-                  </>
-                ) : null}
-                {EMPTY_RISK_BANDS.length > 0 ? (
-                  <>
-                    {" "}
-                    No scheme discloses risk band{" "}
-                    {formatList(EMPTY_RISK_BANDS.map(String))}.
-                  </>
-                ) : null}
+                are excluded by those filters, not hidden. Use{" "}
+                <span className="text-ink">Disclosures → Not captured</span> to
+                list them
               </>
-            }
-          />
-
-          <div className="mt-12 grid gap-3 border-t border-hairline pt-5 md:grid-cols-[168px_1fr] md:items-baseline md:gap-6">
-            <p
-              id={`${uid}-sort`}
-              className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted"
-            >
-              Sort
-            </p>
-            <div
-              role="group"
-              aria-labelledby={`${uid}-sort`}
-              className="flex flex-wrap gap-2"
-            >
-              {SORTS.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  aria-pressed={option.id === sort.id}
-                  onClick={() => setSortId(option.id)}
-                  className={cn(
-                    PILL_BASE,
-                    option.id === sort.id
-                      ? "glass glass-active text-ink"
-                      : "glass glass-ghost text-body",
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <p className="mt-4 max-w-[80ch] text-[13px] leading-[20px] text-muted">
-            Ties break on scheme name, so the order is the same every time.
+            )}
+            .
             {sort.nullable ? (
               <>
                 {" "}
-                Schemes with no captured{" "}
-                {sort.id === "risk" ? "risk band" : "expense ratio"} sort{" "}
-                <span className="text-ink">last</span> — currently{" "}
                 <span className="tabular text-ink">{unsortable}</span> of the{" "}
-                <span className="tabular">{sorted.length}</span> on screen.
-                They are never dropped from the list.
+                <span className="tabular">{sorted.length}</span> on screen have
+                no{" "}
+                {sort.id === "risk" ? "risk band" : "expense ratio"} to sort by
+                and are listed last.
               </>
             ) : null}
           </p>
@@ -820,101 +884,277 @@ export function TrackerTable() {
    Filter block
    ============================================================ */
 
-function FilterBlock({
+/* ============================================================
+   Filter bar
+
+   Nine control groups used to render as nine rows of pills. Correct, and
+   completely honest about the data — but it stood roughly two screens tall
+   before a single scheme was visible, so the page read as a filter form with
+   a table appended rather than as a table you can filter.
+
+   The pills are now menus. Every option, every count and every zero still
+   exists; they are one click away instead of permanently occupying the page.
+   What was lost is seeing all fifty-odd options at once, which is why the
+   active ones are echoed as removable chips beneath the bar: the answer to
+   "what am I looking at?" has to stay on screen even when the menus are shut.
+   ============================================================ */
+
+/** w-72. Needed to decide the flip before the panel has been laid out. */
+const MENU_WIDTH = 288;
+
+function FilterMenu({
   uid,
-  title,
-  note,
+  label,
+  options,
+  chosen,
+  onToggle,
+  onClear,
+  footnote,
+  mode = "multi",
+}: {
+  uid: string;
+  label: string;
+  options: { id: string; label: string; count?: number; note?: string }[];
+  chosen: string[];
+  onToggle: (optionId: string) => void;
+  onClear?: () => void;
+  /** Scope or caveat, shown at the foot of the panel at the point of use. */
+  footnote?: ReactNode;
+  mode?: "multi" | "single";
+}) {
+  const [open, setOpen] = useState(false);
+  const [alignRight, setAlignRight] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelId = `${uid}-panel`;
+
+  useEffect(() => {
+    if (!open) return;
+
+    /* pointerdown, not click: a press that starts inside the panel and ends
+       outside it — a drag on the scrollbar — would otherwise shut the menu. */
+    const onPointerDown = (event: PointerEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const toggleOpen = () => {
+    /* Decide the flip in the handler, not in an effect after paint: measuring
+       post-render would show the panel at the wrong edge for a frame, and
+       setState-in-an-effect is a cascading render. The section clips on the x
+       axis, so a panel overhanging the right edge is cut, not merely ugly. */
+    if (!open && triggerRef.current) {
+      const r = triggerRef.current.getBoundingClientRect();
+      setAlignRight(r.left + MENU_WIDTH > window.innerWidth - 24);
+    }
+    setOpen((value) => !value);
+  };
+
+  const active = chosen.length > 0;
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        ref={triggerRef}
+        type="button"
+        onClick={toggleOpen}
+        aria-expanded={open}
+        aria-controls={panelId}
+        className={cn(
+          PILL_BASE,
+          "inline-flex items-center gap-2",
+          active ? "glass glass-active text-ink" : "glass glass-ghost text-body",
+        )}
+      >
+        <span>{label}</span>
+        {active && mode === "multi" ? (
+          <span className="tabular text-[12px] text-accent-dim">
+            {chosen.length}
+          </span>
+        ) : null}
+        <Chevron open={open} />
+      </button>
+
+      {/* Always rendered so aria-controls always resolves; `hidden` hides it. */}
+      <div
+        id={panelId}
+        hidden={!open}
+        role="group"
+        aria-label={label}
+        className="absolute z-50 mt-2 w-72 border border-hairline bg-surface"
+        style={alignRight ? { right: 0 } : { left: 0 }}
+      >
+        <div className="max-h-[300px] overflow-y-auto py-1">
+          {options.map((option) => {
+            const empty = option.count === 0;
+            const on = chosen.includes(option.id);
+            const id = `${uid}-${option.id}`;
+            return (
+              <label
+                key={option.id}
+                htmlFor={id}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-2.5 text-[14px] leading-[20px] transition-colors duration-150",
+                  empty
+                    ? "cursor-not-allowed text-pending"
+                    : "cursor-pointer text-body hover:bg-accent-wash",
+                )}
+              >
+                <input
+                  id={id}
+                  type={mode === "single" ? "radio" : "checkbox"}
+                  name={mode === "single" ? uid : undefined}
+                  checked={on}
+                  disabled={empty}
+                  onChange={() => onToggle(option.id)}
+                  className="h-4 w-4 shrink-0 cursor-pointer rounded-[4px] border border-hairline accent-accent disabled:cursor-not-allowed"
+                />
+                <span className={cn("flex-1", on && "text-ink")}>
+                  {option.label}
+                  {option.note ? (
+                    <span className="block text-[12px] leading-[16px] text-muted">
+                      {option.note}
+                    </span>
+                  ) : null}
+                </span>
+                {/* Listing a zero rather than hiding it is the whole point —
+                    an empty option is a fact about the market. */}
+                {typeof option.count === "number" ? (
+                  <span className="tabular shrink-0 text-[13px] text-muted">
+                    {option.count}
+                  </span>
+                ) : null}
+              </label>
+            );
+          })}
+        </div>
+
+        {footnote ? (
+          <p className="border-t border-hairline px-4 py-3 text-[12px] leading-[18px] text-muted">
+            {footnote}
+          </p>
+        ) : null}
+
+        {onClear && mode === "multi" ? (
+          <div className="border-t border-hairline px-2 py-2">
+            <button
+              type="button"
+              onClick={onClear}
+              disabled={!active}
+              className={cn(
+                "w-full rounded-full px-3 py-1.5 text-[13px] leading-[20px] transition-colors duration-200",
+                active
+                  ? "text-body hover:bg-accent-wash hover:text-ink"
+                  : "cursor-not-allowed text-pending",
+              )}
+            >
+              Clear {label.toLowerCase()}
+            </button>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      width="10"
+      height="6"
+      viewBox="0 0 10 6"
+      fill="none"
+      aria-hidden="true"
+      className={cn(
+        "shrink-0 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
+        open && "rotate-180",
+      )}
+    >
+      <path
+        d="M1 1l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/**
+ * The active filters, echoed as removable chips.
+ *
+ * This is what pays for collapsing the pills into menus. With the panels shut
+ * there is otherwise nothing on screen saying WHY the table shows four rows
+ * instead of thirty, and a filter you have forgotten about reads as missing
+ * data — the one impression this page must never give.
+ */
+function ActiveFilters({
   groups,
   selections,
   onToggle,
-  className,
+  onClearAll,
 }: {
-  uid: string;
-  title: string;
-  /** States the block's scope BEFORE the pills it governs, not after. */
-  note: ReactNode;
   groups: FilterGroup[];
   selections: Record<string, string[]>;
   onToggle: (groupKey: string, optionId: string) => void;
-  className?: string;
+  onClearAll: () => void;
 }) {
-  const titleId = `${uid}-title`;
-  const noteId = `${uid}-note`;
+  const chips = groups.flatMap((group) =>
+    (selections[group.key] ?? []).flatMap((id) => {
+      const option = group.options.find((o) => o.id === id);
+      return option
+        ? [{ groupKey: group.key, groupLabel: group.label, option }]
+        : [];
+    }),
+  );
+
+  if (chips.length === 0) return null;
 
   return (
-    <div
-      className={className}
-      role="group"
-      aria-labelledby={titleId}
-      aria-describedby={noteId}
-    >
-      <p
-        id={titleId}
-        className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-ink"
+    <div className="mt-5 flex flex-wrap items-center gap-2">
+      <span className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted">
+        Filtering by
+      </span>
+      {chips.map(({ groupKey, groupLabel, option }) => (
+        <button
+          key={`${groupKey}-${option.id}`}
+          type="button"
+          onClick={() => onToggle(groupKey, option.id)}
+          aria-label={`Remove filter ${groupLabel}: ${option.label}`}
+          className="inline-flex items-center gap-2 rounded-full border border-hairline bg-accent-wash px-3 py-1.5 text-[13px] leading-[20px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent"
+        >
+          <span className="text-muted">{groupLabel}</span>
+          <span>{option.label}</span>
+          <svg width="9" height="9" viewBox="0 0 9 9" fill="none" aria-hidden="true">
+            <path
+              d="m1 1 7 7M8 1 1 8"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      ))}
+      <button
+        type="button"
+        onClick={onClearAll}
+        className="rounded-full px-3 py-1.5 text-[13px] leading-[20px] text-muted underline decoration-hairline underline-offset-4 transition-colors duration-200 hover:text-ink"
       >
-        {title}
-      </p>
-
-      <p
-        id={noteId}
-        className="mt-3 max-w-[80ch] text-[13px] leading-[20px] text-muted"
-      >
-        {note}
-      </p>
-
-      <div className="mt-5 border-t border-hairline">
-        {groups.map((group) => {
-          const labelId = `${uid}-${group.key}`;
-          const chosen = selections[group.key] ?? [];
-          return (
-            <div
-              key={group.key}
-              className="grid gap-3 border-b border-hairline py-5 md:grid-cols-[168px_1fr] md:items-baseline md:gap-6"
-            >
-              <p
-                id={labelId}
-                className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted"
-              >
-                {group.label}
-              </p>
-
-              <div
-                role="group"
-                aria-labelledby={labelId}
-                className="flex flex-wrap gap-2"
-              >
-                {group.options.map((option) => {
-                  const empty = option.count === 0;
-                  const on = chosen.includes(option.id);
-                  return (
-                    <button
-                      key={option.id}
-                      type="button"
-                      disabled={empty}
-                      aria-pressed={empty ? undefined : on}
-                      onClick={() => !empty && onToggle(group.key, option.id)}
-                      className={cn(
-                        PILL_BASE,
-                        empty
-                          ? "cursor-not-allowed border border-hairline text-pending"
-                          : on
-                            ? "glass glass-active text-ink"
-                            : "glass glass-ghost text-body",
-                      )}
-                    >
-                      {option.label}{" "}
-                      <span className="tabular">({option.count})</span>
-                      {option.note ? (
-                        <span className="ml-2">· {option.note}</span>
-                      ) : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+        Clear all
+      </button>
     </div>
   );
 }

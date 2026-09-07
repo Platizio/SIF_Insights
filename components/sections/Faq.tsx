@@ -75,8 +75,10 @@ export function Faq() {
       </style>
       <Shell>
         {/* 460 / 120 / 660. The 120px gutter is what makes this editorial
-            rather than a support page — do not reduce it. */}
-        <div className="grid gap-14 xl:grid-cols-[460px_660px] xl:gap-x-[120px]">
+            rather than a support page — do not reduce it. Centred, not
+            widened: the right column is question-and-answer prose at a fixed
+            measure, so extra width would only pad it. */}
+        <div className="grid gap-14 xl:grid-cols-[460px_660px] xl:justify-center xl:gap-x-[120px]">
           {/* Sticky sits on a plain div so no transformed motion ancestor
               can break the stick. */}
           <div className="xl:sticky xl:top-32 xl:self-start">

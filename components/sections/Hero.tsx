@@ -1,12 +1,17 @@
 "use client";
 
 /* ============================================================
-   HERO — the Yield Surface + the lede.
+   HERO — the banner + the lede.
 
-   The proof-tile bento was removed pending a replacement treatment;
-   the hero is a single column over the canvas for now. Everything the
-   bento used (Odometer, DrawnPath, the AMC discs) is still available
-   in the motion + primitives modules when the new treatment lands.
+   The banner is a static image (see HeroBanner). It replaced the WebGL
+   Yield Surface, which still lives in components/webgl/ — HeroCanvas and
+   YieldSurface are intact and unimported, so the old treatment is one
+   import away if it is ever wanted back.
+
+   The proof-tile bento was removed pending a replacement treatment; the
+   hero is a single column over the banner for now. Everything the bento
+   used (Odometer, DrawnPath, the AMC discs) is still available in the
+   motion + primitives modules when the new treatment lands.
 
    "use client" is deliberate. The load sequence needs real
    initial/animate targets with working delays, and the shared wrappers
@@ -20,13 +25,12 @@
    ============================================================ */
 
 import { motion, useReducedMotion, type Transition } from "motion/react";
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 import { LineReveal } from "@/components/motion/LineReveal";
 import { Magnetic } from "@/components/motion/Magnetic";
-import { GlassField } from "@/components/motion/GlassField";
 import { Button, Eyebrow, Section, Shell } from "@/components/primitives";
-import { HeroCanvas } from "@/components/webgl/HeroCanvas";
 import { formatUpdated, navLastUpdated, stats } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
 
@@ -76,14 +80,113 @@ export function Hero() {
       id="hero"
       className="relative flex min-h-[64vh] items-center pt-[72px] pb-[100px]"
     >
-      {/* The Yield Surface. Substrate, never a competitor: it owns its own
-          poster, lazy mount, capability gates and reduced-motion freeze. */}
-      <HeroCanvas />
+      {/* Substrate, never a competitor — see HeroBanner for the scrim that
+          keeps the lede legible over it. */}
+      <HeroBanner />
 
       <Shell className="relative z-10">
         <HeroLede />
       </Shell>
     </Section>
+  );
+}
+
+/* ============================================================
+   Banner
+   ============================================================ */
+
+/**
+ * The hero banner.
+ *
+ * NO ENTRANCE ANIMATION, deliberately. This is the largest painted element
+ * above the fold and therefore a live LCP candidate, and Chrome refuses to
+ * score an element that starts at opacity 0 — fading it in would register as
+ * a measured LCP regression, not a taste choice. It is the same rule that
+ * keeps the headline at delay 0 in CHOREO.
+ *
+ * The art is 3840x1646 (21:9) with its detail massed on the right and pale
+ * water and haze on the left, so `object-right` keeps the architecture in
+ * frame at desktop widths while the lede sits over the quiet side. A phone
+ * viewport is roughly 0.7:1 against the art's 2.33:1, so cover would crop to
+ * a narrow vertical slice of the dark right-hand massing with dark type on
+ * top — hence `object-center` below md, where the scrim also thickens.
+ */
+function HeroBanner() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+    >
+      <Image
+        src="/sif-hero-4k-21x9.png"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        quality={85}
+        className="object-cover object-center md:object-right"
+      />
+
+      {/* Scrim, in two axes. Every stop fades to the SAME hue at zero alpha
+          and never to `transparent`, which is rgba(0,0,0,0) — a ramp toward
+          black that leaves a grey cast over warm paper. That exact mistake
+          has already shipped a visible grey box on this page once.
+
+          HORIZONTAL was 0.94 at the left edge, which is very nearly opaque
+          paper: it erased the misty ridges and water the art puts behind the
+          lede and left that half looking blank. Measured, the raw image there
+          is already luminance 209-234 out of 255, and the headline clears
+          14:1 against it — so that veil was buying nothing and costing the
+          picture. 0.58 keeps the type crisp and lets the ridges read. */}
+      <div
+        className="absolute inset-0 hidden md:block"
+        style={{
+          background:
+            "linear-gradient(to right, oklch(0.976 0.005 85 / 0.58) 0%, oklch(0.976 0.005 85 / 0.46) 34%, oklch(0.976 0.005 85 / 0.16) 62%, oklch(0.976 0.005 85 / 0) 82%)",
+        }}
+      />
+      {/* VERTICAL, and it carries the legibility budget the horizontal one
+          gave up. Type size is not uniform down the column: the 80px headline
+          has ~14:1 of headroom, while the 14px trust row sits on the darkest
+          part of the art (luminance 128) in a colour that only clears 4.60:1
+          on bare paper. So the veil is absent where the type is huge and
+          heaviest where it is small — reveal the picture at the top, protect
+          the fine print at the bottom. */}
+      <div
+        className="absolute inset-0 hidden md:block"
+        style={{
+          background:
+            "linear-gradient(to bottom, oklch(0.976 0.005 85 / 0) 40%, oklch(0.976 0.005 85 / 0.50) 72%, oklch(0.976 0.005 85 / 0.72) 100%)",
+        }}
+      />
+      {/* Below md the art is a texture behind the type, not a picture beside
+          it, so the veil is near-opaque and runs vertically. */}
+      <div
+        className="absolute inset-0 md:hidden"
+        style={{
+          background:
+            "linear-gradient(to bottom, oklch(0.976 0.005 85 / 0.93) 0%, oklch(0.976 0.005 85 / 0.86) 55%, oklch(0.976 0.005 85 / 0.72) 100%)",
+        }}
+      />
+
+      {/* Both edges dissolve into the paper. Without the top fade the art
+          cut in on a hard horizontal seam a few pixels under the header,
+          which read as a mis-cropped image rather than a banner. */}
+      <div
+        className="absolute inset-x-0 top-0 h-24"
+        style={{
+          background:
+            "linear-gradient(to bottom, oklch(0.976 0.005 85 / 1), oklch(0.976 0.005 85 / 0))",
+        }}
+      />
+      <div
+        className="absolute inset-x-0 bottom-0 h-32"
+        style={{
+          background:
+            "linear-gradient(to bottom, oklch(0.976 0.005 85 / 0), oklch(0.976 0.005 85 / 1))",
+        }}
+      />
+    </div>
   );
 }
 
@@ -123,7 +226,13 @@ function HeroLede() {
 
       <motion.p
         data-reveal=""
-        className="mt-8 max-w-[52ch] text-[17px] leading-[30px] text-body"
+        /* 44ch, not the 52ch this measure used on flat paper. At 52ch the
+           longest line reached x=908 and ran into the glass massing, where
+           the art drops to luminance 88 and the line measured 3.05:1 —
+           under AA. Pulling the measure in stops the lede short of the
+           architecture instead of veiling the architecture to protect it,
+           and 44ch is still comfortably inside the 45-75ch band. */
+        className="mt-8 max-w-[44ch] text-[17px] leading-[30px] text-body"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.standfirst, DUR.reveal)}
@@ -135,15 +244,18 @@ function HeroLede() {
 
       <motion.div
         data-reveal=""
-        className="relative isolate mt-10 flex flex-wrap items-center gap-3"
+        className="mt-12 flex flex-wrap items-center gap-3"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.cta, DUR.reveal)}
       >
-        {/* Backdrop for the CTA pair. Fades to its own hue at zero alpha —
-            fading to `transparent` (rgba(0,0,0,0)) is what previously left a
-            visible grey box over the contours. */}
-        <GlassField />
+        {/* NO <GlassField> here, unlike every other CTA cluster on the site.
+            That field exists to give backdrop-filter something to blur when a
+            glass button sits on flat paper. The banner already supplies it, so
+            the field was pure redundancy — and its -inset-x bleed put a hazy
+            rectangle 38px LEFT of the text column, breaking the hero's left
+            margin against the art. The buttons now frost against the image,
+            which is what the treatment was always meant to do. */}
         {/* inline-flex is load-bearing: transforms are ignored on inline boxes,
             so a bare <span> wrapper would silently kill the magnetic pull. */}
         <Magnetic className="inline-flex">
@@ -189,7 +301,13 @@ function TrustCluster() {
   ];
 
   return (
-    <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] leading-[20px] text-muted">
+    /* text-body, not the text-muted this cluster uses elsewhere. Muted
+       clears only 4.60:1 on bare paper, so it has essentially no headroom
+       left for a background image — measured against the darkest pixels
+       under this row it came out at 3.58:1 even under the old near-opaque
+       scrim, i.e. it was already failing AA before the banner landed. Body
+       on the same pixels clears 4.9:1. */
+    <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] leading-[20px] text-body">
       {items.map((item, i) => (
         <li key={i} className="flex items-center gap-5">
           {i > 0 ? (

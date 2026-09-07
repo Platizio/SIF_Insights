@@ -15,7 +15,21 @@ import { useRevealed } from "@/components/motion/Reveal";
    Layout
    ============================================================ */
 
-/** 1240px shell. Gutter 100px desktop, 24px mobile. */
+/**
+ * Full-bleed shell. Gutter only — no max width.
+ *
+ * This was a centred 1240px column, which on a 1920px display left 340px of
+ * dead paper down each side and made a 16:9 screen read as a narrow strip of
+ * content floating in a margin. The shell now runs edge to edge and the
+ * gutter grows with the viewport instead.
+ *
+ * WIDTH IS NOT MEASURE. Going full-bleed widens the CONTAINER; it must never
+ * widen a paragraph, because a 200-character line is unreadable however much
+ * room there is for it. Every body block keeps its own ch-based cap (there
+ * are 48 of them across the site) and those caps are what still decide how
+ * long a line gets. What actually gains from the extra width is the dense
+ * material: the tracker table, the card grids, the NAV board.
+ */
 export function Shell({
   children,
   className,
@@ -24,7 +38,16 @@ export function Shell({
   className?: string;
 }) {
   return (
-    <div className={cn("mx-auto w-full max-w-[1240px] px-6 xl:px-0", className)}>
+    <div
+      className={cn(
+        /* Capped at 2400px and centred. Edge-to-edge is right for a 16:9
+           display; on a 3440px ultrawide it would stretch a table past the
+           point the eye can track a row across, so the gutter takes over
+           beyond the cap. */
+        "mx-auto w-full max-w-[2400px] px-6 md:px-10 lg:px-14 xl:px-20 2xl:px-24",
+        className,
+      )}
+    >
       {children}
     </div>
   );
