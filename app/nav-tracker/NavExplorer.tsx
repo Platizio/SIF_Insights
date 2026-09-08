@@ -300,7 +300,7 @@ function FundDetail({ strategy }: { strategy: Strategy }) {
       </dl>
 
       <p className="mt-8 max-w-[64ch] text-[13px] leading-[20px] text-muted">
-        NAV data fetched from AMFI. Updated daily. Last filed{" "}
+        NAV data fetched from AMFI. Last filed{" "}
         {formatUpdated(navLastUpdated)}.
       </p>
     </div>

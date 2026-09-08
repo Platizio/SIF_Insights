@@ -68,6 +68,21 @@ const COLUMNS: FooterColumn[] = [
   },
 ];
 
+/* The "still awaited" clause is DERIVED, never asserted.
+
+   Asserted, it shipped on all 30 routes claiming AMC documents were awaited
+   while the pages above it named the information documents those very fields
+   were read from — a contradiction a reader could spot from one screen.
+   Counted here, the sentence retires itself the day the gap closes and comes
+   back the day a scheme arrives with no document behind it.
+
+   `disclosedCount`, not the stricter `fullyDisclosedCount`: the clause is
+   about whether a DOCUMENT is still awaited, and disclosedCount is exactly
+   "we have read one". Four schemes hold a document that simply does not state
+   one of the four headline fields; calling their documents awaited would swap
+   one false claim for another. The "not captured" sentence covers those. */
+const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
+
 const LINK_CLASS =
   "group text-[16px] leading-[24px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
 
@@ -124,14 +139,37 @@ export function SiteFooter() {
 
         <Group>
           <GroupItem className="mt-10">
+            {/* Names the four headline fields on purpose, but claims only that
+                where they appear they were READ — never that all thirty carry
+                the full set. The sentence after it is what makes that safe, and
+                is why this copy does not need `fullyDisclosedCount`. */}
             <p className="max-w-[900px] text-[14px] leading-[24px] text-muted">
               <strong className="font-medium text-body">Disclaimer:</strong> The
-              content shared on this website is prepared using information
-              currently available in the public domain, primarily through news
-              reports and secondary sources. At present, the official documents
-              and disclosures from Asset Management Companies (AMCs) regarding
-              the particulars of Specialized Investment Funds (SIFs) are still
-              awaited.
+              scheme terms shown on this site — minimum, expense ratio, exit
+              load, risk band and the rest — are read from each scheme&apos;s own
+              information document, and net asset values come from AMFI&apos;s
+              published SIF feed. Where a document does not state a field, it is
+              marked not captured rather than filled in.
+              {undisclosedSchemes > 0 ? (
+                <>
+                  {" "}
+                  For <span className="tabular">
+                    {undisclosedSchemes}
+                  </span>{" "}
+                  of the{" "}
+                  <span className="tabular">{stats.strategyCount}</span> schemes
+                  we hold no document yet, and nothing beyond AMFI&apos;s feed is
+                  published for them.
+                </>
+              ) : null}{" "}
+              News and commentary elsewhere on this site are drawn from public
+              sources and are not communications of any Asset Management Company
+              (AMC). Documents are amended and net asset values move: the
+              AMC&apos;s own site and the current scheme information document
+              remain the authority on any figure here. SIF Insight is a
+              distributor of Mutual Funds and Specialised Investment Funds, not
+              an investment adviser or an AMC, and nothing on this site is
+              investment advice or a recommendation to buy or sell any scheme.
             </p>
           </GroupItem>
 

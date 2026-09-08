@@ -99,7 +99,11 @@ export default async function AmcDetailPage({
   /* Risk band and expense only exist on disclosed schemes, so both ranges
      are drawn from a subset and can legitimately be EMPTY. An empty range
      renders as "Not captured", never as a blank cell or a lone dash that
-     could be mistaken for a value. */
+     could be mistaken for a value.
+
+     A house can also hold the document and still leave one field out of it,
+     so each range is counted over the schemes that state ITS field — not
+     over `disclosed`, which only knows that a document exists. */
   const bands = [
     ...new Set(
       own
@@ -108,9 +112,16 @@ export default async function AmcDetailPage({
     ),
   ].sort((a, b) => a - b);
 
-  const expenses = own
-    .map((s) => s.expenseRatio)
-    .filter((e): e is number => e !== null);
+  /* The cap flag travels with the ratio. Dropping it here is what let the
+     strip print "2.25%" as a charged fee twenty lines above the scheme row's
+     "Up to 2.25%" for the same number. */
+  const expenses = own.flatMap((s) =>
+    s.expenseRatio === null
+      ? []
+      : [{ ratio: s.expenseRatio, isCap: s.expenseRatioIsCap }],
+  );
+
+  const withBand = own.filter((s) => s.riskBand !== null).length;
 
   const index = amcs.findIndex((a) => a.id === amc.id);
   const prev = index > 0 ? amcs[index - 1] : null;
@@ -206,13 +217,22 @@ export default async function AmcDetailPage({
           <Rise delay={0.12}>
             <p className="mt-5 max-w-[86ch] text-[13px] leading-[20px] text-muted">
               Counted from the {own.length === 1 ? "scheme" : "schemes"} below.
-              NAV data fetched from AMFI. Updated daily; file dated{" "}
+              NAV data fetched from AMFI; file dated{" "}
               {formatUpdated(navLastUpdated)}.{" "}
+              {/* Counted per FIELD, not per document. "2 of 2 captured" over a
+                  Risk bands cell built from one scheme is the same omission
+                  the rest of this page exists to avoid. */}
               {disclosed === 0
                 ? "We hold no scheme information document for this house yet, so risk band and expense are shown as not captured rather than estimated."
-                : `Risk band and expense are drawn from the ${disclosed} of ${own.length} ${
-                    own.length === 1 ? "scheme" : "schemes"
-                  } whose disclosures we have captured.`}
+                : `Risk band is captured for ${withBand} of ${own.length}; expense ratio for ${expenses.length} of ${own.length}. The cells above count only those.`}
+              {expenses.some((e) => e.isCap) ? (
+                <>
+                  {" "}
+                  An expense figure is the maximum ratio the information
+                  document permits, not the ratio being charged — that is
+                  published on the asset manager&apos;s own site and moves.
+                </>
+              ) : null}
             </p>
           </Rise>
         </Shell>
@@ -307,13 +327,47 @@ const FIGURE = "text-[22px] font-medium leading-[30px] text-ink";
 /** Same slot, same size — muted, because an absence is not a figure. */
 const FIGURE_ABSENT = "text-[22px] font-medium leading-[30px] text-muted";
 
+type ExpenseFigure = { ratio: number; isCap: boolean | null };
+
 /** "2.25%" for one value, "2.00–2.25%" across a house that varies. */
-function formatExpenseRange(values: number[]): string {
+function span(values: number[]): { text: string; spread: boolean } {
   const low = Math.min(...values);
   const high = Math.max(...values);
   return low === high
-    ? `${low.toFixed(2)}%`
-    : `${low.toFixed(2)}–${high.toFixed(2)}%`;
+    ? { text: `${low.toFixed(2)}%`, spread: false }
+    : { text: `${low.toFixed(2)}–${high.toFixed(2)}%`, spread: true };
+}
+
+/**
+ * A house's expense figures, stated for what they are.
+ *
+ * Every ratio on file is the ISID's MAXIMUM permissible TER, so a bare
+ * "1.33–2.25%" reads as a spread of prices when it is a spread of ceilings.
+ * The qualifier is said once for the whole span rather than per figure —
+ * "up to 1.33% – up to 2.25%" is two bounds where the house has one range of
+ * them — and a lone cap borrows `formatExpense`'s exact phrasing so the strip
+ * and the scheme row below it cannot state the same number differently.
+ *
+ * Caps and charged ratios are never merged into one span: the low end would
+ * be a fee and the high end a limit, and the reader has no way to tell which
+ * is which. A house holding both gets a labelled span for each. None does
+ * today; the branch exists so the first charged ratio filed is not silently
+ * absorbed into the ceilings.
+ */
+function formatExpenseRange(figures: ExpenseFigure[]): string {
+  const caps = figures.filter((f) => f.isCap === true).map((f) => f.ratio);
+  const charged = figures.filter((f) => f.isCap !== true).map((f) => f.ratio);
+  const parts: string[] = [];
+
+  if (caps.length > 0) {
+    const { text, spread } = span(caps);
+    parts.push(spread ? `Ceilings of ${text}` : `Up to ${text}`);
+  }
+  if (charged.length > 0) {
+    const { text } = span(charged);
+    parts.push(caps.length > 0 ? `Charged ${text}` : text);
+  }
+  return parts.join(" · ");
 }
 
 function SummaryCell({

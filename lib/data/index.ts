@@ -99,7 +99,20 @@ export type NavQuote =
     }
   | { status: "pending" };
 
-export type Nfo = { id: number; title: string; date: string; active: boolean };
+export type Nfo = {
+  id: number;
+  title: string;
+  date: string;
+  active: boolean;
+  /**
+   * ISO date the offer closes, inclusive.
+   *
+   * Optional on the type only because the JSON is hand-maintained; an entry
+   * WITHOUT one can never be shown. See `isOpenNfo` — an offer with no stated
+   * end is exactly the claim we cannot verify.
+   */
+  closesOn?: string;
+};
 export type Faq = { id: number; question: string; answer: string };
 
 /* ============================================================
@@ -149,8 +162,26 @@ const source = schemesRaw as {
 const disclosures = (disclosuresRaw as { disclosures: Record<string, RawDisclosure> })
   .disclosures;
 
-/** Where the numbers come from. Surfaced in the UI, not just in code. */
+/**
+ * Where the numbers come from. Surfaced in the UI, not just in code.
+ *
+ * This is a HUMAN LABEL — "AMFI — https://…" — not a URL. It must never be
+ * used as an `href`: doing so resolved it against the current page and 404'd
+ * on all three category pages. Link with `navSourceUrl` instead.
+ */
 export const navSource = source.source;
+
+/**
+ * The bare URL inside `navSource`, safe to use as an `href`.
+ *
+ * Extracted rather than stored separately so the two can never disagree about
+ * which feed the figures came from. The fallback is AMFI's SIF landing page —
+ * a working link to the right organisation beats a broken one to the exact
+ * file, if the label's shape ever changes.
+ */
+export const navSourceUrl: string =
+  navSource.match(/https?:\/\/\S+/)?.[0] ?? "https://www.amfiindia.com/sif";
+
 export const navLastUpdated: string = source.navAsOf;
 
 /* ============================================================
@@ -236,6 +267,32 @@ export const mandates: { type: string; count: number }[] = Object.entries(
 )
   .map(([type, count]) => ({ type, count }))
   .sort((a, b) => b.count - a.count);
+
+/**
+ * The four fields the summary copy across the site actually names —
+ * "risk band, expense, exit load and minimum".
+ *
+ * Kept as a list rather than an inline conjunction so the sentence and the
+ * count are answering the same question. If the copy ever names a fifth
+ * field, adding it here is what keeps the promise honest.
+ */
+const HEADLINE_DISCLOSURES = [
+  "riskBand",
+  "expenseRatio",
+  "exitLoad",
+  "minInvestment",
+] as const satisfies readonly (keyof Strategy)[];
+
+/**
+ * True only when every field the summary copy names is present.
+ *
+ * A scheme can have a researched entry — `disclosuresCaptured` — and still
+ * leave one of these null, in which case the row honestly renders "Not
+ * captured" while the page's own summary claimed the full set.
+ */
+export function hasFullDisclosures(s: Strategy): boolean {
+  return HEADLINE_DISCLOSURES.every((field) => s[field] !== null);
+}
 
 /* ============================================================
    NAV
@@ -328,7 +385,37 @@ export function liveQuotes(): {
    NFO + FAQ
    ============================================================ */
 
-export const activeNfos: Nfo[] = (nfoRaw as Nfo[]).filter((n) => n.active);
+/**
+ * Is this offer still open on `today`?
+ *
+ * `active` alone is a hand-set flag with NO expiry, which is how three NFO
+ * windows that closed in January stayed on the ticker under a pulsing "Live
+ * NFO" label for seven months. An entry must now also carry a `closesOn` that
+ * has not passed.
+ *
+ * A missing `closesOn` returns false rather than true. An offer with no stated
+ * end date is not evidence that it is open — it is an absence, and the ticker
+ * is the one surface on this site that asserts liveness.
+ *
+ * Compared as ISO strings in UTC, so the answer cannot shift by a day with the
+ * reader's timezone. Inclusive of the closing date: an offer open "to 30 Jan"
+ * is open ON 30 Jan.
+ */
+export function isOpenNfo(nfo: Nfo, today: Date = new Date()): boolean {
+  if (!nfo.active || !nfo.closesOn) return false;
+  return nfo.closesOn >= today.toISOString().slice(0, 10);
+}
+
+/**
+ * Offers open at BUILD time.
+ *
+ * Static rendering means this is only as fresh as the last deploy. The nightly
+ * NAV commit rebuilds every business day, which bounds the staleness at one
+ * business day — but a page left open overnight would keep asserting an
+ * expired offer, so <NfoBar> re-checks against the client's clock too.
+ */
+export const activeNfos: Nfo[] = (nfoRaw as Nfo[]).filter((n) => isOpenNfo(n));
+
 export const faqs: Faq[] = faqsRaw as Faq[];
 
 /* ============================================================
@@ -342,8 +429,23 @@ export const stats = {
   hybridCount: strategiesByCategory.hybrid.length,
   debtCount: strategiesByCategory.debt.length,
   liveNavCount: strategies.filter((s) => getNav(s.id).status === "live").length,
-  /** How many schemes we hold the full disclosure set for. */
+  /**
+   * How many schemes have a disclosures entry AT ALL.
+   *
+   * NOT the same as holding the full set — an entry may still leave individual
+   * fields null. Copy that names specific fields must use
+   * `fullyDisclosedCount`; this one only supports "we have read a document".
+   */
   disclosedCount: strategies.filter((s) => s.disclosuresCaptured).length,
+  /**
+   * How many hold ALL FOUR fields the summary copy names.
+   *
+   * `disclosedCount` counts the presence of an entry, so sentences promising
+   * "risk band, expense, exit load and minimum" over it overstated coverage:
+   * four schemes are each missing one of those fields while still counting as
+   * disclosed. Derived, so the two can never drift apart.
+   */
+  fullyDisclosedCount: strategies.filter(hasFullDisclosures).length,
   /** Of those, how many a second reader confirmed against the source document. */
   disclosuresVerifiedCount: strategies.filter((s) => s.disclosuresVerified).length,
   mandateCount: mandates.length,

@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Shell } from "@/components/primitives";
-import { activeNfos } from "@/lib/data";
+import { activeNfos, isOpenNfo, type Nfo } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
+import { useIsClient } from "@/lib/use-is-client";
 
 /**
  * Section 0 — the live NFO ticker.
@@ -27,13 +28,70 @@ const EDGE_FADE =
  */
 const SPEED = 32;
 
+/**
+ * How often the open set is re-checked against the reader's clock.
+ *
+ * The trade-off, honestly: `closesOn` has day granularity, so the only moment
+ * the answer can change is a date rollover, and a single setTimeout aimed at
+ * midnight would be the tidy version of this. It is also the fragile one —
+ * background tabs clamp long timers, a sleeping laptop can fire one
+ * arbitrarily late, and nothing self-corrects if the system clock moves.
+ * Polling costs three string comparisons a minute, bounds the error at 60s,
+ * and recovers on its own from all of those. `visibilitychange` closes the
+ * last gap: a frozen tab may run no timers at all, so the check is redone the
+ * moment the reader looks at it again rather than up to a minute later.
+ */
+const RECHECK_MS = 60_000;
+
+/**
+ * The offers that are open RIGHT NOW, on the reader's clock.
+ *
+ * `activeNfos` is filtered at build time, so it is only as fresh as the last
+ * deploy — and a page left open across midnight would go on asserting a window
+ * that shut while it sat there. This narrows that list again on the client.
+ *
+ * The set can only ever shrink: an expired offer cannot un-expire, so the
+ * server's list is always a superset of the client's. That is what keeps the
+ * hydration story simple. `useIsClient` is false during SSR and through the
+ * first hydrating render, so pass one reproduces the server's markup exactly
+ * and any expiry lands on the pass after, as an ordinary update rather than a
+ * mismatch. Reading `new Date()` straight into render would instead make the
+ * two passes disagree the moment the build list held a just-expired offer.
+ */
+function useOpenNfos(): Nfo[] {
+  const isClient = useIsClient();
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const recheck = () => setNow(new Date());
+    const id = setInterval(recheck, RECHECK_MS);
+    const onVisibility = () => {
+      if (!document.hidden) recheck();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  return useMemo(
+    () => (isClient ? activeNfos.filter((nfo) => isOpenNfo(nfo, now)) : activeNfos),
+    [isClient, now],
+  );
+}
+
 export function NfoBar() {
   const [dismissed, setDismissed] = useState(false);
+  const openNfos = useOpenNfos();
   const { trackRef, trackStyle, paused } = useMarquee();
 
   // No open NFOs is a real state, not an error — render nothing rather than
-  // an empty strip.
-  if (dismissed || activeNfos.length === 0) return null;
+  // an empty strip. This is also what handles the last offer expiring while
+  // the page is open: the whole bar leaves, border and all, instead of
+  // becoming an empty bordered rule above the header.
+  if (dismissed || openNfos.length === 0) return null;
 
   return (
     <motion.div
@@ -55,8 +113,8 @@ export function NfoBar() {
           style={{ maskImage: EDGE_FADE, WebkitMaskImage: EDGE_FADE }}
         >
           <div ref={trackRef} className="marquee-track" style={trackStyle}>
-            <TrackCopy />
-            <TrackCopy duplicate />
+            <TrackCopy items={openNfos} />
+            <TrackCopy items={openNfos} duplicate />
           </div>
         </div>
 
@@ -101,11 +159,19 @@ function LiveMark({ paused }: { paused: boolean }) {
   );
 }
 
-/** One pass of the ticker. The divider trails every item so the seam is invisible. */
-function TrackCopy({ duplicate = false }: { duplicate?: boolean }) {
+/**
+ * One pass of the ticker. The divider trails every item so the seam is
+ * invisible.
+ *
+ * Takes the list as a prop rather than reading `activeNfos` directly, so both
+ * copies are guaranteed to render the same items as each other and as the
+ * length check above — the marquee's whole -50% loop depends on the two copies
+ * being identical.
+ */
+function TrackCopy({ items, duplicate = false }: { items: Nfo[]; duplicate?: boolean }) {
   return (
     <div className="flex shrink-0 items-center" aria-hidden={duplicate || undefined}>
-      {activeNfos.map((nfo) => (
+      {items.map((nfo) => (
         <span key={nfo.id} className="flex items-center">
           <span className="whitespace-nowrap text-[14px] leading-[20px] text-body">
             {nfo.title}
@@ -145,6 +211,10 @@ function useMarquee() {
     };
     measure();
 
+    // This is also the re-measure path when an offer expires mid-session and
+    // the item count drops: `.marquee-track` is `width: max-content`, so
+    // losing an item shrinks the track's own box and the observer fires. The
+    // two-copy invariant survives because both copies render the same list.
     const resize = new ResizeObserver(measure);
     resize.observe(track);
 

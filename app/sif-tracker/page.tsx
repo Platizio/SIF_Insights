@@ -85,7 +85,7 @@ export default function SifTrackerPage() {
               SIF Insight is a distributor of Mutual Funds and Specialised
               Investment Funds, not an investment adviser or an AMC. Risk bands
               are indicative and may vary with market conditions and portfolio
-              composition. NAV data fetched from AMFI. Updated daily; NAVs as at{" "}
+              composition. NAV data fetched from AMFI. NAVs as at{" "}
               {formatUpdated(navLastUpdated)}.
             </p>
           </div>

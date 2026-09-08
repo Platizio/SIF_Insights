@@ -33,6 +33,14 @@ const FOUNDER_PHOTO = { width: 400, height: 400 } as const;
 /** ₹10,00,000 expressed in lakh — the unit SEBI's framework is quoted in. */
 const MIN_LAKH = stats.minInvestment / 100_000;
 
+/* Same derivation as the site footer, for the same reason: this page carried
+   "official AMC documentation for several SIFs is still awaited" as a flat
+   assertion long after the last document landed. Counted, it cannot go stale
+   in either direction. `disclosedCount` — "have we read a document" — not
+   `fullyDisclosedCount`, which asks the different question of whether that
+   document happened to state all four headline fields. */
+const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
+
 const WHAT_WE_DO = [
   {
     title: "Track every scheme",
@@ -241,7 +249,7 @@ function WhatWeDo() {
 
         <Rise delay={0.1}>
           <p className="mt-12 max-w-[80ch] text-[14px] leading-[24px] text-muted">
-            NAV data fetched from AMFI. Updated daily. Latest values as of{" "}
+            NAV data fetched from AMFI. Latest values as of{" "}
             {formatUpdated(navLastUpdated)} — see the{" "}
             <a
               href="https://www.amfiindia.com/sif"
@@ -252,9 +260,18 @@ function WhatWeDo() {
               AMFI SIF portal
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
-            . Coverage is prepared from information currently in the public
-            domain; official AMC documentation for several SIFs is still
-            awaited.
+            . Scheme terms are read from each scheme&apos;s own information
+            document; where a document does not state a field, we mark it not
+            captured rather than fill it in.
+            {undisclosedSchemes > 0 ? (
+              <>
+                {" "}
+                Official AMC documentation is still awaited for{" "}
+                <span className="tabular">{undisclosedSchemes}</span> of the{" "}
+                <span className="tabular">{stats.strategyCount}</span> schemes,
+                which carry nothing beyond AMFI&apos;s feed.
+              </>
+            ) : null}
           </p>
         </Rise>
       </Shell>
