@@ -63,6 +63,15 @@ jobs:
           if git diff --staged --quiet; then
             echo "No NAV changes today — nothing to commit."
           else
-            git commit -m "chore(nav): daily SIF NAV update [skip ci]"
+            # NO `[skip ci]` IN THIS MESSAGE. The host treats that token as
+            # "do not deploy", so it was suppressing the very redeploy this
+            # job exists to trigger — the data landed in git and never
+            # reached the site. There is also nothing for it to skip: CI
+            # excludes this path rather than relying on a commit token.
+            git commit -m "chore(nav): daily SIF NAV update"
+            # AMFI's feed is a latest-snapshot file, so a rejected push does
+            # not retry — that business day's observation is lost for good.
+            # Rebase onto anything a human pushed since checkout.
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
             git push
           fi

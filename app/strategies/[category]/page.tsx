@@ -23,7 +23,7 @@ import {
   formatUpdated,
   getNav,
   navLastUpdated,
-  navSource,
+  navSourceUrl,
   riskBandNumber,
   stats,
   strategiesByCategory,
@@ -547,7 +547,7 @@ function Schemes({ list, facts }: { list: Strategy[]; facts: Facts }) {
           NAV data fetched from AMFI. Updated daily. Last updated{" "}
           {formatUpdated(navLastUpdated)}, from{" "}
           <a
-            href={navSource}
+            href={navSourceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent"
