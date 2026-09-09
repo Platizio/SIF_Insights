@@ -2,10 +2,20 @@
  * `hasFullDisclosures` and the count derived from it.
  *
  * The site's summary copy names four fields — "risk band, expense, exit load
- * and minimum". `disclosuresCaptured` only says a document was read; four
- * schemes have an entry and still leave one of those four null. Counting the
+ * and minimum". `disclosuresCaptured` only says a document was read; a scheme
+ * can have an entry and still leave one of those four null. Counting the
  * former under a sentence that promises the latter overstates coverage, which
  * is the bug this pair exists to prevent.
+ *
+ * These tests deliberately do NOT require the gap to exist. Four schemes were
+ * each missing one headline field until those fields were read out of the
+ * AMFI-hosted ISIDs; pinning "there are exactly four" made closing the gap
+ * fail the suite, which is backwards — filling a hole is the goal, not a
+ * regression. What must hold either way is the RELATIONSHIP: a null headline
+ * field means `hasFullDisclosures` is false and the scheme is outside
+ * `fullyDisclosedCount`. That is asserted over whatever the data holds today,
+ * and over a synthetic hole so the false branch is exercised even at full
+ * coverage.
  */
 import { describe, expect, it } from "vitest";
 
@@ -22,7 +32,6 @@ const partiallyDisclosed = rawSchemes.filter((s) => {
 
 describe("hasFullDisclosures", () => {
   it("is false for every scheme missing one of the four headline fields", () => {
-    expect(partiallyDisclosed.length).toBeGreaterThan(0);
     for (const raw of partiallyDisclosed) {
       const s = strategies.find((x) => x.id === raw.id)!;
       expect(s.disclosuresCaptured).toBe(true); // it HAS an entry …
@@ -30,16 +39,16 @@ describe("hasFullDisclosures", () => {
     }
   });
 
-  it("the four known partial schemes are each missing exactly one field", () => {
-    // Documented in the audit: four schemes, one hole each. If this changes the
-    // summary copy's coverage claim needs re-checking, so pin it.
-    expect(partiallyDisclosed).toHaveLength(4);
+  it("every partially-disclosed scheme is genuinely missing a headline field", () => {
+    // Guards the reverse direction: nothing lands in `partiallyDisclosed`
+    // unless a headline field really is null in disclosures.json. Vacuous at
+    // full coverage, which is the point — it must not fail when the gap closes.
     for (const raw of partiallyDisclosed) {
       const entry = rawDisclosures[raw.amfiSchemeCode];
       const missing = HEADLINE_FIELDS.filter(
         (field) => (entry[field] ?? null) === null,
       );
-      expect(missing).toHaveLength(1);
+      expect(missing.length).toBeGreaterThan(0);
     }
   });
 
@@ -73,7 +82,11 @@ describe("stats.fullyDisclosedCount", () => {
     );
   });
 
-  it("is strictly below strategyCount while any scheme has a hole", () => {
-    expect(stats.fullyDisclosedCount).toBeLessThan(stats.strategyCount);
+  it("never exceeds strategyCount, and falls below it exactly when a hole exists", () => {
+    expect(stats.fullyDisclosedCount).toBeLessThanOrEqual(stats.strategyCount);
+    expect(stats.fullyDisclosedCount < stats.strategyCount).toBe(
+      partiallyDisclosed.length > 0 ||
+        stats.disclosedCount < stats.strategyCount,
+    );
   });
 });

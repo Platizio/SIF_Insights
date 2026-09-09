@@ -26,15 +26,17 @@ export type RawSchemeRow = {
   navAsOf: string;
 };
 
+/** No `description` — it is editorial and derived from the house's mandates
+    by `describeAmc` in `lib/data/index.ts`, not stored per AMC. */
 export type RawAmcRow = {
   id: string;
   name: string;
   sifName: string;
-  description: string;
 };
 
+/** No `overview` — it is editorial, derived from the mandate in
+    `lib/data/index.ts`, and deliberately not stored per scheme. */
 export type RawDisclosureRow = Partial<{
-  overview: string | null;
   minInvestment: number | null;
   expenseRatio: number | null;
   expenseRatioIsCap: boolean;

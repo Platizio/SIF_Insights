@@ -338,104 +338,87 @@
     {
       "id": "edelweiss",
       "name": "Edelweiss Mutual Fund",
-      "sifName": "Altiva SIF",
-      "description": "Edelweiss Mutual Fund's Altiva Specialised Investment Fund"
+      "sifName": "Altiva SIF"
     },
     {
       "id": "dynasif",
       "name": "360 ONE Asset",
-      "sifName": "DynaSIF",
-      "description": "360 ONE Asset offers Specialised Investment Fund strategies under the DynaSIF brand."
+      "sifName": "DynaSIF"
     },
     {
       "id": "icici",
       "name": "ICICI Prudential Mutual Fund",
-      "sifName": "iSIF",
-      "description": "ICICI Prudential Mutual Fund's iSIF Specialised Investment Fund"
+      "sifName": "iSIF"
     },
     {
       "id": "quant",
       "name": "Quant Mutual Fund",
-      "sifName": "QSIF",
-      "description": "Quant Mutual Fund's Specialised Investment Fund offering"
+      "sifName": "QSIF"
     },
     {
       "id": "wealth",
       "name": "The Wealth Company Mutual Fund",
-      "sifName": "WSIF",
-      "description": "The Wealth Company Mutual Fund's WSIF Specialised Investment Fund"
+      "sifName": "WSIF"
     },
     {
       "id": "arthaya",
       "name": "Union Mutual Fund",
-      "sifName": "Arthaya SIF",
-      "description": "Union Mutual Fund offers Specialised Investment Fund strategies under the Arthaya SIF brand."
+      "sifName": "Arthaya SIF"
     },
     {
       "id": "bandhan",
       "name": "Bandhan Mutual Fund",
-      "sifName": "Arudha SIF",
-      "description": "Bandhan Mutual Fund's Arudha Specialised Investment Fund"
+      "sifName": "Arudha SIF"
     },
     {
       "id": "iti",
       "name": "ITI Mutual Fund",
-      "sifName": "Diviniti SIF",
-      "description": "ITI Mutual Fund's Diviniti Specialised Investment Fund"
+      "sifName": "Diviniti SIF"
     },
     {
       "id": "franklin",
       "name": "Franklin Templeton Mutual Fund",
-      "sifName": "Sapphire SIF",
-      "description": "Franklin Templeton Mutual Fund offers Specialised Investment Fund strategies under the Sapphire SIF brand."
+      "sifName": "Sapphire SIF"
     },
     {
       "id": "invesco",
       "name": "Invesco Mutual Fund",
-      "sifName": "Summit SIF",
-      "description": "Invesco Mutual Fund offers Specialised Investment Fund strategies under the Summit SIF brand."
+      "sifName": "Summit SIF"
     },
     {
       "id": "tata",
       "name": "Tata Mutual Fund",
-      "sifName": "Titanium SIF",
-      "description": "Tata Mutual Fund's Titanium Specialised Investment Fund"
+      "sifName": "Titanium SIF"
     },
     {
       "id": "apex",
       "name": "Aditya Birla Sun Life Mutual Fund",
-      "sifName": "Apex SIF",
-      "description": "Aditya Birla Sun Life Mutual Fund offers Specialised Investment Fund strategies under the Apex SIF brand."
+      "sifName": "Apex SIF"
     },
     {
       "id": "hsbc",
       "name": "HSBC Mutual Fund",
-      "sifName": "RedHex SIF",
-      "description": "HSBC Mutual Fund offers Specialised Investment Fund strategies under the RedHex SIF brand."
+      "sifName": "RedHex SIF"
     },
     {
       "id": "jioblackrock",
       "name": "Jio BlackRock Mutual Fund",
-      "sifName": "Prism SIF",
-      "description": "Jio BlackRock Mutual Fund offers Specialised Investment Fund strategies under the Prism SIF brand."
+      "sifName": "Prism SIF"
     },
     {
       "id": "kotak",
       "name": "Kotak Mahindra Mutual Fund",
-      "sifName": "INFINITY SIF",
-      "description": "Kotak Mahindra Mutual Fund offers Specialised Investment Fund strategies under the INFINITY SIF brand."
+      "sifName": "INFINITY SIF"
     },
     {
       "id": "sbi",
       "name": "SBI Mutual Fund",
-      "sifName": "Magnum SIF",
-      "description": "SBI Mutual Fund's Magnum Specialised Investment Fund"
+      "sifName": "Magnum SIF"
     },
     {
       "id": "mirae",
       "name": "Mirae Asset Mutual Fund",
-      "sifName": "Platinum SIF",
-      "description": "Mirae Asset Mutual Fund offers Specialised Investment Fund strategies under the Platinum SIF brand."
+      "sifName": "Platinum SIF"
     }
   ]
 }
