@@ -22,6 +22,7 @@ import {
   formatNav,
   formatUpdated,
   getNav,
+  hasFullDisclosures,
   navLastUpdated,
   navSourceUrl,
   riskBandNumber,
@@ -75,6 +76,39 @@ function captured<T>(list: Strategy[], pick: (s: Strategy) => T | null): T[] {
   return list.map(pick).filter((v): v is T => v !== null);
 }
 
+/**
+ * One counted dimension: what was found, and how many it was looked for in.
+ *
+ * `captured()` drops the nulls, which is correct for the values and wrong
+ * for the denominator. Counting twelve risk bands and then printing them
+ * "of 14" is the same lie by omission this page exists to prevent — the two
+ * missing schemes vanish between the tally and its heading. So the shortfall
+ * travels WITH the tally instead of being recomputed at the call site, and
+ * the row below renders it as a stated absence.
+ */
+type Tally<T extends string | number> = {
+  rows: { value: T; count: number }[];
+  /** Schemes in `population` that actually state this field. */
+  captured: number;
+  /** Schemes the field was looked for in — the row's real denominator. */
+  population: number;
+};
+
+/** Tallies one field over `list`, keeping the count it failed to find. */
+function dimension<T extends string | number>(
+  list: Strategy[],
+  pick: (s: Strategy) => T | null,
+  order?: (a: { value: T; count: number }, b: { value: T; count: number }) => number,
+): Tally<T> {
+  const values = captured(list, pick);
+  const rows = tally(values);
+  return {
+    rows: order ? [...rows].sort(order) : rows,
+    captured: values.length,
+    population: list.length,
+  };
+}
+
 function summarise(list: Strategy[]) {
   const disclosed = list.filter((s) => s.disclosuresCaptured);
 
@@ -82,21 +116,39 @@ function summarise(list: Strategy[]) {
     count: list.length,
     houses: new Set(list.map((s) => s.amcId)).size,
     live: list.filter((s) => getNav(s.id).status === "live").length,
-    /** The denominator for every disclosure tally on this page. */
+    /** Schemes with a disclosures entry at all — NOT with every field in it. */
     disclosed: disclosed.length,
+    /**
+     * Of those, how many still leave one of the named fields blank.
+     *
+     * `hasFullDisclosures` is the site-wide definition of a complete entry,
+     * so the heading that introduces these rows and the counts on them are
+     * answering the same question. Each row still states its own coverage;
+     * this figure only warns the reader that the rows will not agree.
+     */
+    incomplete: disclosed.filter((s) => !hasFullDisclosures(s)).length,
 
     // From the feed — present for all `count`.
-    mandates: tally(list.map((s) => s.type)),
+    mandates: dimension(list, (s) => s.type),
 
-    // From disclosures — present for `disclosed` only.
-    bands: tally(captured(disclosed, (s) => riskBandNumber(s.riskBand))).sort(
+    // From disclosures — looked for in `disclosed`, found in fewer.
+    bands: dimension(
+      disclosed,
+      (s) => riskBandNumber(s.riskBand),
       (a, b) => a.value - b.value,
     ),
-    minimums: tally(captured(disclosed, (s) => s.minInvestment)),
-    expenses: tally(captured(disclosed, (s) => s.expenseRatio)),
-    exitLoads: tally(captured(disclosed, (s) => s.exitLoad)),
-    redemptions: tally(captured(disclosed, (s) => s.redemptionFrequency)),
-    benchmarks: tally(captured(disclosed, (s) => s.benchmark)),
+    minimums: dimension(disclosed, (s) => s.minInvestment),
+    /* Tallied as FORMATTED figures, not bare ratios. Every ratio on file is
+       the ISID's maximum permissible TER, and `formatExpense` is the one
+       place that says so; grouping the numbers and printing "%" after them
+       would state a fee the investor may not be paying — and would drop the
+       two-decimal form every other expense figure on the site uses. */
+    expenses: dimension(disclosed, (s) =>
+      formatExpense(s.expenseRatio, s.expenseRatioIsCap),
+    ),
+    exitLoads: dimension(disclosed, (s) => s.exitLoad),
+    redemptions: dimension(disclosed, (s) => s.redemptionFrequency),
+    benchmarks: dimension(disclosed, (s) => s.benchmark),
   };
 }
 
@@ -123,10 +175,25 @@ const COPY: Record<
     standfirst: (f) => (
       <>
         Every equity SIF currently offered in India — {f.count} schemes from{" "}
-        {f.houses} houses, across {f.mandates.length} distinct long-short
-        mandates. Name, code and NAV come from AMFI&apos;s feed; the disclosure
-        rows come from the asset manager, and {f.count - f.disclosed} schemes have
-        none captured yet.
+        {/* Explicit `{" "}`: the space that follows this expression on the
+            same source line is swallowed in the compiled output, so the count
+            ran into the next word ("3distinct"). */}
+        {f.houses} houses, across {f.mandates.rows.length}{" "}
+        distinct long-short mandates. Name, code and NAV come from
+        AMFI&apos;s feed; the disclosure rows come from the asset manager
+        {/* Both clauses are conditional because both count absences, and an
+            absence of nothing is not a fact worth printing: "0 schemes have
+            none captured yet" reads as a defect, not as full coverage. */}
+        {f.count - f.disclosed > 0 ? (
+          <>, and {f.count - f.disclosed} schemes have none captured yet</>
+        ) : null}
+        {f.incomplete > 0 ? (
+          <>
+            , and {f.incomplete} of the captured entries still leave a field
+            blank
+          </>
+        ) : null}
+        .
       </>
     ),
     metaTitle: "Equity strategies",
@@ -139,10 +206,28 @@ const COPY: Record<
     standfirst: (f) => (
       <>
         Every hybrid SIF currently offered in India — {f.count} schemes from{" "}
-        {f.houses} houses, across {f.mandates.length} multi-asset long-short
+        {f.houses} houses, across {f.mandates.rows.length} multi-asset long-short
         mandates. Where disclosures are captured, the risk bands and redemption
-        windows genuinely differ house to house; the other {f.count - f.disclosed}{" "}
-        schemes publish a NAV and nothing else.
+        windows genuinely differ house to house
+        {/* "the other 0 schemes publish a NAV and nothing else" was printing
+            whenever coverage was complete. Both shortfalls are stated only
+            when there is one, and the gap that actually bites this page is
+            the second: every hybrid scheme has an entry, four of them are a
+            field short. */}
+        {f.count - f.disclosed > 0 ? (
+          <>
+            ; the other {f.count - f.disclosed} schemes publish a NAV and
+            nothing else
+          </>
+        ) : null}
+        {f.incomplete > 0 ? (
+          <>
+            ; {f.incomplete} of the entries we hold state every field but one,
+            and each row below counts that absence rather than dropping the
+            scheme
+          </>
+        ) : null}
+        .
       </>
     ),
     metaTitle: "Hybrid strategies",
@@ -217,8 +302,8 @@ export default async function CategoryPage({
                   {facts.houses === 1 ? "asset manager" : "asset managers"}
                 </>,
                 <>
-                  <span className="tabular">{facts.mandates.length}</span>{" "}
-                  {facts.mandates.length === 1 ? "mandate" : "mandates"}
+                  <span className="tabular">{facts.mandates.rows.length}</span>{" "}
+                  {facts.mandates.rows.length === 1 ? "mandate" : "mandates"}
                 </>,
                 <>
                   <span className="tabular">
@@ -264,11 +349,57 @@ export default async function CategoryPage({
    disclosure block covers a subset and says so twice — once as a
    block heading, once per row — because a reader who lands on a
    single row must still be able to see what it was counted over.
+
+   "Its own" means its own FIELD. A single `disclosureScope` shared
+   by six rows was counting documents, and a document is not a
+   field: on hybrid it announced "14 of 14 with disclosures" above
+   twelve risk bands, because two of those fourteen entries state
+   no band. Each row now derives its scope from the field it
+   tallies, and every shortfall is rendered as a "Not captured"
+   entry so the counts sum to the total the row states.
    ============================================================ */
+
+/**
+ * What one row was counted over, taken from the field rather than the file.
+ *
+ * Read on its own, "12 of the 14 with disclosures" is the whole story: the
+ * page holds fourteen entries and twelve of them answer this question.
+ */
+function scopeOf(counts: { captured: number; population: number }): string {
+  return counts.captured === counts.population
+    ? `all ${counts.population} with disclosures`
+    : `${counts.captured} of the ${counts.population} with disclosures`;
+}
+
+/**
+ * The heading over the disclosure tallies, and the only sentence that has to
+ * hold for all six rows at once.
+ *
+ * Two independent shortfalls, so two independent clauses. `missing` counts
+ * schemes with no entry at all — they are outside every tally below.
+ * `incomplete` counts entries that exist and are still a field short, which
+ * is the failure that made this heading wrong: it read "Captured for all 14"
+ * over rows summing to twelve. Neither clause prints at zero.
+ */
+function disclosureNote(facts: Facts, missing: number): string {
+  if (missing === 0 && facts.incomplete === 0) {
+    return `Captured for all ${facts.count} schemes on this page.`;
+  }
+
+  const gaps =
+    facts.incomplete === 0
+      ? ""
+      : ` An entry is not a full set: ${facts.incomplete} of the ${facts.disclosed} we hold state every field but one. Each row below is counted over the schemes that disclose that field, and the rest are counted as “Not captured” rather than dropped, so every row sums to the total it states.`;
+
+  if (missing === 0) {
+    return `An entry exists for all ${facts.count} schemes on this page.${gaps}`;
+  }
+
+  return `Captured for ${facts.disclosed} of ${facts.count} schemes. The other ${missing} publish a NAV and nothing else, so they are in none of the tallies below — they appear further down with every disclosure row marked “Not captured”.${gaps}`;
+}
 
 function AtAGlance({ facts }: { facts: Facts }) {
   const missing = facts.count - facts.disclosed;
-  const disclosureScope = `${facts.disclosed} of ${facts.count} with disclosures`;
 
   return (
     <Section id="at-a-glance">
@@ -337,73 +468,76 @@ function AtAGlance({ facts }: { facts: Facts }) {
                 <TallyRow
                   label="Mandate"
                   scope={`all ${facts.count} schemes`}
-                  rows={facts.mandates}
-                  total={facts.count}
+                  counts={facts.mandates}
                 />
+                {/* The one feed field that can be absent: a scheme in the
+                    file with no published NAV is counted, not omitted. */}
                 <TallyRow
                   label="NAV observation"
                   scope={`all ${facts.count} schemes`}
-                  rows={[
-                    {
-                      value: `Live, as at ${formatUpdated(navLastUpdated)}`,
-                      count: facts.live,
-                    },
-                  ]}
-                  total={facts.count}
+                  counts={{
+                    rows: [
+                      {
+                        value: `Live, as at ${formatUpdated(navLastUpdated)}`,
+                        count: facts.live,
+                      },
+                    ],
+                    captured: facts.live,
+                    population: facts.count,
+                  }}
+                  absent="No NAV in the current AMFI file"
                 />
               </dl>
             </Group>
 
             <Group>
               <GroupItem>
+                {/* Three states, because there are three ways coverage can
+                    fall short: no entry, an entry missing a field, or both.
+                    The old heading knew only the first, so a page where
+                    every scheme had an entry announced full capture while
+                    the rows beneath it counted twelve of fourteen. */}
                 <BlockHeading
                   label="From scheme disclosures"
-                  note={
-                    missing === 0
-                      ? `Captured for all ${facts.count} schemes on this page.`
-                      : `Captured for ${facts.disclosed} of ${facts.count} schemes. The other ${missing} publish a NAV and nothing else, so they are in none of the tallies below — they appear further down with every disclosure row marked “Not captured”.`
-                  }
+                  note={disclosureNote(facts, missing)}
                 />
               </GroupItem>
               <dl>
                 <TallyRow
                   label="Risk band"
-                  scope={disclosureScope}
-                  rows={facts.bands}
-                  total={facts.disclosed}
+                  scope={scopeOf(facts.bands)}
+                  counts={facts.bands}
                   render={(band) => <RiskBand band={band} />}
                 />
                 <TallyRow
                   label="Minimum investment"
-                  scope={disclosureScope}
-                  rows={facts.minimums}
-                  total={facts.disclosed}
+                  scope={scopeOf(facts.minimums)}
+                  counts={facts.minimums}
                   render={(v) => <span className="tabular">{formatInr(v)}</span>}
                 />
+                {/* `formatExpense` has already qualified the figure — see
+                    `summarise`. Printing the raw ratio with a "%" glued on
+                    would state a ceiling as a charge. */}
                 <TallyRow
                   label="Expense ratio"
-                  scope={disclosureScope}
-                  rows={facts.expenses}
-                  total={facts.disclosed}
-                  render={(v) => <span className="tabular">{v}%</span>}
+                  scope={scopeOf(facts.expenses)}
+                  counts={facts.expenses}
+                  render={(v) => <span className="tabular">{v}</span>}
                 />
                 <TallyRow
                   label="Exit load"
-                  scope={disclosureScope}
-                  rows={facts.exitLoads}
-                  total={facts.disclosed}
+                  scope={scopeOf(facts.exitLoads)}
+                  counts={facts.exitLoads}
                 />
                 <TallyRow
                   label="Redemption"
-                  scope={disclosureScope}
-                  rows={facts.redemptions}
-                  total={facts.disclosed}
+                  scope={scopeOf(facts.redemptions)}
+                  counts={facts.redemptions}
                 />
                 <TallyRow
                   label="Benchmark"
-                  scope={disclosureScope}
-                  rows={facts.benchmarks}
-                  total={facts.disclosed}
+                  scope={scopeOf(facts.benchmarks)}
+                  counts={facts.benchmarks}
                 />
               </dl>
             </Group>
@@ -431,21 +565,30 @@ function BlockHeading({ label, note }: { label: string; note: string }) {
  * was counted over the whole page. Values are never collapsed either:
  * folding "Band 1, Band 2, Band 5" into "up to Band 5" is exactly the
  * flattening these pages exist to avoid.
+ *
+ * The absence is a value too. A field nobody filed in still happened to the
+ * schemes that did not file it, so the shortfall renders as its own entry
+ * instead of leaving the reader to notice that the counts come up short of
+ * the total printed beside them. Anyone adding a column here should be able
+ * to add the numbers in it and land on `population`.
  */
 function TallyRow<T extends string | number>({
   label,
   scope,
-  rows,
-  total,
+  counts,
+  absent = "Not captured",
   render,
 }: {
   label: string;
-  /** The population `total` counts, restated on the row itself. */
+  /** The population `counts.population` refers to, restated on the row. */
   scope: string;
-  rows: { value: T; count: number }[];
-  total: number;
+  counts: Tally<T>;
+  /** What the shortfall is called. "Not captured" everywhere but the feed. */
+  absent?: string;
   render?: (value: T) => ReactNode;
 }) {
+  const { rows, population } = counts;
+  const notCaptured = population - counts.captured;
   const show = (value: T) => (render ? render(value) : <>{value}</>);
 
   /* Classes on <GroupItem>: it renders the wrapper, so anything nested is an
@@ -476,10 +619,20 @@ function TallyRow<T extends string | number>({
                 >
                   <span>{show(r.value)}</span>
                   <span className="tabular shrink-0 text-[13px] text-muted">
-                    {r.count} of {total}
+                    {r.count} of {population}
                   </span>
                 </li>
               ))}
+              {/* Muted, and last — an absence is not one of the values, but
+                  it is the difference between this list and its total. */}
+              {notCaptured > 0 ? (
+                <li className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-muted">
+                  <span>{absent}</span>
+                  <span className="tabular shrink-0 text-[13px]">
+                    {notCaptured} of {population}
+                  </span>
+                </li>
+              ) : null}
             </ul>
           )}
         </dd>
@@ -544,7 +697,11 @@ function Schemes({ list, facts }: { list: Strategy[]; facts: Facts }) {
         </div>
 
         <p className="mt-8 max-w-[64ch] text-[14px] leading-[20px] text-muted">
-          NAV data fetched from AMFI. Updated daily. Last updated{" "}
+          {/* No cadence is claimed. Nothing in this pipeline guarantees a
+              daily refresh, and "Updated daily" sat beside a file that was
+              five days old — the dated statement is the one we can stand
+              behind, so it is the only one made. */}
+          NAV data fetched from AMFI. Last updated{" "}
           {formatUpdated(navLastUpdated)}, from{" "}
           <a
             href={navSourceUrl}

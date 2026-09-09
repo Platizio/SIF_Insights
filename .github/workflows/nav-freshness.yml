@@ -1,0 +1,238 @@
+name: NAV Freshness
+
+# A dead-man's switch for the NAV pipeline.
+#
+# Every other safety mechanism in this repo is a CONTENT check that runs INSIDE
+# update-nav.yml: fetch_nav.py exits non-zero if one of the 30 scheme codes
+# stops resolving, and the job refuses to commit data that does not typecheck.
+# All of them presuppose that the job ran. Nothing checked that it ran at all,
+# so three outcomes were externally indistinguishable and every one of them was
+# silent:
+#
+#   1. AMFI published nothing for these codes (a genuine market holiday),
+#   2. GitHub dropped the scheduled run (documented behaviour under load),
+#   3. GitHub auto-disabled the schedule after 60 days of repo inactivity.
+#
+# In all three the site keeps serving the last number it has and no mail is
+# sent. On 2026-09-07 the run produced no commit and nothing anywhere noticed.
+#
+# This job asks the one question whose answer is the same for all three: not
+# "did the run succeed?" but "is the data on disk still recent?". It FAILS on
+# staleness — failing is what makes GitHub email the repo owner — and a healthy
+# run is deliberately silent.
+#
+# Note the residual it cannot cover: this workflow is itself a scheduled job and
+# can be dropped or auto-disabled the same way. It shortens the blind window
+# from unbounded to a few business days; it does not close it.
+
+on:
+  schedule:
+    # 03:30 UTC = 09:00 IST, daily.
+    #
+    # The NAV job runs at 18:00 UTC (23:30 IST) Mon-Fri, so this lands ~9.5h
+    # after it — long past the point where that night's run has had its chance
+    # to fetch, validate, typecheck and push, and at an hour when the failure
+    # mail reaches an operator who is awake in IST. Anything earlier in the UTC
+    # day would read the data BEFORE that night's run and alarm on the
+    # pipeline's normal steady state.
+    #
+    # Weekend runs are deliberate and free: the gap below is counted in
+    # business days, so Saturday and Sunday add nothing to it and those runs are
+    # no-ops by construction. What they buy is that the switch is exercised
+    # every day rather than only on weekdays.
+    - cron: '30 3 * * *'
+
+  workflow_dispatch: {}        # manual "Run workflow" button
+
+permissions:
+  contents: read
+
+jobs:
+  nav-freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # No setup-node and no npm install: ubuntu-latest ships node, the script
+      # below uses only fs/Date/JSON, and this job must stay runnable even when
+      # the dependency tree is broken — a stale-data alarm that needs a green
+      # `npm ci` to fire is an alarm wired to the thing it is watching.
+      - name: Check NAV freshness
+        run: |
+          node <<'NODE'
+          'use strict';
+          const fs = require('fs');
+
+          const SCHEMES_PATH = 'lib/data/raw/schemes.json';
+
+          // THRESHOLD: fail at MORE THAN 3 business days behind today (IST).
+          //
+          // Counted in BUSINESS days, never calendar days. A calendar-day
+          // threshold has no setting that works: tight enough to catch a stuck
+          // pipeline and it fires every Monday; loose enough to survive a
+          // weekend and it stops detecting anything. Weekends therefore cost
+          // nothing here, and the number below is pure holiday tolerance on top
+          // of the normal steady state:
+          //
+          //   1  Normal. This runs at 09:00 IST, and the freshest NAV that can
+          //      exist is the previous business day's, filed by ~23:00 IST last
+          //      night. A healthy pipeline sits here permanently.
+          //   2  One Indian public holiday. Markets shut, AMFI publishes
+          //      nothing, the nightly run succeeds and commits nothing.
+          //   3  Two CONSECUTIVE weekday holidays. Not hypothetical: the Diwali
+          //      cluster does exactly this whenever Laxmi Pujan falls on a
+          //      Thursday, closing Thursday and Friday (19-20 Oct 2017). The
+          //      Monday after such a pair lands on exactly 3, so any lower
+          //      threshold is a guaranteed false alarm on a recurring festival
+          //      — and a dead-man's switch that cries wolf gets muted, which is
+          //      indistinguishable from not having one.
+          //   4+ Three straight business days with nothing published. Longer
+          //      than any Indian holiday cluster; treat it as a stuck pipeline.
+          //
+          // So 3 is a floor imposed by the Indian holiday calendar, not a
+          // preference. It costs at most one extra business day of detection
+          // latency; content faults are already caught inside the nightly job,
+          // and this switch is responsible only for total absence.
+          const MAX_BUSINESS_DAYS_BEHIND = 3;
+
+          const DAY_MS = 86400000;
+          const IST_OFFSET_MS = (5 * 60 + 30) * 60 * 1000;
+
+          // fs.writeSync, not console.log: this whole file exists to deliver a
+          // message, and console.* writes to a PIPE (which is what Actions gives
+          // a step) are asynchronous in node — process.exit() can drop whatever
+          // is still buffered. Losing the annotation would turn the alarm back
+          // into the silence it was built to end.
+          function say(fd, text) {
+            fs.writeSync(fd, text + '\n');
+          }
+
+          function die(annotation, body) {
+            say(1, '::error title=SIF NAV data is stale::' + annotation);
+            say(2, body);
+            process.exit(1);
+          }
+
+          // India has never observed DST, so IST is UTC+05:30 year-round and the
+          // offset can be applied arithmetically. That keeps this free of Intl
+          // timezone data and of whatever locale the runner happens to have.
+          const todayIST = new Date(Date.now() + IST_OFFSET_MS)
+            .toISOString()
+            .slice(0, 10);
+
+          let doc;
+          try {
+            doc = JSON.parse(fs.readFileSync(SCHEMES_PATH, 'utf8'));
+          } catch (err) {
+            die(
+              'Cannot read ' + SCHEMES_PATH + ': ' + err.message,
+              'FRESHNESS CHECK CANNOT RUN\n\n' +
+              '  Cannot read ' + SCHEMES_PATH + '\n' +
+              '  ' + err.message + '\n\n' +
+              'This check reads the same file the site renders from, so an\n' +
+              'unreadable file here means the site is broken too. Look at the\n' +
+              'newest commit that touched it.'
+            );
+          }
+
+          const navAsOf = doc.navAsOf;
+          if (typeof navAsOf !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(navAsOf)) {
+            die(
+              SCHEMES_PATH + ' has no usable top-level "navAsOf" (got ' +
+                JSON.stringify(navAsOf) + ')',
+              'FRESHNESS CHECK CANNOT RUN\n\n' +
+              '  ' + SCHEMES_PATH + ' has no usable top-level "navAsOf".\n' +
+              '  Found: ' + JSON.stringify(navAsOf) + ' (expected "YYYY-MM-DD").\n\n' +
+              'Failing loudly rather than assuming fresh: a missing field is\n' +
+              'exactly how this check would silently stop watching. The pipeline\n' +
+              'writes that field — check the newest "Update SIF NAV" run.'
+            );
+          }
+
+          function toUTC(ymd) {
+            const parts = ymd.split('-').map(Number);
+            return Date.UTC(parts[0], parts[1] - 1, parts[2]);
+          }
+
+          // Business days strictly after `fromMs`, up to and including `toMs`.
+          // Both are UTC midnights, so this never touches the runner's timezone.
+          function businessDaysBetween(fromMs, toMs) {
+            let count = 0;
+            for (let t = fromMs + DAY_MS; t <= toMs; t += DAY_MS) {
+              const dow = new Date(t).getUTCDay();
+              if (dow !== 0 && dow !== 6) count += 1;
+            }
+            return count;
+          }
+
+          const navMs = toUTC(navAsOf);
+          const todayMs = toUTC(todayIST);
+
+          if (navMs > todayMs) {
+            die(
+              'navAsOf=' + navAsOf + ' is in the FUTURE relative to ' +
+                todayIST + ' IST',
+              'IMPOSSIBLE navAsOf\n\n' +
+              '  navAsOf              : ' + navAsOf + '\n' +
+              '  today (Asia/Kolkata) : ' + todayIST + '\n\n' +
+              'A future-dated NAV means the source was misparsed or a date column\n' +
+              'moved. Check the parser against the current AMFI file before\n' +
+              'trusting any number on the site.'
+            );
+          }
+
+          const gap = businessDaysBetween(navMs, todayMs);
+          const unit = gap === 1 ? 'business day' : 'business days';
+
+          if (gap <= MAX_BUSINESS_DAYS_BEHIND) {
+            say(
+              1,
+              'NAV freshness OK — navAsOf=' + navAsOf + ', today=' + todayIST +
+              ' IST, ' + gap + ' ' + unit + ' behind (tolerated: ' +
+              MAX_BUSINESS_DAYS_BEHIND + ').'
+            );
+            process.exit(0);
+          }
+
+          const rows = [
+            ['navAsOf in ' + SCHEMES_PATH, navAsOf],
+            ['today (Asia/Kolkata)', todayIST],
+            ['business days behind', String(gap)],
+            ['tolerated', String(MAX_BUSINESS_DAYS_BEHIND)]
+          ];
+          const width = rows.reduce(function (w, r) {
+            return Math.max(w, r[0].length);
+          }, 0);
+          const table = rows.map(function (r) {
+            return '  ' + r[0] + ' '.repeat(width - r[0].length) + ' : ' + r[1];
+          }).join('\n');
+
+          die(
+            'navAsOf=' + navAsOf + ' is ' + gap + ' ' + unit + ' behind ' +
+              todayIST + ' IST (tolerated: ' + MAX_BUSINESS_DAYS_BEHIND +
+              ') — check the "Update SIF NAV" run history in the Actions tab',
+            "DEAD-MAN'S SWITCH TRIPPED — the SIF NAV data has stopped advancing.\n" +
+            '\n' +
+            table + '\n' +
+            '\n' +
+            'This does NOT say the pipeline errored. It says no fresh data has\n' +
+            'landed. Check the three indistinguishable causes, in this order:\n' +
+            '\n' +
+            '  1. THE JOB NEVER RAN. Actions -> "Update SIF NAV" -> compare the\n' +
+            '     run history against its cron (0 18 * * 1-5). Missing rows mean\n' +
+            '     GitHub dropped the schedule, or disabled it after 60 days of\n' +
+            '     repo inactivity — the Actions tab shows a banner when it has.\n' +
+            '     Re-enable it, then press "Run workflow" to catch up.\n' +
+            '  2. THE JOB RAN AND FAILED. The newest run is red — open its log.\n' +
+            '     fetch_nav.py exits non-zero on AMFI format drift or a scheme\n' +
+            '     code that stopped resolving, deliberately committing nothing.\n' +
+            '  3. THE JOB RAN, PASSED, AND COMMITTED NOTHING. Its log ends with\n' +
+            '     "No NAV changes today" — AMFI published nothing new. Past ' +
+              MAX_BUSINESS_DAYS_BEHIND + '\n' +
+            '     business days that is longer than any Indian holiday cluster,\n' +
+            '     so treat it as an upstream outage or a changed source URL.\n' +
+            '\n' +
+            'Until this is resolved the site presents the ' + navAsOf + ' numbers\n' +
+            'as current, with nothing telling visitors they are stale.'
+          );
+          NODE

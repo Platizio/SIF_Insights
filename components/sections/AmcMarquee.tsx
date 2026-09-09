@@ -19,12 +19,55 @@ const EDGE_FADE =
 const SPEED = 32;
 
 export function AmcMarquee() {
-  const { trackRef, trackStyle } = useMarquee();
+  /* WCAG 2.2.2 (Pause, Stop, Hide). Starts false so the server markup and
+     the first client paint agree; the strip moves until the reader says
+     otherwise. */
+  const [paused, setPaused] = useState(false);
+  const { trackRef, trackStyle } = useMarquee(paused);
 
   return (
     <Section id="amcs" className="py-14">
       <Shell>
-        <Eyebrow className="text-center">Funds we cover</Eyebrow>
+        <div className="flex flex-col items-center gap-3">
+          <Eyebrow>Funds we cover</Eyebrow>
+
+          {/* PAUSE, not hide — the opposite call to <NfoBar>, on purpose.
+              NfoBar carries time-boxed announcements, so "Dismiss" is the
+              right escape: the reader is done with them. This strip is a
+              standing index of the houses we cover and every logo is a live
+              link into #strategies, so hiding it would delete 17 links from
+              the page — a worse outcome for the keyboard user than the one
+              we are fixing. What is hostile here is the MOTION, not the
+              presence, so the control stops the motion and leaves the links.
+
+              Placed before the strip in the DOM so it is the tab stop
+              immediately ahead of those 17 links: a keyboard user reaches
+              the brake before the thing that runs away from them.
+              A native <button> answers Enter and Space for free — do not
+              swap it for a div with a click handler.
+
+              Kept OUTSIDE `.marquee-host` deliberately: inside it, the
+              `:focus-within` rule would pin the track paused while the
+              button held focus, so pressing Resume would appear to do
+              nothing until focus moved away.
+
+              Hidden under prefers-reduced-motion because the reduced-motion
+              block in globals.css already sets `animation: none` on the
+              track — a brake for a strip that never moves is noise, and one
+              more tab stop for nothing. */}
+          <button
+            type="button"
+            onClick={() => setPaused((wasPaused) => !wasPaused)}
+            aria-label={
+              paused
+                ? "Resume the fund logo strip"
+                : "Pause the fund logo strip"
+            }
+            className="rounded-full border border-hairline px-3 py-1 text-[12px] leading-[18px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent-dim hover:text-ink motion-reduce:hidden"
+          >
+            {paused ? "Resume" : "Pause"}
+          </button>
+        </div>
       </Shell>
 
       <div className="mt-7">
@@ -78,8 +121,11 @@ function MarqueeRow({ duplicate = false }: { duplicate?: boolean }) {
  * Drives the CSS marquee from the track's real width, so the strip runs at a
  * fixed px/s no matter how many AMCs are in the data. Also stops it when the
  * strip is off-screen or the tab is backgrounded.
+ *
+ * `requestedPause` is the reader's explicit choice from the control above.
+ * It is a third reason to stop, never a reason to start — see trackStyle.
  */
-function useMarquee() {
+function useMarquee(requestedPause: boolean) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [duration, setDuration] = useState(0);
   const [offscreen, setOffscreen] = useState(false);
@@ -118,10 +164,16 @@ function useMarquee() {
   }, []);
 
   const trackStyle: CSSProperties = {
+    // Pausing cannot disturb this. The duration comes from `scrollWidth`,
+    // which is a layout measurement and is identical whether the animation
+    // is running or paused, and the ResizeObserver above is what re-measures
+    // — so the constant px/s survives any number of pause/resume presses.
     animationDuration: duration ? `${duration}s` : undefined,
     // Never written as "running": an inline value would outrank the
-    // `.marquee-host:hover` pause rule in globals.css.
-    animationPlayState: offscreen || backgrounded ? "paused" : undefined,
+    // `.marquee-host:hover` and `:focus-within` pause rules in globals.css,
+    // and a keyboard user's focus pause would silently stop working.
+    animationPlayState:
+      requestedPause || offscreen || backgrounded ? "paused" : undefined,
   };
 
   return { trackRef, trackStyle };

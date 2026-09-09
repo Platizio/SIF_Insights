@@ -323,7 +323,20 @@
   animation: marquee-x 40s linear infinite;
 }
 
-.marquee-host:hover .marquee-track {
+/* Pause on hover AND on keyboard focus.
+   :hover alone was pointer-only, which left the 17 focusable logo links
+   inside the AMC strip drifting while one of them held focus — measured
+   x = 509 -> 476 -> 444 -> 412 over three one-second samples, with the
+   masked host at `overflow: hidden` so the browser could not scroll the
+   focused link back into view. :focus-within stops the track the moment a
+   link inside it is tabbed to, which is WCAG 2.2.2 (Pause, Stop, Hide) and
+   2.1.1 (Keyboard). It is a selector, not a state the components write:
+   neither marquee ever sets `animation-play-state: running` inline, because
+   an inline value would outrank both of these rules.
+   NOTE this covers a user who has already reached the strip. The explicit
+   pause control in <AmcMarquee> covers the one who has not. */
+.marquee-host:hover .marquee-track,
+.marquee-host:focus-within .marquee-track {
   animation-play-state: paused;
 }
 

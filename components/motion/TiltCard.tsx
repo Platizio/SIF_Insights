@@ -86,10 +86,22 @@ export function TiltCard({
         onPointerMove={onMove}
         onPointerLeave={reset}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+        /* FRAME ONLY — the caller's `className` must NOT land here.
+           This element cannot be the caller's layout box because it is not
+           the element that parents `children`: the translateZ wrapper below
+           sits in between. A caller passing `flex flex-col justify-between`
+           would therefore distribute exactly ONE flex item (the wrapper) and
+           the real content would stack in normal block flow inside it, so
+           every card kept whatever slack the tallest card in its grid row
+           created. Measured on `/#strategies`: three 620px-tall cards in one
+           row had 33 / 99 / 85px below their disclosure lists, while under
+           `prefers-reduced-motion` — the branch above, which puts `className`
+           on the content's own parent — all of them measured 33px.
+           So: frame and positioning live here, the caller's layout classes go
+           on the wrapper, and the two branches lay out identically. */
         className={cn(
-          "group relative border border-hairline bg-surface transition-colors duration-200",
+          "group relative h-full border border-hairline bg-surface transition-colors duration-200",
           "hover:border-accent-dim",
-          className,
         )}
       >
         {/* Warm follow-highlight. Opacity only — no repaint cost. */}
@@ -98,7 +110,16 @@ export function TiltCard({
           style={{ background: glow }}
           className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
         />
-        <div style={{ transform: "translateZ(0)" }} className="relative h-full">
+        {/* translateZ(0) flattens the content onto its own plane inside the
+            3D context so text does not shimmer as the card tilts. `relative`
+            (no z-index needed — later sibling in the same stacking context)
+            keeps it above the absolutely-positioned glow span. `h-full` is
+            kept in the base so a caller that passes no height still fills the
+            frame; twMerge dedupes it against the caller's own `h-full`. */}
+        <div
+          style={{ transform: "translateZ(0)" }}
+          className={cn("relative h-full", className)}
+        >
           {children}
         </div>
       </motion.div>

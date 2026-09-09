@@ -120,6 +120,23 @@ const EXPENSE_RANGE = DISCLOSED_EXPENSES.length
     }
   : null;
 
+/* Every expense ratio on file is the ISID's MAXIMUM permissible TER, not the
+   ratio being charged. That governs how this whole control is worded: a
+   bucket labelled "Low" ranks ceilings as if they were prices, and a scheme
+   with a lower ceiling is not thereby a cheaper scheme. So the buckets, the
+   sort key and the footnote all name the BOUND and leave the cost judgement
+   to the reader.
+
+   Derived, not asserted — the first charged ratio filed flips every one of
+   them back to neutral wording on its own rather than leaving three labels
+   quietly overstating what we know. */
+const EXPENSE_ALL_CAPS =
+  DISCLOSED_EXPENSES.length > 0 &&
+  strategies.every((s) => s.expenseRatio === null || s.expenseRatioIsCap === true);
+
+/** "Ceiling under 1.5%" while every figure is a cap; a plain bound if not. */
+const EXPENSE_BOUND = EXPENSE_ALL_CAPS ? "Ceiling" : "Ratio";
+
 /* Minimum investment is material disclosure but it is identical across
    every scheme that discloses it, so a column of identical figures would
    be noise. It is stated once beneath the table — and the moment the data
@@ -226,15 +243,18 @@ const SCOPED_GROUPS: FilterGroup[] = [
   {
     key: "expense",
     label: "Expense",
+    /* Labelled by the bound, never by cost. "Low · under 1.5%" invited a
+       relative-cost judgement across figures that are ceilings — the reader
+       has no charged ratio here to be low or high against. */
     options: [
       withCount({
         id: "low",
-        label: "Low · under 1.5%",
+        label: `${EXPENSE_BOUND} under 1.5%`,
         match: (s) => s.expenseRatio !== null && s.expenseRatio < 1.5,
       }),
       withCount({
         id: "medium",
-        label: "Medium · 1.5–2.5%",
+        label: `${EXPENSE_BOUND} 1.5–2.5%`,
         match: (s) =>
           s.expenseRatio !== null &&
           s.expenseRatio >= 1.5 &&
@@ -242,7 +262,7 @@ const SCOPED_GROUPS: FilterGroup[] = [
       }),
       withCount({
         id: "high",
-        label: "High · over 2.5%",
+        label: `${EXPENSE_BOUND} over 2.5%`,
         match: (s) => s.expenseRatio !== null && s.expenseRatio > 2.5,
       }),
     ],
@@ -287,29 +307,30 @@ const GROUPS: FilterGroup[] = [...UNIVERSAL_GROUPS, ...SCOPED_GROUPS];
    the data the way the pill counts always have.
    ============================================================ */
 
-/* True when every scheme has a captured information document. The scoping
-   caveat is then vacuous — "scoped to the 30 we hold, the other 0 are
-   excluded" — so it is not printed at all. This flips on its own the moment
-   a new scheme lands in the feed ahead of its documents, which is the normal
-   state of this dataset rather than an edge case. */
-const ALL_DISCLOSED = stats.disclosedCount === stats.strategyCount;
+/* True when every scheme states every field this block filters on. The
+   scoping caveat is then vacuous — "scoped to the 30 we hold, the other 0
+   are excluded" — so it is not printed at all.
 
-const SCOPE_NOTE = ALL_DISCLOSED ? (
+   Counted with `fullyDisclosedCount`, NOT `disclosedCount`. The two differ,
+   and the difference is precisely what this sentence is about: all 30
+   schemes have a researched entry, but four of those entries leave one of
+   the named fields null. Gating on document-presence made the caveat
+   disappear exactly when the fields it describes were incomplete. */
+const ALL_FULLY_DISCLOSED = stats.fullyDisclosedCount === stats.strategyCount;
+
+const SCOPE_NOTE = ALL_FULLY_DISCLOSED ? (
   <>
-    From scheme information documents, which we currently hold for all{" "}
+    From scheme information documents, which we currently hold in full for all{" "}
     <span className="tabular text-ink">{stats.strategyCount}</span> schemes.
   </>
 ) : (
   <>
-    Scoped to the{" "}
-    <span className="tabular text-ink">{stats.disclosedCount}</span> of{" "}
-    <span className="tabular">{stats.strategyCount}</span> schemes whose
-    information documents we hold, so counts here are out of{" "}
-    <span className="tabular">{stats.disclosedCount}</span>. The other{" "}
-    <span className="tabular">
-      {stats.strategyCount - stats.disclosedCount}
-    </span>{" "}
-    are excluded by this filter, not hidden.
+    From scheme information documents, and an entry is not a full set: we hold
+    every named field for{" "}
+    <span className="tabular text-ink">{stats.fullyDisclosedCount}</span> of{" "}
+    <span className="tabular">{stats.strategyCount}</span> schemes. A scheme
+    that states no value for this field matches no option here — excluded by
+    this filter, not hidden.
   </>
 );
 
@@ -324,11 +345,29 @@ const UNIVERSAL_NOTES: Record<string, ReactNode> = {
 };
 
 const SCOPED_NOTES: Record<string, ReactNode> = {
+  /* The range is stated for what the figures ARE. "Every disclosed expense
+     ratio currently sits between 1.33% and 2.25%" read as a spread of prices
+     when it is a spread of ceilings — the same defect `formatExpense` exists
+     to prevent on every individual figure, reappearing in the prose. The
+     phrasing is borrowed from the AMC pages so the site says it one way. */
   expense: EXPENSE_RANGE ? (
     <>
-      Every disclosed expense ratio currently sits between{" "}
-      <span className="tabular">{EXPENSE_RANGE.min.toFixed(2)}%</span> and{" "}
-      <span className="tabular">{EXPENSE_RANGE.max.toFixed(2)}%</span>.
+      {EXPENSE_ALL_CAPS ? "Ceilings of " : "Ratios of "}
+      <span className="tabular">
+        {EXPENSE_RANGE.min.toFixed(2)}–{EXPENSE_RANGE.max.toFixed(2)}%
+      </span>{" "}
+      across the{" "}
+      <span className="tabular">{DISCLOSED_EXPENSES.length}</span> schemes that
+      disclose one.
+      {EXPENSE_ALL_CAPS ? (
+        <>
+          {" "}
+          An expense figure is the maximum ratio the information document
+          permits, not the ratio being charged — that is published on the asset
+          manager&apos;s own site and moves, so these buckets sort by the
+          ceiling, not by what a scheme costs.
+        </>
+      ) : null}
     </>
   ) : undefined,
   risk:
@@ -344,7 +383,7 @@ const SCOPED_NOTES: Record<string, ReactNode> = {
 /* ============================================================
    Sort model.
 
-   Two of the four keys are nullable, so the comparator pushes null
+   Three of the five keys are nullable, so the comparator pushes null
    LAST in every direction and falls back to scheme name, which is
    unique and always present. The sort is therefore total and stable
    regardless of how much disclosure we hold — and it never touches
@@ -361,35 +400,48 @@ const SCOPED_NOTES: Record<string, ReactNode> = {
 type SortDef = {
   id: string;
   label: string;
-  /** True when some schemes have no value for this key. */
-  nullable: boolean;
+  /**
+   * What a row is missing when it has no value for this key, named so the
+   * footnote can say which field it means.
+   *
+   * The noun lives here rather than at the point of use because three keys
+   * are nullable and the footnote used to know about two: `sort.id === "risk"
+   * ? "risk band" : "expense ratio"` told a reader sorting by Change that
+   * schemes had "no expense ratio to sort by". Null means every scheme
+   * carries the key — which is also what keeps `unsortable` at zero, so the
+   * clause never prints and the noun is never needed.
+   */
+  missing: string | null;
   value: (s: Strategy) => string | number | null;
 };
 
 const SORTS: SortDef[] = [
-  { id: "name", label: "Scheme name", nullable: false, value: (s) => s.name },
+  { id: "name", label: "Scheme name", missing: null, value: (s) => s.name },
   {
     id: "amc",
     label: "Asset manager",
-    nullable: false,
+    missing: null,
     value: (s) => amcById.get(s.amcId)?.sifName ?? s.amcId,
   },
   {
     id: "risk",
     label: "Risk band, low first",
-    nullable: true,
+    missing: "risk band",
     value: (s) => riskBandNumber(s.riskBand),
   },
   {
+    /* Ordered by the bound, and labelled as such. "Expense, low first" ranked
+       ceilings as prices; the figure sorted on is the maximum permissible
+       TER, so the key names it and leaves cost out of it. */
     id: "expense",
-    label: "Expense, low first",
-    nullable: true,
+    label: `Expense ${EXPENSE_ALL_CAPS ? "ceiling" : "ratio"}, lowest first`,
+    missing: "expense ratio",
     value: (s) => s.expenseRatio,
   },
   {
     id: "change",
     label: "Change, largest rise first",
-    nullable: true,
+    missing: "published change",
     /* The comparator only sorts ascending, so negate to put the largest rise
        first. A scheme with one published NAV has no move and stays null, which
        sorts it last rather than dropping it from the table. */
@@ -499,9 +551,10 @@ export function TrackerTable() {
   );
 
   /** How many of the rows on screen have nothing to sort by. */
-  const unsortable = sort.nullable
-    ? sorted.filter((s) => sort.value(s) === null).length
-    : 0;
+  const unsortable =
+    sort.missing === null
+      ? 0
+      : sorted.filter((s) => sort.value(s) === null).length;
 
   /* Selection is scoped to what is on screen — comparing a scheme you have
      just filtered away would be a quiet lie about what you are looking at. */
@@ -629,42 +682,64 @@ export function TrackerTable() {
           />
 
           {/* The one line that has to stay visible with every menu shut: which
-              controls see all thirty schemes and which see only thirteen. The
-              detail behind it now lives in each scoped panel's footnote. */}
+              controls see all thirty schemes and which see fewer. The detail
+              behind it now lives in each scoped panel's footnote.
+
+              It names four fields, so it counts with `fullyDisclosedCount`.
+              `disclosedCount` answers "have we read a document", which is a
+              different question and currently a rosier one — it was letting
+              this sentence promise all four fields for all thirty schemes
+              while four entries were a field short. */}
           <p className="mt-5 max-w-[86ch] text-[13px] leading-[20px] text-muted">
             Asset manager, category, mandate and disclosures range over all{" "}
             <span className="tabular">{stats.strategyCount}</span> schemes.
             Risk band, expense, exit load and redemption come from scheme
             information documents
-            {ALL_DISCLOSED ? (
+            {ALL_FULLY_DISCLOSED ? (
               <>
-                , which we currently hold for all{" "}
+                , which we currently hold in full for all{" "}
                 <span className="tabular">{stats.strategyCount}</span>
               </>
             ) : (
               <>
-                , so they are scoped to the{" "}
+                , and an entry does not guarantee a field: we hold the complete
+                set for{" "}
                 <span className="tabular text-ink">
-                  {stats.disclosedCount}
+                  {stats.fullyDisclosedCount}
                 </span>{" "}
-                we hold — the other{" "}
-                <span className="tabular">
-                  {stats.strategyCount - stats.disclosedCount}
-                </span>{" "}
-                are excluded by those filters, not hidden. Use{" "}
-                <span className="text-ink">Disclosures → Not captured</span> to
-                list them
+                of the <span className="tabular">{stats.strategyCount}</span>.
+                A scheme that leaves a field blank matches no option in that
+                filter — excluded there, not hidden
+                {/* Only offered when it would return something. Every scheme
+                    currently has an entry, so this pointer would send the
+                    reader to an empty table — a shortfall in the FIELDS is
+                    not reachable through a filter on the DOCUMENT. */}
+                {stats.disclosedCount < stats.strategyCount ? (
+                  <>
+                    . Use{" "}
+                    <span className="text-ink">
+                      Disclosures → Not captured
+                    </span>{" "}
+                    for the{" "}
+                    <span className="tabular">
+                      {stats.strategyCount - stats.disclosedCount}
+                    </span>{" "}
+                    with no document at all
+                  </>
+                ) : null}
               </>
             )}
             .
-            {sort.nullable ? (
+            {/* Gated on the count, not on nullability: three keys are
+                nullable and a sort with nothing missing has nothing to
+                report. The noun comes off the sort itself, so "Change"
+                can no longer print "no expense ratio to sort by". */}
+            {unsortable > 0 ? (
               <>
                 {" "}
                 <span className="tabular text-ink">{unsortable}</span> of the{" "}
                 <span className="tabular">{sorted.length}</span> on screen have
-                no{" "}
-                {sort.id === "risk" ? "risk band" : "expense ratio"} to sort by
-                and are listed last.
+                no {sort.missing} to sort by and are listed last.
               </>
             ) : null}
           </p>
@@ -860,7 +935,11 @@ export function TrackerTable() {
               each.{" "}
             </>
           )}
-          NAV data fetched from AMFI. Updated daily. NAVs as at{" "}
+          {/* No refresh cadence is claimed. Nothing guarantees one, and
+              "Updated daily" was sitting beside a file five days old. The
+              dated statement that follows is the claim we can stand behind,
+              so it is the only claim made. */}
+          NAV data fetched from AMFI. NAVs as at{" "}
           {formatUpdated(navLastUpdated)}; source: {navSource}.
           {NAV_RANGE ? (
             <>
@@ -1649,8 +1728,9 @@ function CompareDialog({
                   schemes
                 </h2>
                 <p className="mt-1 max-w-[70ch] text-[13px] leading-[20px] text-muted">
-                  Every field exactly as filed. NAV data fetched from AMFI,
-                  updated daily, as at {formatUpdated(navLastUpdated)}.
+                  {/* Dated, not cadenced — see the note under the table. */}
+                  Every field exactly as filed. NAV data fetched from AMFI, as
+                  at {formatUpdated(navLastUpdated)}.
                   {undisclosed > 0 ? (
                     <>
                       {" "}
