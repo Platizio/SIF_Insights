@@ -87,9 +87,71 @@ const withCount = (o: Omit<Option, "count">): Option => ({
   count: countWhere(o.match),
 });
 
-/** "No exit load" is the source's own phrasing — match it, don't restate it. */
-const hasNoExitLoad = (s: Strategy) =>
-  s.exitLoad !== null && s.exitLoad.trim().toLowerCase() === "no exit load";
+/* Any rate the value quotes. A scheme that charges on the way out always
+   names the figure — every one of the 25 on file quotes 0.25%, 0.5%, 1% or
+   2% — so a non-zero rate anywhere in the string is the tell, wherever the
+   sentence puts it. Zero is not a charge: "0.00%" is a nil stated in
+   figures. */
+const QUOTED_RATE = /(\d+(?:[.]\d+)?)\s*%/g;
+
+/* A clause that states nil OUTRIGHT, with nothing attached. Whole-string,
+   because bolting a qualifier on — "Nil after 90 days" — describes a scheme
+   that DOES charge, for 90 days. */
+const NIL_EXIT_LOAD =
+  /^(nil|none|no exit load|nil exit load|not applicable|n\/?a|0([.]0+)?%?)$/;
+
+/**
+ * A nil exit load, however the information document phrases it.
+ *
+ * The CELL still prints the source's own words — "match it, don't restate
+ * it" governs what the reader sees, and that stays. This predicate answers a
+ * different question: which bucket the scheme is COUNTED in. Testing for the
+ * exact string "no exit load" made that the only phrasing that counted, so
+ * SIF-40 ("Entry Load: Nil; Exit Load: Nil"), SIF-111 ("NIL") and SIF-138
+ * ("Nil") — three schemes that charge nothing on the way out — were tallied
+ * under "Has an exit load".
+ *
+ * The trap is the CONDITIONAL nil, which is the commonest phrasing on file:
+ * 25 of the 30 values read "1% ... on or before 15 days; Nil after 15 days"
+ * or "No Exit Load if redeemed/switched-out after 15 days". Those DO carry a
+ * load. So a nil has to clear two independent tests:
+ *
+ *  1. The value quotes no non-zero rate ANYWHERE. This is what a conditional
+ *     nil always fails: the clause that charges names its figure. It also
+ *     catches the phrasings clause-splitting cannot, and it is deliberately
+ *     blunt — SIF-21's "first 10% of units redeemable free" is an allowance,
+ *     not a charge, and still reads as one here. Erring toward "has a load"
+ *     is the safe direction: tallying a charging scheme as free is a worse
+ *     error than the one being fixed.
+ *  2. Its LEADING clause is a bare nil. This is what stops a value that
+ *     names no figure — "No exit load after 90 days" — from passing test 1
+ *     on a technicality. Clauses split on `;`, newlines, and a full stop
+ *     followed by whitespace: never on the stop inside "0.50%", so SIF-11,
+ *     which uses full stops as its separator, cannot yield a bare "Nil".
+ *     A clause that LEADS with the entry load is dropped first — that is a
+ *     different charge (SIF-40 states both) — but only when it leads, so
+ *     SIF-21's "Nil after 6 months. Entry load: Not Applicable." stays and
+ *     fails as it should.
+ *
+ * Both tests together also read SIF-146's "Nil. No exit load is chargeable
+ * on switches between different plans/options..." correctly: a bare nil
+ * followed by a scope note is still a nil.
+ */
+const hasNoExitLoad = (s: Strategy) => {
+  if (s.exitLoad === null) return false;
+
+  const rates = s.exitLoad.match(QUOTED_RATE) ?? [];
+  if (rates.some((rate) => parseFloat(rate) > 0)) return false;
+
+  const [lead] = s.exitLoad
+    .split(/[;\n]+|[.](?=\s|$)/)
+    .map((c) => c.trim().toLowerCase())
+    .filter((c) => c.length > 0)
+    .filter((c) => !/^entry\s*load\b/.test(c) || /exit\s*load/.test(c))
+    .map((c) => c.replace(/^exit\s*load\s*[:\-–]\s*/, ""));
+
+  return lead !== undefined && NIL_EXIT_LOAD.test(lead);
+};
 
 const CATEGORIES: Category[] = ["equity", "hybrid", "debt"];
 
@@ -170,6 +232,19 @@ const LIVE_NAVS = liveQuotes().map((q) => q.nav.today);
 const NAV_RANGE = LIVE_NAVS.length
   ? { low: Math.min(...LIVE_NAVS), high: Math.max(...LIVE_NAVS) }
   : null;
+
+/* True when at least one scheme's NAV is dated BEFORE the file's own date.
+   `navLastUpdated` is the date of the AMFI file, not a promise about every
+   row in it: a house that files late leaves its scheme on the previous
+   close, and SIF-87 is on 3 Sept against a 4 Sept file today.
+
+   Derived, never asserted — a late filing is a recurring condition, not an
+   anomaly, so the column header has to stop claiming one date for thirty
+   rows on its own the next time it happens, and go back to claiming it on
+   its own the day everybody files on time. */
+const NAV_DATES_DIVERGE = liveQuotes().some(
+  ({ nav }) => nav.asOf !== navLastUpdated,
+);
 
 /** Filters that range over all 30 schemes. */
 const UNIVERSAL_GROUPS: FilterGroup[] = [
@@ -495,7 +570,15 @@ const COLUMNS: Column[] = [
   {
     key: "nav",
     label: "NAV",
-    sub: `as at ${formatUpdated(navLastUpdated)}`,
+    /* The header states the file's date, and says so conditionally: with a
+       scheme dated behind it, "as at 4 Sept" over that row is simply false,
+       and the mobile card and the compare dialog — which both print each
+       scheme's own `asOf` — were contradicting this table about the same
+       scheme. The qualifier appears only while a row actually diverges, so
+       thirty rows are not made to carry a caveat about one. */
+    sub: NAV_DATES_DIVERGE
+      ? `as at ${formatUpdated(navLastUpdated)} unless a row says otherwise`
+      : `as at ${formatUpdated(navLastUpdated)}`,
     align: "right",
   },
   { key: "risk", label: "Risk" },
@@ -745,8 +828,15 @@ export function TrackerTable() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+            {/* aria-atomic, because this sentence is assembled from six
+                sibling spans that React swaps individually — one filter
+                change measured five separate childList mutations. Without
+                it a removal is not announced at all, so clearing a clause
+                could announce nothing and a changed count could be read
+                out as a bare number with no sentence around it. */}
             <p
               aria-live="polite"
+              aria-atomic="true"
               className="text-[13px] leading-[20px] text-muted"
             >
               Showing <span className="tabular text-ink">{sorted.length}</span>{" "}
@@ -1021,11 +1111,32 @@ function FilterMenu({
       triggerRef.current?.focus();
     };
 
+    /* Focus leaving the menu shuts it, as APG requires. Tabbing past the
+       last option used to land on the NEXT trigger while this one kept
+       aria-expanded="true"; pressing Enter there opened a second panel, so
+       assistive tech was told two menus were open when one had been
+       abandoned. Nothing is occluded, but the state was a lie.
+
+       On the root, not the panel: the trigger is a sibling of the panel and
+       tabbing trigger -> first option must NOT count as leaving. `focusout`
+       rather than `blur` because only focusout bubbles from the options.
+
+       A null relatedTarget means focus left the DOCUMENT — alt-tab, or the
+       browser chrome — and the reader has not left the panel, so the menu
+       stays open and their place in it is kept. */
+    const onFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget as Node | null;
+      if (next && !rootRef.current?.contains(next)) setOpen(false);
+    };
+
+    const root = rootRef.current;
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    root?.addEventListener("focusout", onFocusOut);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
+      root?.removeEventListener("focusout", onFocusOut);
     };
   }, [open]);
 
@@ -1398,6 +1509,15 @@ function Row({ strategy, index, idPrefix, checked, onToggle }: RowProps) {
             <span className="mt-0.5 block">
               <Delta pct={nav.changePct} />
             </span>
+            {/* Only the schemes the header cannot speak for. Printing the
+                date on all thirty would bury the one fact worth seeing —
+                that this figure is older than the rest of the column —
+                under twenty-nine repetitions of the header. */}
+            {nav.asOf !== navLastUpdated ? (
+              <span className="mt-0.5 block text-[12px] leading-[16px] text-muted">
+                as at {formatUpdated(nav.asOf)}
+              </span>
+            ) : null}
           </>
         ) : (
           <PendingBadge />

@@ -86,6 +86,12 @@ const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
 const LINK_CLASS =
   "group text-[16px] leading-[24px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
 
+/* The sign-off row under the disclaimer sets its own 14px, so a link in it
+   cannot borrow LINK_CLASS — 16px there would out-shout the copyright line
+   beside it. Same colour, same hover, same underline wipe; its own size. */
+const SIGNOFF_LINK_CLASS =
+  "group text-[14px] leading-[20px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
+
 export function SiteFooter() {
   const currentYear = new Date().getFullYear();
 
@@ -178,13 +184,19 @@ export function SiteFooter() {
               © {currentYear} SIF Insight by Platizio Services LLP. All rights
               reserved.
             </p>
-            {/* Privacy Policy and Terms of Service have not been written yet.
-                Rendering them as text keeps the sign-off honest instead of
-                pointing two links at `#`. */}
+            {/* Both of these used to be plain text, because neither page had
+                been written and the rule in `FooterEntry` is that the
+                affordance has to match the behaviour.
+
+                /privacy now exists, so Privacy Policy is a link — the
+                condition was met, not overridden. Terms of Service stays as
+                text for precisely the same rule: there is no /terms route,
+                and a link that goes nowhere is the thing this footer was
+                built to avoid. Give it an href the day the page ships. */}
             <p className="flex items-center gap-5">
-              <span className="text-muted" title="Pending publication">
-                Privacy Policy
-              </span>
+              <Link href="/privacy" className={SIGNOFF_LINK_CLASS}>
+                <LinkLabel>Privacy Policy</LinkLabel>
+              </Link>
               <span className="text-muted" title="Pending publication">
                 Terms of Service
               </span>

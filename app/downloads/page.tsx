@@ -20,11 +20,27 @@ import { Card, Eyebrow, Section, Shell } from "@/components/primitives";
  * midnight and renders as the 16th on any server west of Greenwich.
  */
 
+/* `openGraph` repeats siteName/locale/type because Next merges metadata
+   shallowly: declaring the key replaces the root layout's block rather than
+   merging into it. */
 export const metadata: Metadata = {
   title: "Downloads",
   description:
     "Factsheets, portfolio updates and presentation decks for Indian Specialised Investment Fund schemes. Third-party AMC material, opened from Google Drive.",
   alternates: { canonical: "/downloads" },
+  openGraph: {
+    title: "SIF factsheets and portfolio updates",
+    description:
+      "Factsheets, portfolio updates and presentation decks for Indian SIF schemes — third-party AMC material, opened from Google Drive.",
+    url: "/downloads",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 type Doc = {

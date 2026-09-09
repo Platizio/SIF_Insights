@@ -85,7 +85,7 @@ function useOpenNfos(): Nfo[] {
 export function NfoBar() {
   const [dismissed, setDismissed] = useState(false);
   const openNfos = useOpenNfos();
-  const { trackRef, trackStyle, paused } = useMarquee();
+  const { trackRef, trackStyle } = useMarquee();
 
   // No open NFOs is a real state, not an error — render nothing rather than
   // an empty strip. This is also what handles the last offer expiring while
@@ -104,7 +104,7 @@ export function NfoBar() {
       className="border-b border-hairline bg-accent-wash"
     >
       <Shell className="flex h-11 items-center gap-4">
-        <LiveMark paused={paused} />
+        <LiveMark />
 
         <span className="h-3.5 w-px shrink-0 bg-hairline" aria-hidden="true" />
 
@@ -139,19 +139,29 @@ export function NfoBar() {
 }
 
 /**
- * The dot breathes, but the mark never depends on that breathing: the
- * keyframes start and end at full opacity, so with animation suppressed —
- * or with the strip off-screen — it settles as a solid accent dot beside
- * the word LIVE. The meaning is carried by the label, not the motion.
+ * A STATIC accent dot beside the word LIVE.
+ *
+ * It used to breathe on Tailwind's `animate-pulse`, and the argument for that
+ * was always about the dot's meaning rather than about the animation: the
+ * keyframes started and ended at full opacity, so the mark never depended on
+ * the motion. Which is the point — if the pull-out is that the label carries
+ * the meaning, the perpetual animation was carrying nothing.
+ *
+ * It also cost two things it could not pay for. `animate-pulse` is
+ * `2s cubic-bezier(0.4,0,0.6,1) infinite`: neither value exists on the
+ * sanctioned scale (lib/motion DUR/EASE, --duration-micro/--ease-out-quint),
+ * so it was a third easing curve on a site whose contract has one. And a
+ * perpetually animating icon is on the contract's own banned list — it sits
+ * above the header on every page, in the reader's periphery, forever.
+ *
+ * Removing it also removes the `paused` plumbing: `useMarquee` still computes
+ * `paused` for the TRACK, which genuinely needs stopping off-screen, but a
+ * dot that never moves needs no play-state.
  */
-function LiveMark({ paused }: { paused: boolean }) {
+function LiveMark() {
   return (
     <span className="inline-flex shrink-0 items-center gap-2">
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-        style={{ animationPlayState: paused ? "paused" : undefined }}
-      />
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
       <span className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-accent">
         Live NFO
       </span>
@@ -245,5 +255,7 @@ function useMarquee() {
     animationPlayState: paused ? "paused" : undefined,
   };
 
-  return { trackRef, trackStyle, paused };
+  // `paused` stays internal — it is the TRACK's concern. Nothing else on the
+  // strip animates, so nothing else needs it.
+  return { trackRef, trackStyle };
 }

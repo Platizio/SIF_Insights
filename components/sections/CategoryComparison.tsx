@@ -104,13 +104,25 @@ const LIFT = "transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]"
 const LABEL = "text-[13px] font-normal uppercase leading-[18px] tracking-[0.06em] text-muted";
 
 /**
- * Cascade interval, matched to the `stagger` token that `<Group>` propagates
- * to its `<RowItem>` children. Keeping the rules on the same beat is what
- * makes each hairline read as leading its own row by a constant ~40ms
- * (`stagger`'s delayChildren) rather than drifting away from it.
+ * Cascade interval for the drawn hairlines, matched to <RowItem>'s OWN beat.
+ *
+ * It has to be RowItem's, not `stagger`'s. <RowItem> passes an explicit
+ * `transition={{ delay: Math.min(index, 10) * 0.045 }}` (Reveal.tsx), and an
+ * explicit delay beats the `staggerChildren` that <Group> would otherwise
+ * compute — so the rows never ran on the 0.06 beat this constant used to
+ * claim to share, and every hairline drifted 15ms further from its row than
+ * the one above it. Same number as RowItem, and they stay locked.
+ *
+ * The index is the row's position in the GROUP, not in ROWS: the header is
+ * also a <RowItem>, so it is beat 0 and the body rows are beats 1..5. Each
+ * <Rule> is absolutely positioned at the BOTTOM of its row, i.e. it is the
+ * hairline the row BELOW lands into — which is why it takes the row's own
+ * beat and thereby leads that next row by exactly one interval, everywhere,
+ * with no accumulating drift.
+ *
  * Capped at 10 — past that a cascade reads as lag, not choreography.
  */
-const STEP = 0.06;
+const STEP = 0.045;
 const CASCADE_CAP = 10;
 const stepDelay = (i: number) => Math.min(i, CASCADE_CAP - 1) * STEP;
 
@@ -220,7 +232,15 @@ export function CategoryComparison() {
                 </thead>
                 <tbody>
                   {ROWS.map((row, i) => (
-                    <RowItem key={row.label} className="relative">
+                    /* `index` is not optional here even though it defaults to
+                       0: RowItem computes its whole delay from it, so omitting
+                       it put all five rows on delay 0 while their hairlines
+                       cascaded past them — sampled mid-reveal, every frame
+                       read one value five times (0.253 ×5, then 0.602 ×5,
+                       then 0.808 ×5) where NavBoard, which does pass an
+                       index, reads 0.55 / 0.31 / 0 / 0 / 0. `i + 1` because
+                       the header row above is this Group's beat 0. */
+                    <RowItem key={row.label} index={i + 1} className="relative">
                       <th scope="row" className={cn("py-6 pr-5 align-top text-left", LABEL)}>
                         {row.label}
                         <Rule

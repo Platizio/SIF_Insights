@@ -62,6 +62,57 @@ export function generateStaticParams() {
   return amcs.map((amc) => ({ id: amc.id }));
 }
 
+/** Google truncates a SERP snippet at roughly 155–160 characters. */
+const META_MAX = 160;
+
+/**
+ * Meta description for one house.
+ *
+ * Two defects lived in the template this replaces. It read
+ * `${amc.description}. ${n} scheme…`, and nine of the seventeen stored
+ * `description` values already ended in a full stop, so nine pages
+ * shipped "…under the Apex SIF brand.. 1 scheme tracked". And the
+ * appended clause ran to 84 characters — "N schemes tracked, N with a
+ * NAV filed with AMFI, and the disclosure set for N of them" — byte
+ * identical on the ten single-scheme houses, and enough to push nine
+ * descriptions past 160.
+ *
+ * `lib/data` now derives the house sentence rather than storing it, and
+ * ends none of them with a stop. The normalisation below stays anyway:
+ * it makes the trailing stop a detail of the data rather than something
+ * this file is coupled to, and it is the difference between a period
+ * appearing in schemes.json again and nine pages shipping "..".
+ *
+ * The derived sentence runs 127–144 characters and already names the
+ * house, its SIF brand and the mandate categories it runs, so there is
+ * usually no room left for the counted clause — and no need for it,
+ * since the page renders those counts in the header meta row beside it.
+ * Each tier below is tried in descending order of value and the first
+ * one inside the budget wins, so no house can silently overrun.
+ */
+function describe(amc: Amc, own: Strategy[]): string {
+  const lead = amc.description.replace(/\s*\.\s*$/, "");
+
+  const n = own.length;
+  const live = liveCount(own);
+  const disclosed = disclosedCount(own);
+  const noun = `${n} scheme${n === 1 ? "" : "s"}`;
+  const counted =
+    live === n && disclosed === n
+      ? `${noun}, ${n === 1 ? "NAV" : "NAVs"} and disclosures on file.`
+      : `${noun}: ${live} priced, ${disclosed} disclosed.`;
+
+  const withCount = `${lead}. ${counted}`;
+  if (withCount.length <= META_MAX) return withCount;
+
+  const plain = `${lead}.`;
+  if (plain.length <= META_MAX) return plain;
+
+  /* A house sentence longer than the whole budget. Name the house and
+     the holding; the sentence itself is on the page either way. */
+  return `${amc.name}'s ${amc.sifName}. ${counted}`;
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -71,13 +122,59 @@ export async function generateMetadata({
   const amc = amcById.get(id);
   if (!amc) return { title: "Asset manager not found" };
 
-  const own = schemesOf(amc.id);
-  const disclosed = disclosedCount(own);
+  const description = describe(amc, schemesOf(amc.id));
+  const path = `/amc/${amc.id}`;
+
+  /* Built inside generateMetadata so the share card stays derived from the
+     same row the page renders. `openGraph` repeats siteName/locale/type
+     because Next merges metadata shallowly: declaring the key replaces the
+     root layout's block rather than merging into it. */
   return {
     title: `${amc.sifName} — ${amc.name}`,
-    description: `${amc.description}. ${own.length} scheme${
-      own.length === 1 ? "" : "s"
-    } tracked, ${liveCount(own)} with a NAV filed with AMFI, and the disclosure set for ${disclosed} of them.`,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title: `${amc.sifName} — ${amc.name}`,
+      description,
+      url: path,
+      /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+         file convention contributes, which silently downgrades the card to
+         twitter:card=summary. Restated, not inherited. */
+      images: "/opengraph-image.png",
+      siteName: "SIF Insight",
+      locale: "en_IN",
+      type: "website",
+    },
+  };
+}
+
+/** Matches `metadataBase` in app/layout.tsx. JSON-LD needs absolute URLs. */
+const ORIGIN = "https://sifinsight.com";
+
+/**
+ * BreadcrumbList — Home → Asset managers → this house.
+ *
+ * The hierarchy is real in both the URL and the page: /amc/:id sits under
+ * /amc, and the page carries an "All asset managers" link back to it. The
+ * payoff is that Google replaces the raw URL under the SERP title with the
+ * trail, which is worth something across seventeen near-identical /amc/*
+ * results. The last item carries no `item` URL, per Google's guidance that
+ * the current page is the end of the trail.
+ */
+function breadcrumbLd(amc: Amc) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${ORIGIN}/` },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Asset managers",
+        item: `${ORIGIN}/amc`,
+      },
+      { "@type": "ListItem", position: 3, name: amc.sifName },
+    ],
   };
 }
 
@@ -137,6 +234,17 @@ export default async function AmcDetailPage({
 
   return (
     <>
+      {/* dangerouslySetInnerHTML, not a `{JSON.stringify(...)}` child:
+          React HTML-escapes text children and an escaped quote is a JSON
+          parse error. `<` is re-escaped so no house name can ever close
+          the script element. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbLd(amc)).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <PageHeader
         eyebrow={amc.name}
         lines={[amc.sifName]}

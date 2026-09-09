@@ -119,7 +119,16 @@ const STEP = 0.06;
 const CASCADE_CAP = 10;
 const stepDelay = (i: number) => Math.min(i, CASCADE_CAP - 1) * STEP;
 
-/** 32px plus that becomes a minus by rotating its vertical stroke. */
+/**
+ * 32px plus that becomes a minus by rotating its vertical stroke.
+ *
+ * Both transitions run at `duration-200` (= --duration-micro, DUR.micro's
+ * neighbour on the sanctioned scale), not the 300ms they used to. 300ms is
+ * not a value on that scale at all: the only 300 in this file is ENTER_MS,
+ * which belongs to the FOLD, and borrowing it for the glyph tied a 32px
+ * icon's hover to a whole panel's collapse. The glyph is UI feedback on a
+ * pointer, so it takes the micro duration like every other hover on the site.
+ */
 function PlusMinus() {
   return (
     <svg
@@ -128,7 +137,7 @@ function PlusMinus() {
       viewBox="0 0 32 32"
       fill="none"
       aria-hidden="true"
-      className="mt-1 shrink-0 text-muted transition-colors duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-ink group-data-[state=open]:text-accent"
+      className="mt-1 shrink-0 text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-ink group-data-[state=open]:text-accent"
     >
       <path d="M5 16h22" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
       <path
@@ -137,7 +146,7 @@ function PlusMinus() {
         strokeWidth="1.25"
         strokeLinecap="round"
         style={{ transformBox: "view-box", transformOrigin: "center" }}
-        className="transition-transform duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] group-data-[state=open]:[transform:rotate(90deg)]"
+        className="transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-data-[state=open]:[transform:rotate(90deg)]"
       />
     </svg>
   );

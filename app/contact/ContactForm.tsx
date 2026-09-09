@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useEffect, useRef, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { GlassField } from "@/components/motion/GlassField";
@@ -32,6 +33,32 @@ const RANGES = [
   { value: "50L-1Cr", label: "₹50 L–1 Cr" },
   { value: "1Cr+", label: "₹1 Cr+" },
 ] as const;
+
+/**
+ * The placeholder and the four ranges as ONE array, which is the whole
+ * point of it existing.
+ *
+ * The `<select>` used to render a static `<option value="">` as a SIBLING of
+ * `{RANGES.map(...)}`. React then reconciles a children set whose first
+ * element carries no key, and logs "Each child in a list should have a
+ * unique key prop" against `Field` — `Field` because the render-prop that
+ * builds these options executes during Field's render, so Field is the
+ * owner React names, and the warning points at a component that contains
+ * no list at all.
+ *
+ * Keying the stray option would silence it. Building one list removes the
+ * mixed shape that caused it: every `<option>` here is now an array member
+ * with a key, and the placeholder is a first-class entry rather than a
+ * special case sitting outside the map.
+ *
+ * The empty value is load-bearing and must stay empty — `required` on the
+ * select is what makes "" fail the browser's own check, and actions.ts
+ * treats "" as "nothing chosen" rather than as an unknown range.
+ */
+const RANGE_OPTIONS: readonly { value: string; label: string }[] = [
+  { value: "", label: "Select a range" },
+  ...RANGES,
+];
 
 const INITIAL: ContactState = { status: "idle" };
 
@@ -211,8 +238,7 @@ export function ContactForm() {
                   defaultValue={values?.investmentRange ?? ""}
                   className={cn(CONTROL, "appearance-none pr-11")}
                 >
-                  <option value="">Select a range</option>
-                  {RANGES.map((range) => (
+                  {RANGE_OPTIONS.map((range) => (
                     <option key={range.value} value={range.value}>
                       {range.label}
                     </option>
@@ -246,34 +272,52 @@ export function ContactForm() {
         {/* ============================================================
             COMPLIANCE — READ BEFORE THIS FORM COLLECTS DATA IN PRODUCTION.
 
-            A published privacy policy is REQUIRED before this form is
-            allowed to collect personal data live. There is no /privacy
-            page on this site yet, and the footer renders "Privacy Policy"
-            as plain text for exactly that reason.
+            THE BLOCKING CONDITION IS NOW MET. This block used to say a
+            published privacy policy was REQUIRED before the form could
+            collect personal data live, and that there was no /privacy
+            page. `app/privacy/page.tsx` now exists, is reachable from the
+            footer sign-off, and is linked from the copy below — so the
+            gate that was described here has been satisfied rather than
+            argued away.
+
+            WHAT IS STILL TRUE, AND MUST STAY TRUE UNTIL SOMEBODY DECIDES
+            OTHERWISE: `deliverEnquiry` in actions.ts still returns
+            "unconfigured", so nothing is delivered and nothing is stored.
+            That is not an oversight to tidy up alongside this change —
+            /privacy describes exactly that behaviour, in those words, and
+            the two files are now a matched pair. Wiring delivery makes
+            the notice wrong, so wire it and update /privacy in the SAME
+            change, before the first enquiry is sent. The notice names
+            that obligation itself, under "What changes when delivery is
+            wired".
 
             The site this replaces shipped the line "you agree to our
             privacy policy" next to a Privacy link that pointed at `#`.
-            The consent copy below therefore claims nothing about a
-            policy — it states only what is verifiably true about how the
-            details are used. When /privacy ships, link it from here and
-            from the footer in the same change.
+            The copy below still does not claim you have agreed to
+            anything — it states what is verifiably true about these
+            details and points at the page that says the rest. A consent
+            sentence is a different thing from a notice, and only the
+            notice is what exists today.
 
-            SINCE THE AUDIT: the form now refuses control characters in
-            the fields a mail header would carry, and three controls sit
-            in front of delivery — the honeypot above, a fill-time floor
-            claimed by this client, and an in-process per-IP and
-            per-email rate limit. Their limits, and honestly what each
-            one is and is not worth, are written down in actions.ts.
-
-            None of that moves the gate. Rate limiting is about what the
-            form costs us; a privacy policy is about what we are allowed
-            to collect in the first place. Delivery stays blocked on the
-            policy, not on the abuse controls being good enough.
+            The three controls in front of delivery — the honeypot above,
+            the fill-time floor claimed by this client, and the in-process
+            per-IP and per-email rate limit — are unchanged. Their limits,
+            and honestly what each one is and is not worth, are written
+            down in actions.ts, and the rate limit's short-lived record of
+            IP and email is disclosed in the notice because it is
+            processing of personal data whatever else it is for.
             ============================================================ */}
         <p className="mt-8 max-w-[62ch] text-[13px] leading-[20px] text-muted">
           We use these details only to respond to your enquiry about SIF
-          schemes. We do not sell them, share them with the AMCs whose
-          schemes we cover, or add you to a mailing list.
+          schemes. We do not sell them, share them with the AMCs whose schemes
+          we cover, or add you to a mailing list. This form is not connected
+          to a mail service yet, so a submission is not delivered and not
+          stored —{" "}
+          <Link href="/privacy" className={INLINE_LINK}>
+            our privacy notice
+          </Link>{" "}
+          sets out what that means, what the abuse controls keep, and what
+          changes when delivery is wired.
         </p>
 
         <div className="relative isolate mt-8 inline-block">

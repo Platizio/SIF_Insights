@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { LineReveal } from "@/components/motion/LineReveal";
-import { Rise, RowListItem, Rule, Wipe } from "@/components/motion/Reveal";
+import { Rise, Rule, Wipe } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { ConsultCta } from "@/components/ConsultCta";
 import { PageHeader } from "@/components/PageHeader";
@@ -10,10 +10,9 @@ import { cn } from "@/lib/cn";
 /**
  * /media
  *
- * Two libraries: the video explainers and the written notes. Both are real
- * and both live off-site, so every card is an external link — no embedded
- * player (an iframe per card would ship ~1MB of YouTube JS above the fold
- * for content most visitors will not play).
+ * One library now: the video explainers. They live off-site, so every card is
+ * an external link — no embedded player (an iframe per card would ship ~1MB
+ * of YouTube JS above the fold for content most visitors will not play).
  *
  * REMOVED DELIBERATELY: the old site listed a sixth video, `dQw4w9WgXcQ`,
  * titled "Understanding SIF Returns". That id is the Rickroll. It was
@@ -23,12 +22,33 @@ import { cn } from "@/lib/cn";
  * Also removed: the newsletter form. It had no action and no handler, so it
  * collected an email address and dropped it. We do not run a mailing list;
  * the page points at /contact instead of pretending otherwise.
+ *
+ * REMOVED IN THIS PASS — the whole "Written notes" section and both entries
+ * in it. Re-verified live before deleting them: the two article URLs and the
+ * `/blogs-1` index above them all return 404 (301 → www, then 404 from the
+ * origin). They were rendered with the full editorial apparatus — title,
+ * date, read-time, category, excerpt — wrapped around a dead page, which is
+ * the most confident possible way to present nothing.
+ *
+ * The paths made it worse rather than better. `metadataBase` in
+ * app/layout.tsx is `https://sifinsight.com`, so `sifinsight.com/blogs-1/…`
+ * is a path on THIS APP'S OWN future origin, inherited from the legacy CMS
+ * this app replaces. After cutover those links become 404s that this very
+ * application serves, since no `/blogs-1` route exists here.
+ *
+ * The section went rather than the two entries because removing the entries
+ * left a heading, a standfirst and an empty list — a promise of a library
+ * with nothing in it. The closing note that used to sit under that list was
+ * NOT deleted with it: it is load-bearing (it is what replaced the fake
+ * newsletter form) and now closes the video section instead, with a sentence
+ * added that says the notes are gone and why. Nothing was invented to fill
+ * the gap; if written notes come back they come back with real URLs.
  */
 
 export const metadata: Metadata = {
   title: "Media",
   description:
-    "Video explainers and written notes on India's Specialised Investment Funds — SIF basics, minimum investment, market analysis and how SIFs differ from mutual funds.",
+    "Video explainers on India's Specialised Investment Funds — SIF basics, minimum investment, market analysis and how SIFs differ from mutual funds.",
   alternates: { canonical: "/media" },
 };
 
@@ -42,44 +62,6 @@ const VIDEOS: Video[] = [
   { id: "HQ4N1ZuZLNM", title: "Expert Investment Tips for SIFs" },
 ];
 
-type Post = {
-  title: string;
-  /** Machine-readable date for <time>. */
-  iso: string;
-  /** Rendered label. Written out rather than parsed from `iso`, because
-      `new Date("2025-01-15")` is UTC midnight and would render as the 14th
-      on any server west of Greenwich. */
-  date: string;
-  readTime: string;
-  category: string;
-  excerpt: string;
-  href: string;
-};
-
-const POSTS: Post[] = [
-  {
-    title:
-      "What are Specialized Investment Funds (SIFs)? A Beginner’s Guide",
-    iso: "2025-01-15",
-    date: "15 Jan 2025",
-    readTime: "5 min read",
-    category: "SIF Basics",
-    excerpt:
-      "Learn everything you need to know about SIFs, India's newest SEBI-regulated investment category. Understand the basics, benefits, and how they differ from traditional mutual funds.",
-    href: "https://sifinsight.com/blogs-1/f/what-are-specialized-investment-funds-sifs-a-beginner%E2%80%99s-guide",
-  },
-  {
-    title: "Minimum Investment in SIFs: What Does ₹10 Lakh Get You?",
-    iso: "2025-01-10",
-    date: "10 Jan 2025",
-    readTime: "4 min read",
-    category: "Investment Guide",
-    excerpt:
-      "Understanding the value proposition of the Rs 10 lakh minimum investment in Specialised Investment Funds. Discover what returns and benefits you can expect.",
-    href: "https://sifinsight.com/blogs-1/f/minimum-investment-in-sifs-what-does-%E2%82%B910-lakh-get-you",
-  },
-];
-
 const CHANNEL = "https://www.youtube.com/@sifinsight";
 
 export default function MediaPage() {
@@ -87,20 +69,16 @@ export default function MediaPage() {
     <>
       <PageHeader
         eyebrow="Media"
-        lines={["Explainers, analysis,", "and written notes."]}
+        lines={["Explainers and analysis,", "on camera."]}
         standfirst={
           <>
             Everything we have published about the SIF category, in one list.
-            The videos run on the SIF Insight channel; the written notes sit on
-            the SIF Insight blog. All of it is educational — none of it is
-            advice or a recommendation to buy a scheme.
+            The videos run on the SIF Insight channel and each card opens
+            there. All of it is educational — none of it is advice or a
+            recommendation to buy a scheme.
           </>
         }
-        meta={[
-          `${VIDEOS.length} videos`,
-          `${POSTS.length} written notes`,
-          "YouTube @sifinsight",
-        ]}
+        meta={[`${VIDEOS.length} videos`, "YouTube @sifinsight"]}
         aside={
           <Card className="p-8">
             <p className="text-[14px] leading-[20px] text-muted">
@@ -124,7 +102,6 @@ export default function MediaPage() {
       />
 
       <Videos />
-      <Written />
       <ConsultCta lines={["Prefer a conversation", "to a video?"]} />
     </>
   );
@@ -165,6 +142,26 @@ function Videos() {
             </li>
           ))}
         </ul>
+
+        {/* This block closed the written-notes list until that list was
+            removed. It moved rather than went with it: the mailing-list
+            sentence is what stands in for the fake newsletter form this page
+            used to carry, and deleting it would quietly re-open the question
+            it answers. The first sentence is new, and is the page saying
+            what happened to itself. */}
+        <Rule className="mt-16" delay={0.1} />
+        <Rise delay={0.16}>
+          <p className="mt-6 max-w-[80ch] text-[14px] leading-[24px] text-muted">
+            Two written notes were listed here until recently. Both pointed at
+            a blog that no longer answers — the two articles and the index
+            above them all return 404 — so they were removed rather than left
+            as a title, a date and a read-time wrapped around a dead page.
+            Nothing has been written to replace them. We do not run a mailing
+            list either, so there is nothing to subscribe to. If you want a
+            specific scheme or document walked through, reach us directly —
+            the details are on the contact page.
+          </p>
+        </Rise>
       </Shell>
     </Section>
   );
@@ -180,7 +177,38 @@ function VideoCard({ video, lead }: { video: Video; lead: boolean }) {
         className="group/link flex h-full flex-col"
       >
         <Wipe>
-          <div className="relative">
+          {/*
+            `bg-surface-2` here is the FALLBACK, and the `after:` utilities on
+            the image are what make it visible.
+
+            These five stills are the only third-party asset on the site. When
+            img.youtube.com is unreachable — a blocked network, an outage, a
+            video taken down — the <img> fails. `aspect-video` already held the
+            box open so nothing reflowed, which was the important half; what
+            was left inside it was Chrome's own broken-image icon in the top
+            corner, which is the exact thing this is supposed to stop looking
+            like.
+
+            A pseudo-element only gets a box on a BROKEN image: a loaded <img>
+            is a replaced element and renders no ::after at all. Measured, not
+            assumed — computed ::after width came back as the image's width
+            when the request was aborted and `auto` (no box) when it loaded.
+            So `after:inset-0 after:bg-surface-2` is a mask that exists only in
+            the failure case: it covers the UA icon and leaves a flat tinted
+            field, with the play mark below still sitting on top of it.
+
+            The result reads as a video card that has no art rather than as a
+            page that is broken, and it is the same surface tone the empty
+            states elsewhere on the site use. It also costs nothing when the
+            image loads normally.
+
+            NO TEXT in the fallback, deliberately. A "thumbnail unavailable"
+            label would flash during every ordinary lazy load and would be
+            asserting something false for as long as it showed. A field that
+            claims nothing is true in both states, which is the only way this
+            stays a nicety instead of becoming a new defect.
+          */}
+          <div className="relative bg-surface-2">
             {/*
               A plain <img>, not next/image: the thumbnails come from
               img.youtube.com, and whitelisting a remote host means editing
@@ -195,7 +223,7 @@ function VideoCard({ video, lead }: { video: Video; lead: boolean }) {
               height={720}
               loading="lazy"
               decoding="async"
-              className="block aspect-video w-full object-cover grayscale-[0.55] transition duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/link:grayscale-0"
+              className="relative block aspect-video w-full object-cover grayscale-[0.55] transition duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover/link:grayscale-0 after:absolute after:inset-0 after:bg-surface-2 after:content-['']"
             />
             <span
               aria-hidden="true"
@@ -227,85 +255,6 @@ function VideoCard({ video, lead }: { video: Video; lead: boolean }) {
         </div>
       </a>
     </TiltCard>
-  );
-}
-
-function Written() {
-  return (
-    <Section id="notes">
-      <Shell>
-        <div className="grid gap-8 lg:grid-cols-[460px_1fr] lg:gap-24">
-          <div>
-            <Rise>
-              <Eyebrow>Written</Eyebrow>
-            </Rise>
-            <LineReveal
-              as="h2"
-              lines={["Notes from", "the blog."]}
-              className="mt-5 text-[clamp(32px,4vw,48px)] font-medium leading-[1.16] text-ink"
-            />
-          </div>
-          <Rise delay={0.12} className="lg:self-end">
-            <p className="max-w-[52ch] text-[17px] leading-[30px] text-body">
-              Longer-form pieces on the SIF framework. Excerpts are the
-              articles’ own; each opens on sifinsight.com.
-            </p>
-          </Rise>
-        </div>
-
-        <ul className="mt-16 list-none border-b border-hairline">
-          {POSTS.map((post, i) => (
-            <RowListItem
-              key={post.href}
-              index={i}
-              className="border-t border-hairline"
-            >
-              <a
-                href={post.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group grid gap-6 py-10 lg:grid-cols-[220px_1fr] lg:gap-16"
-              >
-                <div>
-                  <time
-                    dateTime={post.iso}
-                    className="tabular block text-[14px] leading-[20px] text-muted"
-                  >
-                    {post.date}
-                  </time>
-                  <p className="mt-2 text-[14px] leading-[20px] text-muted">
-                    {post.category} · {post.readTime}
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-[22px] font-medium leading-[30px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-accent-dim">
-                    {post.title}
-                  </h3>
-                  <p className="mt-4 max-w-[68ch] text-[17px] leading-[30px] text-body">
-                    {post.excerpt}
-                  </p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-[14px] leading-[20px] text-accent">
-                    Read on sifinsight.com
-                    <ArrowGlyph />
-                    <span className="sr-only">(opens in a new tab)</span>
-                  </span>
-                </div>
-              </a>
-            </RowListItem>
-          ))}
-        </ul>
-
-        <Rule className="mt-16" delay={0.1} />
-        <Rise delay={0.16}>
-          <p className="mt-6 max-w-[80ch] text-[14px] leading-[24px] text-muted">
-            We do not run a mailing list, so there is nothing to subscribe to.
-            If you want a specific scheme or document walked through, reach us
-            directly — the details are on the contact page.
-          </p>
-        </Rise>
-      </Shell>
-    </Section>
   );
 }
 

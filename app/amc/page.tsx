@@ -19,9 +19,27 @@ import {
   type Amc,
 } from "@/lib/data";
 
+/* `openGraph` repeats `siteName`/`locale`/`type` because Next merges
+   metadata shallowly — declaring the key here replaces the root layout's
+   block entirely rather than merging into it. `openGraph.title` also
+   bypasses the "%s | SIF Insight" title template, so it is written out as
+   the share headline we actually want. */
 export const metadata: Metadata = {
   title: "Asset managers",
-  description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, the SIF sub-brand each files under, and how many of their ${stats.strategyCount} schemes we hold the disclosure set for.`,
+  description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, the SIF sub-brand each files under, and our disclosure coverage of their ${stats.strategyCount} schemes.`,
+  alternates: { canonical: "/amc" },
+  openGraph: {
+    title: `India's ${stats.amcCount} SIF asset managers`,
+    description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, and the ${stats.strategyCount} schemes between them.`,
+    url: "/amc",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /* ============================================================

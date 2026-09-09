@@ -16,9 +16,26 @@ import { NavExplorer } from "./NavExplorer";
 /** Counted, never asserted — 17 of the 30 schemes carry no disclosures. */
 const notCaptured = stats.strategyCount - stats.disclosedCount;
 
+/* `openGraph` repeats siteName/locale/type because Next merges metadata
+   shallowly: declaring the key replaces the root layout's block rather than
+   merging into it. `openGraph.title` also bypasses the "%s | SIF Insight"
+   template, so it is written out as the share headline we actually want. */
 export const metadata: Metadata = {
   title: "NAV tracker — net asset value, as filed",
   description: `One AMFI-published net asset value for each of India's ${stats.strategyCount} Specialised Investment Fund schemes, with its observation date and source.`,
+  alternates: { canonical: "/nav-tracker" },
+  openGraph: {
+    title: `SIF NAV tracker — ${stats.strategyCount} schemes, as filed with AMFI`,
+    description: `Every Indian SIF scheme's NAV exactly as filed with AMFI — ${stats.strategyCount} schemes, each with its observation date and source.`,
+    url: "/nav-tracker",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default function NavTrackerPage() {

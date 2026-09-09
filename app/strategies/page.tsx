@@ -27,10 +27,29 @@ import {
   type Category,
 } from "@/lib/data";
 
+/* "thirty schemes across seventeen asset managers and five long-short
+   mandates" was written out in words, so all three counts were frozen at
+   their October figures with nothing to catch them drifting. They are
+   interpolated now — the display headline further down this file keeps its
+   words, for the typographic reason stated there. `openGraph` repeats
+   siteName/locale/type because Next merges metadata shallowly: declaring
+   the key replaces the root layout's block rather than merging into it. */
 export const metadata: Metadata = {
   title: "Strategies",
-  description:
-    "Every Specialised Investment Fund scheme currently offered in India — thirty schemes across seventeen asset managers and five long-short mandates — with the disclosures each house has filed, and an honest gap where it has not.",
+  description: `All ${stats.strategyCount} Specialised Investment Fund schemes in India, across ${stats.amcCount} asset managers and ${stats.mandateCount} long-short mandates, with the disclosures each house has filed.`,
+  alternates: { canonical: "/strategies" },
+  openGraph: {
+    title: `All ${stats.strategyCount} Indian SIF strategies, by category`,
+    description: `Every Indian SIF scheme, by category: ${stats.strategyCount} across ${stats.amcCount} asset managers and ${stats.mandateCount} long-short mandates.`,
+    url: "/strategies",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /* ============================================================

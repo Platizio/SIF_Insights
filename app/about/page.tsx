@@ -20,11 +20,30 @@ import { formatUpdated, navLastUpdated, stats } from "@/lib/data";
  * testimonials, no team roster, no offices — because none of those are known.
  */
 
+/* The trailing "We track every Specialised Investment Fund scheme in the
+   Indian market" ran the description to 207 characters — Google cuts at
+   about 160, so the sentence naming the firm and its founder was the part
+   being thrown away. `openGraph` repeats siteName/locale/type because Next
+   merges metadata shallowly: declaring the key replaces the root layout's
+   block rather than merging into it. */
 export const metadata: Metadata = {
   title: "About",
   description:
-    "SIF Insight is operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®. We track every Specialised Investment Fund scheme in the Indian market.",
+    "SIF Insight is operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
   alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About SIF Insight — who tracks these funds",
+    description:
+      "Operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
+    url: "/about",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /** The founder photo is a 400×400 asset; dimensions are explicit for CLS. */

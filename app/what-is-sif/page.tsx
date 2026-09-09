@@ -24,11 +24,31 @@ import {
   type Category,
 } from "@/lib/data";
 
+/** ₹10,00,000 expressed in lakh — the unit SEBI's framework is quoted in,
+    derived here for the same reason /about derives it rather than typing it. */
+const MIN_LAKH = stats.minInvestment / 100_000;
+
+/* At 240 characters this was the longest description on the site; the
+   clause that survived Google's ~160 cut ended mid-list at "mutual funds,
+   PMS and…". `openGraph` repeats siteName/locale/type because Next merges
+   metadata shallowly: declaring the key replaces the root layout's block
+   rather than merging into it. */
 export const metadata: Metadata = {
   title: "What is a SIF",
-  description:
-    "Specialised Investment Funds are a SEBI category introduced in 2025 — hedge-fund-style flexibility inside a regulated pooled structure, from a ₹10 lakh minimum. The definition, the rules and where SIFs sit against mutual funds, PMS and AIF.",
+  description: `Specialised Investment Funds: SEBI's 2025 category — hedge-fund-style flexibility in a regulated structure, from ₹${MIN_LAKH} lakh. The rules, and how SIFs compare.`,
   alternates: { canonical: "/what-is-sif" },
+  openGraph: {
+    title: "What is a Specialised Investment Fund?",
+    description: `SEBI's 2025 fund category: hedge-fund-style flexibility inside a regulated structure, from a ₹${MIN_LAKH} lakh minimum.`,
+    url: "/what-is-sif",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 const SEBI_CIRCULAR =

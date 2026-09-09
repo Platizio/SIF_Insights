@@ -99,8 +99,15 @@ export function TiltCard({
            on the content's own parent — all of them measured 33px.
            So: frame and positioning live here, the caller's layout classes go
            on the wrapper, and the two branches lay out identically. */
+        /* Written out in full — Tailwind scans source text, so the curve
+           cannot be interpolated from a token. `duration-200` is
+           --duration-micro; the ease is the site's ONE curve
+           (--ease-out-quint / lib/motion EASE). Bare `transition-colors`
+           silently ships Tailwind's own cubic-bezier(0.4,0,0.2,1), which is
+           a second easing curve on a site whose contract has one. */
         className={cn(
-          "group relative h-full border border-hairline bg-surface transition-colors duration-200",
+          "group relative h-full border border-hairline bg-surface",
+          "transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
           "hover:border-accent-dim",
         )}
       >
@@ -108,7 +115,7 @@ export function TiltCard({
         <motion.span
           aria-hidden="true"
           style={{ background: glow }}
-          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:opacity-100"
         />
         {/* translateZ(0) flattens the content onto its own plane inside the
             3D context so text does not shimmer as the card tilts. `relative`

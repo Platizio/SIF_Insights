@@ -591,52 +591,62 @@ function TallyRow<T extends string | number>({
   const notCaptured = population - counts.captured;
   const show = (value: T) => (render ? render(value) : <>{value}</>);
 
-  /* Classes on <GroupItem>: it renders the wrapper, so anything nested is an
-     only child and `first:` would match on every row, doubling the hairline
-     between each pair. `contents` keeps the inner div out of the grid. */
+  /* <GroupItem> IS the wrapper div, and dt/dd are its DIRECT children.
+     A <dl> permits exactly one div around a dt/dd group; this row used to
+     nest a second `display:contents` div inside it, which is two deep and
+     therefore invalid — axe reported `definition-list` and `dlitem` SERIOUS
+     on every category page, i.e. screen readers were not announcing this as
+     a definition list at all. The inner div was buying nothing: it was
+     `display:contents`, so dt/dd were already the grid items of the layout
+     one level up. Dropping it changes no pixel and makes the markup legal.
+
+     The grid and hairline classes must stay on <GroupItem> rather than move
+     down to a wrapper of our own: a nested div is an only child, so
+     `first:border-t` would match on EVERY row and draw a top rule against
+     the previous row's `border-b`, doubling the hairline between each pair.
+     GroupItem's divs are siblings inside the <dl>, so `first:` means the
+     first row — one rule above the list, one below each row. */
   return (
     <GroupItem className="grid gap-2 border-b border-hairline py-5 first:border-t sm:grid-cols-[190px_1fr] sm:gap-6">
-      <div className="contents">
-        <dt>
-          <span className="block text-[13px] leading-[22px] text-muted">
-            {label}
+      <dt>
+        <span className="block text-[13px] leading-[22px] text-muted">
+          {label}
+        </span>
+        <span className="mt-0.5 block text-[12px] leading-[18px] text-muted">
+          {scope}
+        </span>
+      </dt>
+      <dd className="text-[15px] leading-[22px] text-ink">
+        {rows.length === 0 ? (
+          <span className="text-muted">
+            Not captured for any scheme on this page
           </span>
-          <span className="mt-0.5 block text-[12px] leading-[18px] text-muted">
-            {scope}
-          </span>
-        </dt>
-        <dd className="text-[15px] leading-[22px] text-ink">
-          {rows.length === 0 ? (
-            <span className="text-muted">
-              Not captured for any scheme on this page
-            </span>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {rows.map((r) => (
-                <li
-                  key={String(r.value)}
-                  className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1"
-                >
-                  <span>{show(r.value)}</span>
-                  <span className="tabular shrink-0 text-[13px] text-muted">
-                    {r.count} of {population}
-                  </span>
-                </li>
-              ))}
-              {/* Muted, and last — an absence is not one of the values, but
-                  it is the difference between this list and its total. */}
-              {notCaptured > 0 ? (
-                <li className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-muted">
-                  <span>{absent}</span>
-                  <span className="tabular shrink-0 text-[13px]">
-                    {notCaptured} of {population}
-                  </span>
-                </li>
-              ) : null}
-            </ul>
-          )}
-        </dd>
-      </div>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {rows.map((r) => (
+              <li
+                key={String(r.value)}
+                className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1"
+              >
+                <span>{show(r.value)}</span>
+                <span className="tabular shrink-0 text-[13px] text-muted">
+                  {r.count} of {population}
+                </span>
+              </li>
+            ))}
+            {/* Muted, and last — an absence is not one of the values, but
+                it is the difference between this list and its total. */}
+            {notCaptured > 0 ? (
+              <li className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-muted">
+                <span>{absent}</span>
+                <span className="tabular shrink-0 text-[13px]">
+                  {notCaptured} of {population}
+                </span>
+              </li>
+            ) : null}
+          </ul>
+        )}
+      </dd>
     </GroupItem>
   );
 }

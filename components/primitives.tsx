@@ -219,7 +219,11 @@ function Arrow() {
  * `pct` stays nullable for the scheme that has only one published NAV: with
  * no prior close there is no move to state. That renders as an explicit
  * "No prior close" rather than as 0.00%, which would claim the fund was
- * unchanged. Callers pass `changePct` straight through — never guard here.
+ * unchanged. Callers pass `changePct` straight through — never guard here,
+ * which is also why a non-finite `pct` (a NaN out of a division by a zero or
+ * absent prior close) takes the same branch: "no move can be stated" is the
+ * honest reading of it, and it is the one thing this component must never
+ * render as a figure. It used to print "NaN%".
  */
 export function Delta({
   pct,
@@ -230,7 +234,7 @@ export function Delta({
   className?: string;
   size?: "sm" | "lg";
 }) {
-  if (pct === null) {
+  if (pct === null || !Number.isFinite(pct)) {
     return (
       <span
         className={cn(
@@ -246,14 +250,30 @@ export function Delta({
     );
   }
 
-  const dir = pct > 0 ? "up" : pct < 0 ? "down" : "flat";
+  /**
+   * ONE rounded value decides direction, sign AND digits.
+   *
+   * They used to be derived separately — direction and sign from the raw
+   * `pct`, the digits from `Math.abs(pct).toFixed(2)` — so any move in
+   * 0 < |pct| < 0.005 rendered as "▼ −0.00%": a loss glyph, a minus sign and
+   * a zero magnitude, all at once. Rounding first makes the three agree by
+   * construction, because there is only one number left to read.
+   *
+   * `-0` survives this correctly and is why the comparisons are written
+   * against 0 rather than as a sign test: `(-0) > 0` and `(-0) < 0` are both
+   * false, so a negative zero takes the flat branch, and `Math.abs` erases
+   * the sign before it can reach the digits. (-0.004).toFixed(2) is "-0.00",
+   * which Number() reads back as exactly that -0.
+   */
+  const shown = Number(pct.toFixed(2));
+  const dir = shown > 0 ? "up" : shown < 0 ? "down" : "flat";
   const colour = {
     up: "text-gain",
     down: "text-loss",
     flat: "text-flat",
   }[dir];
   const glyph = { up: "▲", down: "▼", flat: "—" }[dir];
-  const sign = pct > 0 ? "+" : pct < 0 ? "−" : "";
+  const sign = { up: "+", down: "−", flat: "" }[dir];
 
   return (
     <span
@@ -269,7 +289,7 @@ export function Delta({
       </span>
       <span>
         {sign}
-        {Math.abs(pct).toFixed(2)}%
+        {Math.abs(shown).toFixed(2)}%
       </span>
     </span>
   );
@@ -326,7 +346,30 @@ export function RiskBand({
   );
 }
 
-/** The 5 unlaunched funds. Honest, not hidden, not faked. */
+/**
+ * What stands in for a NAV that is not in the current AMFI file.
+ *
+ * It said "Awaiting launch", and asserted more than anyone knows. Every
+ * NAV-side caller reaches this through `getNav()`, which returns `pending`
+ * for any scheme whose NAV is non-finite — absent from the file, unparseable,
+ * suspended, whatever. "Not launched" is one possible cause among several,
+ * and it is the one thing the feed cannot tell us. The wording now states the
+ * observation instead, matching how the same absence is worded in prose
+ * everywhere else on the site ("No NAV for this scheme in the current AMFI
+ * file", app/strategies/[category]/page.tsx; "No NAV for this scheme in the
+ * AMFI file dated …", app/amc/[id]/page.tsx; "No net asset value is held for
+ * this scheme", app/nav-tracker/NavExplorer.tsx).
+ *
+ * The old docstring also said "the 5 unlaunched funds". There are currently
+ * none: all 30 schemes carry a NAV, so on the NAV surfaces this badge is
+ * unreachable against today's feed and exists for the day that changes.
+ *
+ * Two callers use it for a different absence — a CATEGORY with no schemes at
+ * all (app/strategies/page.tsx, app/what-is-sif/page.tsx, both of which pair
+ * it with their own "Launching soon" / "No debt SIF has launched yet" copy).
+ * The new wording is still true there — nothing has filed a NAV for an empty
+ * category — but that copy, not this badge, is what carries the launch claim.
+ */
 export function PendingBadge({ className }: { className?: string }) {
   return (
     <span
@@ -334,8 +377,12 @@ export function PendingBadge({ className }: { className?: string }) {
         "inline-flex items-center gap-1.5 rounded-full border border-hairline px-3 py-1 text-[12px] text-pending",
         className,
       )}
+      /* Deliberately says "in the current AMFI file" and not "for this
+         scheme": the two category callers below hang this off a category,
+         not a scheme, and the sentence has to stay true in both. */
+      title="No NAV in the current AMFI file."
     >
-      Awaiting launch
+      No NAV filed
     </span>
   );
 }

@@ -40,7 +40,7 @@ const ORIGIN = "https://sifinsight.com";
  * imports `@/lib/data` at all, directly or through a section component.
  * They get no `lastModified` rather than a date we cannot source.
  */
-const EDITORIAL_PATHS = ["/media", "/downloads"];
+const EDITORIAL_PATHS = ["/media", "/downloads", "/privacy"];
 
 /**
  * Routes whose visible figures are counted from the NAV dataset, so a
