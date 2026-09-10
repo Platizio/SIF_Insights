@@ -12,9 +12,32 @@ import { TrackerTable } from "./TrackerTable";
    is Server-Component-only (next/dist/docs/.../generate-metadata.md), and
    this route needs both a title and client state. */
 
+/* At 231 characters this was the second-longest description on the site,
+   and the clause Google kept stopped at "…across 5 mandates — NAV, and for
+   the 30 schemes whose disclo…". It also counted over `disclosedCount`
+   while naming five specific fields; lib/data is explicit that copy naming
+   fields must count `fullyDisclosedCount`, which is four lower because a
+   captured document can still leave a field out. Shortened and recounted.
+
+   `openGraph` repeats siteName/locale/type because Next merges metadata
+   shallowly: declaring the key replaces the root layout's block rather
+   than merging into it. */
 export const metadata: Metadata = {
   title: "SIF Tracker — every scheme, side by side",
-  description: `Filter and compare all ${stats.strategyCount} Specialised Investment Fund schemes from ${stats.amcCount} asset managers across ${stats.mandateCount} mandates — NAV, and for the ${stats.disclosedCount} schemes whose disclosures we hold, risk band, expense ratio, exit load, redemption and taxation, as filed.`,
+  description: `Filter and compare all ${stats.strategyCount} Indian Specialised Investment Fund schemes from ${stats.amcCount} asset managers — a NAV on every one, and the full disclosure set on ${stats.fullyDisclosedCount} of them.`,
+  alternates: { canonical: "/sif-tracker" },
+  openGraph: {
+    title: `SIF Tracker — all ${stats.strategyCount} Indian SIF schemes, side by side`,
+    description: `All ${stats.strategyCount} Indian SIF schemes in one filterable table — a NAV on every one, and the full disclosure set on ${stats.fullyDisclosedCount} of them.`,
+    url: "/sif-tracker",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 export default function SifTrackerPage() {
@@ -85,7 +108,7 @@ export default function SifTrackerPage() {
               SIF Insight is a distributor of Mutual Funds and Specialised
               Investment Funds, not an investment adviser or an AMC. Risk bands
               are indicative and may vary with market conditions and portfolio
-              composition. NAV data fetched from AMFI. Updated daily; NAVs as at{" "}
+              composition. NAV data fetched from AMFI. NAVs as at{" "}
               {formatUpdated(navLastUpdated)}.
             </p>
           </div>

@@ -1,8 +1,7 @@
 {
-  "_comment": "Researched scheme terms, keyed by AMFI scheme code. A scheme with no entry here has no disclosures captured — that is how `disclosuresCaptured` is derived, so it cannot drift. A null field means the source document does not state it; render 'Not captured', never a default. `expenseRatio` is the ISID CAP where expenseRatioIsCap is true, not the charged TER. Kept separate from schemes.json so the nightly NAV pipeline and disclosure research never write the same file.",
+  "_comment": "Researched scheme terms, keyed by AMFI scheme code. A scheme with no entry here has no disclosures captured — that is how `disclosuresCaptured` is derived, so it cannot drift. A null field means the source document does not state it; render 'Not captured', never a default. `expenseRatio` is the ISID CAP where expenseRatioIsCap is true, not the charged TER. Every field here is read from the scheme's own information document — `verifiedAgainst` names the copy it was read from, so any figure can be checked against its source. Scheme OVERVIEWS are deliberately not in this file: an overview describes the mandate rather than the document, so it is derived from `type` in lib/data/index.ts (MANDATE_OVERVIEW) and written once per mandate. Kept separate from schemes.json so the nightly NAV pipeline and disclosure research never write the same file.",
   "disclosures": {
     "SIF-3": {
-      "overview": "A sophisticated equity strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% if redeemed/switched out on or before completion of 15 days from the date of allotment of units; No Exit Load if redeemed/switched-out after 15 days from the date of allotment",
@@ -16,7 +15,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-7": {
-      "overview": "A balanced approach combining equity long-short strategies with fixed income allocation, providing diversification across asset classes while maintaining hedge fund-style flexibility.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% if redeemed/switched out on or before completion of 15 days from the date of allotment of units; Nil if redeemed/switched out after 15 days from the date of allotment.",
@@ -30,7 +28,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-11": {
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 2,
       "exitLoad": "If units are redeemed/switched out on or before 90 days from the date of allotment: 0.50% of the applicable NAV. If redeemed/switched out after 90 days from the date of allotment: Nil.",
@@ -44,7 +41,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-13": {
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations to generate alpha while managing risk through sophisticated hedging techniques.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "0.50% if redeemed on or before 15 days from date of allotment; 0.25% if redeemed after 15 days but on or before 1 month; Nil after 1 month. No exit load on switching between Plans within the Investment Strategy or on units issued on IDCW re-investment.",
@@ -58,7 +54,6 @@
       "verifiedAgainst": "ISID, adjudicated against the document text"
     },
     "SIF-21": {
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "0.50% if redeemed/switched out on or before completion of 6 months from allotment (first 10% of units redeemable free); Nil after 6 months. Entry load: Not Applicable.",
@@ -72,7 +67,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-25": {
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% if redeemed/switched out on or before completion of 15 days from the date of allotment of units; Nil after 15 days",
@@ -86,7 +80,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-29": {
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% if redeemed/switched out on or before expiry of 1 year from date of allotment; Nil thereafter",
@@ -100,7 +93,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-34": {
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% of applicable Net Asset Value if the amount is redeemed or switched out within 12 months from allotment; NIL if redeemed or switched out after 12 months.",
@@ -114,7 +106,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
     },
     "SIF-35": {
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "1% of applicable NAV if redeemed or switched out within 12 months from allotment; NIL if redeemed/switched out after 12 months",
@@ -128,18 +119,17 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-40": {
-      "overview": "A hybrid long-short strategy that combines equity and debt allocations with sophisticated hedging techniques to generate alpha while managing risk across market cycles.",
       "minInvestment": 1000000,
       "expenseRatio": 1.33,
       "exitLoad": "Entry Load: Nil; Exit Load: Nil",
-      "riskBand": null,
+      "riskBand": "Risk Band 2",
       "benchmark": "CRISIL Hybrid 85+15 Conservative Index (Tier 1; Tier 2: NA)",
       "redemptionFrequency": "Twice a week (Monday & Thursday)",
       "taxation": "Debt STCG- as per Tax Slab upto 12 months ; Equity LTCG – 12.5% (holding >24 months)",
       "dividend": "Growth and IDCW options available; IDCW offered as Payout and Reinvestment in Daily, Weekly, Fortnightly, Monthly, Quarterly, Half Yearly, Annual and Periodic frequencies (Regular and Direct plans)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-10.pdf"
     },
     "SIF-55": {
       "minInvestment": 1000000,
@@ -155,7 +145,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-62": {
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or within 30 days from date of allotment; Nil after 30 days. Entry Load: Not Applicable.",
@@ -169,18 +158,17 @@
       "verifiedAgainst": "ISID, adjudicated against the document text"
     },
     "SIF-80": {
-      "overview": null,
       "minInvestment": 1000000,
       "expenseRatio": 2,
       "exitLoad": "0.50% of applicable NAV for redemption/switch-out on or before 90 days from the date of allotment; Nil for redemption/switch-out after 90 days from the date of allotment.",
       "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index",
       "redemptionFrequency": "Twice a week (every Monday & Wednesday). If it falls on a non-business day, the immediate next business day.",
-      "taxation": null,
+      "taxation": "Tax on IDCW: 10% for residents (not deducted where cumulative IDCW from the fund is below Rs 10,000 in a financial year) and 20% for non-residents; Nil in the hands of the Mutual Fund. Capital gains: long-term 12.5% without indexation plus applicable surcharge and 4% cess; short-term taxable at the normal rates of tax applicable to the assessee. Units are listed, so the long-term holding period is more than 12 months. Withholding under section 195 applies to capital gains arising to non-residents. Full details deferred to the Apex SIF SAI.",
       "dividend": "Growth Option and IDCW Option (Payout of IDCW & Reinvestment of IDCW) available under each Plan; Default Option is Growth. IDCW subject to availability of distributable surplus and at the discretion of the Trustees.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-13.pdf"
     },
     "SIF-87": {
       "minInvestment": 1000000,
@@ -189,11 +177,11 @@
       "riskBand": "Risk Band 2",
       "benchmark": "25% BSE SENSEX TRI + 60% CRISIL Short Term Bond Fund Index + 15% iCOMDEX Composite Index",
       "redemptionFrequency": "Every Monday of the week (next business day if Monday is a non-business day); redemption is otherwise not allowed except during the Specified Transaction Period",
-      "taxation": null,
-      "dividend": null,
+      "taxation": "Tax on dividend: taxable at income slab rates for residents; 20% for FPIs and for units purchased in foreign currency, otherwise at the applicable rate for other non-residents; Nil for the Specialized Investment Fund itself. Capital gains — long-term (units listed on a recognised stock exchange held more than 12 months; unlisted, more than 24 months): 12.5% for residents and non-residents. Short-term: taxable at income slab rates for residents, and at 30% for FPIs / 35% for non-resident companies / income slab rates for other non-resident unitholders. Rates are increased by applicable surcharge and 4% health & education cess. TDS 10% on IDCW above Rs 5,000 for resident unitholders and 20% plus surcharge and cess for non-residents.",
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans, with IDCW Payout and IDCW Re-investment sub-options. IDCW is declared subject to the availability and adequacy of distributable surplus and may be distributed out of the investor's capital (the equalisation reserve). Default Option is Growth; Reinvestment is the default IDCW sub-option. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-14.pdf"
     },
     "SIF-93": {
       "minInvestment": 1000000,
@@ -203,10 +191,10 @@
       "benchmark": "40% NSE 500 TRI + 30% CRISIL Short Term Bond Fund Index + 30% iCOMDEX Composite Index",
       "redemptionFrequency": "Every Tuesday and Wednesday of the week (next business day if either is a non-business day)",
       "taxation": null,
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option, with Payout and Re-investment facilities, available under both Regular and Direct Plans, which share a common portfolio. IDCW dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-15.pdf"
     },
     "SIF-96": {
       "minInvestment": 1000000,
@@ -215,11 +203,11 @@
       "riskBand": "Risk Band 5",
       "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily on all business days",
-      "taxation": null,
-      "dividend": null,
+      "taxation": "Taxed as an equity-oriented fund where the transaction is chargeable to STT. LTCG (holding >12 months): 12.5% for resident individuals/HUF, domestic corporates and non-residents, on gains exceeding Rs 1,25,000 in a financial year. STCG (holding <=12 months): 20% for all three. IDCW taxed at the investor's applicable rate for residents and domestic corporates, and 20% for non-residents. TDS: IDCW 10% for residents (no withholding under section 194K where the amount paid in a financial year does not exceed Rs 10,000) and 20% for non-residents; Nil on LTCG and STCG for residents, 12.5% and 20% respectively for non-residents, with no TDS on either for foreign portfolio investors. Rates are increased by applicable surcharge and health & education cess.",
+      "dividend": "Growth Plan and Income Distribution cum capital withdrawal (IDCW) Plan, each offered as a Regular and a Direct variant; the IDCW Plan carries Reinvestment and Payout options. All plans share a common portfolio and units have a face value of Rs 1,000. Default Plan is Direct; default Option is Growth, and Reinvestment of IDCW where IDCW is chosen without an option. (This scheme is the Growth plan.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-16.pdf"
     },
     "SIF-102": {
       "minInvestment": 1000000,
@@ -229,13 +217,12 @@
       "benchmark": "Nifty 500 Total Return Index (TRI)",
       "redemptionFrequency": "Daily (All business days)",
       "taxation": "Long Term Capital Gains: 12.5% (on gains exceeding Rs. 1.25 lakh, without indexation, provided STT was paid on acquisition/transfer); Short Term Capital Gains: 20%. Applicable to Resident Investors, NRIs and Domestic Companies; Mutual Fund itself is tax-exempt under Section 10(23D).",
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Withdrawal (IDCW) Option available under both the Regular Plan (applications routed through distributors) and the Direct Plan; IDCW sub-options are Payout of IDCW and Reinvestment of IDCW. Default Option is Growth; default sub-option is Reinvestment of IDCW. Income is distributed at the discretion of the Trustee. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-17.pdf"
     },
     "SIF-105": {
-      "overview": "A focused equity strategy targeting small and mid-cap stocks excluding the top 100 companies, employing long-short techniques to capture alpha in this segment.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "No exit load",
@@ -249,7 +236,6 @@
       "verifiedAgainst": "ISID/KIM, independently re-read"
     },
     "SIF-111": {
-      "overview": "A sophisticated equity long-short strategy that combines long positions in undervalued stocks with short positions in overvalued ones, aiming to generate alpha regardless of market direction.",
       "minInvestment": 1000000,
       "expenseRatio": 2.25,
       "exitLoad": "NIL",
@@ -270,10 +256,10 @@
       "benchmark": "NIFTY 200 Total Return Index (TRI)",
       "redemptionFrequency": "Daily (only Business Days)",
       "taxation": "Equity-oriented classification: LTCG (holding >12 months) taxed at 12.5% without indexation on gains above Rs 1,25,000 (same rate, without indexation/forex benefit, for non-residents); STCG (<=12 months) taxed at 20% for both residents and non-residents. If the strategy instead qualifies as non-equity-oriented (36%-64% domestic equity exposure): LTCG (>24 months) 12.5% without indexation; STCG (<=24 months) at applicable slab rate. Dividend/IDCW taxed at the investor's slab rate for residents (TDS 10% if payout exceeds Rs 10,000) and at 20% (or lower DTAA rate with valid TRC) for non-residents. Equity-oriented positions also attract Securities Transaction Tax (STT). The SIF itself pays Nil tax on dividend and capital gains.",
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans; the IDCW option carries Reinvestment and Payout facilities. Default Option is Growth; default facility is Reinvestment of IDCW. IDCW warrants dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-20.pdf"
     },
     "SIF-117": {
       "minInvestment": 1000000,
@@ -283,13 +269,12 @@
       "benchmark": "NIFTY 500 Total Return Index (TRI)",
       "redemptionFrequency": "Daily (Only Business Days)",
       "taxation": "Equity-oriented fund treatment: LTCG (holding > 12 months) taxed at 12.50% (without indexation) on gains exceeding Rs 1,25,000/year, plus applicable surcharge and cess; STCG (holding <= 12 months) taxed at 20% plus surcharge and cess; STT of 0.001% applies on redemption of units; IDCW taxed at investor's slab rate for residents (20% plus surcharge/cess for non-residents); the Specialized Investment Fund itself pays NIL tax (income exempt under Section 10(23D) of the Income-tax Act, 1961).",
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans, which share a common portfolio. IDCW dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-21.pdf"
     },
     "SIF-122": {
-      "overview": null,
       "minInvestment": 1000000,
       "expenseRatio": 2.1,
       "exitLoad": "0.50% of applicable NAV if redeemed/switched out on or before 90 days from date of allotment; Nil after 90 days. Units issued on IDCW reinvestment and bonus units are not subject to exit load.",
@@ -322,36 +307,37 @@
       "riskBand": "Risk Band 5",
       "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily",
-      "taxation": null,
-      "dividend": null,
+      "taxation": "LTCG on sale of listed and unlisted units (held more than 12 months): 12.5% without indexation on gains exceeding Rs 1,25,000, on redemption of units where STT is payable, for both resident and non-resident investors. STCG (held less than 12 months): 20% without indexation on redemption of units where STT is payable. Tax on IDCW: taxable at the investor's applicable tax rates for residents and non-residents. The Mutual Fund's own income is exempt. Where a resident individual's or HUF's total income excluding these gains is below the basic exemption limit, the gains are first adjusted against that limit and only the excess is chargeable.",
+      "dividend": "Not applicable — the Investment Strategy offers only the Growth Option under both the iSIF Equity Long-Short Fund Regular Plan and Direct Plan; no IDCW option is offered.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-24.pdf"
     },
     "SIF-128": {
       "minInvestment": 1000000,
-      "expenseRatio": null,
+      "expenseRatio": 1.85,
       "exitLoad": "2% of applicable NAV if redeemed/switched out on or before 1 year from date of allotment; Nil after 1 year",
       "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index",
       "redemptionFrequency": "Every Monday of the week",
       "taxation": "Long-term capital gains taxed at 12.5% after 1-year holding period for listed units (as stated in fund commentary; not a formal tax table)",
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans; IDCW sub-options are Payout of IDCW and Reinvestment of IDCW, with IDCW declared annually or at such other frequency as the Board of Directors of the Trustee Company may decide. Growth is the default Option; Reinvestment of IDCW is the default sub-option where IDCW is selected. (This scheme is the Regular - Growth option.)",
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-25.pdf",
+      "expenseRatioIsCap": true
     },
     "SIF-136": {
       "minInvestment": 1000000,
       "expenseRatio": 2.1,
       "exitLoad": "1% if redeemed within 90 days from date of allotment; Nil if redeemed after 90 days",
-      "riskBand": null,
+      "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index (Tier 1)",
       "redemptionFrequency": "2 times a week (Monday and Thursday)",
-      "taxation": null,
-      "dividend": null,
+      "taxation": "ISID gives the capital-gains table for units of an Equity Oriented Fund. Where STT is paid on redemption, for sales on or after 23 July 2024: STCG (redemption before completing one year) 20%; LTCG (redemption after completing one year) 12.5% without indexation, taxable under section 112A only on gains exceeding Rs 1,25,000, plus applicable surcharge and cess. The same rates apply to residents, PIO/NRI, other non-FII non-residents and FIIs; TDS is Nil for residents and 20% (STCG) / 12.5% (LTCG) for NRI/OCB/FII. Where STT is not paid, STCG is taxed at the normal rate applicable to the assessee (30% for non-resident non-corporates, 35% for non-resident corporates) and LTCG at 12.5% without indexation. Full details deferred to the SAI.",
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans, which share a common portfolio; IDCW sub-options are Payout of IDCW and Reinvestment of IDCW. Default is Regular Plan - Growth for investments routed through a distributor and Direct Plan - Growth for direct investors; where IDCW is selected without a sub-option the default is Reinvestment of IDCW. IDCW dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-26.pdf"
     },
     "SIF-138": {
       "minInvestment": 1000000,
@@ -361,10 +347,10 @@
       "benchmark": "Tier I Benchmark: NIFTY 50 Hybrid Composite Debt 50:50 Index (Tier II: Not Applicable)",
       "redemptionFrequency": "Two times a week (Monday and Wednesday); next business day's NAV applies if either day is a non-business day",
       "taxation": null,
-      "dividend": null,
+      "dividend": "Not applicable — each Plan offers only the Growth Option, which is also the default Option. The Investment Strategy has a Regular Plan and a Direct Plan sharing a common portfolio; no IDCW option is offered.",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-27.pdf"
     },
     "SIF-143": {
       "minInvestment": 1000000,
@@ -373,24 +359,24 @@
       "riskBand": "Risk Band 5",
       "benchmark": "BSE 500 TRI",
       "redemptionFrequency": "Daily (only business days)",
-      "taxation": null,
-      "dividend": null,
+      "taxation": "Tax on dividend: taxable at income slab rates for residents; 20% for FPIs and for units purchased in foreign currency, otherwise at the applicable rate for other non-residents; Nil for the Specialized Investment Fund itself. Capital gains: long-term (held more than 12 months) 12.5% and short-term (held 12 months or less) 20%, for both residents and non-residents, increased by applicable surcharge and 4% health & education cess. Long-term gains on an equity-oriented fund are computed without indexation and taxed only on gains exceeding Rs 1,25,000, and the beneficial rates are subject to payment of STT. TDS 10% on IDCW above Rs 5,000 for resident unitholders; no TDS on capital gains for resident unitholders or FPIs.",
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans, with IDCW Payout and IDCW Re-investment sub-options. IDCW is declared subject to the availability and adequacy of distributable surplus and may be distributed out of the investor's capital (the equalisation reserve). Default Option is Growth; Reinvestment is the default IDCW sub-option. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-28.pdf"
     },
     "SIF-146": {
       "minInvestment": 1000000,
       "expenseRatio": 1.85,
-      "exitLoad": null,
+      "exitLoad": "Nil. No exit load is chargeable on switches between different plans/options of the strategy, and units issued on reinvestment of IDCW are not subject to entry or exit load.",
       "riskBand": "Risk Band 2",
       "benchmark": "NIFTY 50 Hybrid Composite Debt 50:50 Index (Total Return Index)",
-      "redemptionFrequency": null,
-      "taxation": null,
-      "dividend": null,
+      "redemptionFrequency": "Twice a week — Monday and Wednesday. Requests received after Wednesday 3.00 PM until Monday 3.00 PM are processed at Monday's NAV; those received after Monday 3.00 PM until Wednesday 3.00 PM at Wednesday's NAV. Where a Monday or Wednesday is a non-business day, the next business day's NAV applies.",
+      "taxation": "Taxed as a non-equity-oriented fund: the ISID's capital-gains table is for a Mutual Fund with domestic equity above 35% and below 65%, and the strategy undertakes to keep funds invested in listed domestic equity shares below 65%. For listed units: STCG (held 12 months or less) at the investor's applicable slab rates; LTCG (held more than 12 months) 12.5%. Rates for residents and non-residents are increased by applicable surcharge and 4% health & education cess. IDCW: TDS 10% for resident unitholders above the Rs 10,000 threshold (w.e.f. 1 April 2025), taxed at applicable rates; for FII/FPI 20% plus surcharge and cess, and for foreign companies 20% TDS with taxation at 35% where units were purchased in Indian rupees, subject to DTAA benefits. Full details deferred to the SAI.",
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans; IDCW sub-options are Payout of IDCW and Reinvestment of IDCW. Where the IDCW sub-option is not indicated the application is accepted as Reinvestment of IDCW. IDCW dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-29.pdf"
     },
     "SIF-150": {
       "minInvestment": 1000000,
@@ -400,10 +386,10 @@
       "benchmark": "BSE 500 TRI",
       "redemptionFrequency": "Daily (at applicable NAV)",
       "taxation": "LTCG (holding >12 months): 12.5% (no indexation), Rs.1,25,000 annual exemption; STCG (holding <=12 months): 20%; same rates apply to FPIs; Dividend/IDCW taxed at investor's applicable slab/flat rate (20% for FPI); STT applies on equity transactions (0.001%-0.1% depending on transaction type)",
-      "dividend": null,
+      "dividend": "Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option available under both Regular and Direct Plans; IDCW sub-options are IDCW Reinvestment and IDCW Payout. Default Option is Growth; default IDCW sub-option is IDCW Reinvestment. An IDCW payout of Rs 100 or less is compulsorily reinvested. IDCW dispatched within 7 working days from the record date. (This scheme is the Regular Plan - Growth option.)",
       "expenseRatioIsCap": true,
       "verified": true,
-      "verifiedAgainst": "ISID/KIM, independently re-read"
+      "verifiedAgainst": "ISID/KIM, independently re-read; fields completed from the AMFI-hosted ISID portal.amfiindia.com/spages/S-30.pdf"
     }
   }
 }

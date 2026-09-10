@@ -19,9 +19,27 @@ import {
   type Amc,
 } from "@/lib/data";
 
+/* `openGraph` repeats `siteName`/`locale`/`type` because Next merges
+   metadata shallowly — declaring the key here replaces the root layout's
+   block entirely rather than merging into it. `openGraph.title` also
+   bypasses the "%s | SIF Insight" title template, so it is written out as
+   the share headline we actually want. */
 export const metadata: Metadata = {
   title: "Asset managers",
-  description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, the SIF sub-brand each files under, and how many of their ${stats.strategyCount} schemes we hold the disclosure set for.`,
+  description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, the SIF sub-brand each files under, and our disclosure coverage of their ${stats.strategyCount} schemes.`,
+  alternates: { canonical: "/amc" },
+  openGraph: {
+    title: `India's ${stats.amcCount} SIF asset managers`,
+    description: `The ${stats.amcCount} asset managers running Specialised Investment Funds in India, and the ${stats.strategyCount} schemes between them.`,
+    url: "/amc",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /* ============================================================
@@ -66,6 +84,20 @@ const undisclosedHouses = houses
   );
 
 const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
+
+/* Schemes priced at the file's own date, counted from each scheme's own NAV.
+
+   `stats.liveNavCount` answers "does this scheme have a NAV at all", which is
+   NOT the question the source note below was asking. Reading it as "all thirty
+   are current" made that note assert one date for thirty schemes, and one of
+   them — DynaSIF Active Asset Allocator — was struck a day earlier. A house
+   filing late is a normal, recurring condition rather than an anomaly, so the
+   note names both figures and lets the gap show instead of papering over it.
+   Derived from `asOf`, so it stays true the next time a house is late. */
+const navAtFileDate = strategies.filter((s) => {
+  const nav = getNav(s.id);
+  return nav.status === "live" && nav.asOf === navLastUpdated;
+}).length;
 
 /* Houses we hold no mark for render as a text lockup in the same tile, never
    as a gap. Currently zero — every one of the seventeen has a mark — so the
@@ -193,11 +225,21 @@ export default function AmcIndexPage() {
             <Rise delay={0.16} className="lg:pt-1">
               <dl className="border-t border-hairline">
                 <SourceRow label="NAV source">
-                  NAV data fetched from AMFI. Updated daily. All{" "}
-                  <span className="tabular">{stats.liveNavCount}</span> schemes
-                  carry a NAV in the file dated{" "}
-                  {formatUpdated(navLastUpdated)}. We hold every NAV AMFI has
-                  published for each scheme, so a dated series backs each
+                  NAV data fetched from AMFI. We hold a NAV for{" "}
+                  <span className="tabular">{stats.liveNavCount}</span> of the{" "}
+                  <span className="tabular">{stats.strategyCount}</span>{" "}
+                  schemes, <span className="tabular">{navAtFileDate}</span> of
+                  them struck on {formatUpdated(navLastUpdated)} — the most
+                  recent date in the file.
+                  {navAtFileDate < stats.liveNavCount ? (
+                    <>
+                      {" "}
+                      Where a house has filed late its scheme keeps the date of
+                      its own last NAV, and that is the date shown against it.
+                    </>
+                  ) : null}{" "}
+                  We hold every NAV AMFI has published for each scheme, so a
+                  dated series backs each
                   figure — none of it modelled or interpolated.
                 </SourceRow>
                 <SourceRow label="Our relationship">

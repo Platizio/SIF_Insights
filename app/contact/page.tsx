@@ -7,10 +7,27 @@ import { cn } from "@/lib/cn";
 import { stats } from "@/lib/data";
 import { ContactForm } from "./ContactForm";
 
+/* `openGraph` repeats siteName/locale/type because Next merges metadata
+   shallowly: declaring the key replaces the root layout's block rather than
+   merging into it. */
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Talk to SIF Insight about India's Specialised Investment Funds. Email, phone and WhatsApp, plus an enquiry form. Operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs.",
+    "Talk to SIF Insight about India's Specialised Investment Funds — email, phone, WhatsApp or the enquiry form. We are a distributor, not an adviser.",
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Contact SIF Insight",
+    description:
+      "Email, phone, WhatsApp or an enquiry form — tell us your objective and we will show you which SIF schemes fit.",
+    url: "/contact",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /* The prefill is encoded rather than hand-written so the apostrophe-free

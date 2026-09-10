@@ -1,10 +1,11 @@
 "use client";
 
 import { motion } from "motion/react";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Shell } from "@/components/primitives";
-import { activeNfos } from "@/lib/data";
+import { activeNfos, isOpenNfo, type Nfo } from "@/lib/data";
 import { DUR, EASE } from "@/lib/motion";
+import { useIsClient } from "@/lib/use-is-client";
 
 /**
  * Section 0 — the live NFO ticker.
@@ -27,13 +28,70 @@ const EDGE_FADE =
  */
 const SPEED = 32;
 
+/**
+ * How often the open set is re-checked against the reader's clock.
+ *
+ * The trade-off, honestly: `closesOn` has day granularity, so the only moment
+ * the answer can change is a date rollover, and a single setTimeout aimed at
+ * midnight would be the tidy version of this. It is also the fragile one —
+ * background tabs clamp long timers, a sleeping laptop can fire one
+ * arbitrarily late, and nothing self-corrects if the system clock moves.
+ * Polling costs three string comparisons a minute, bounds the error at 60s,
+ * and recovers on its own from all of those. `visibilitychange` closes the
+ * last gap: a frozen tab may run no timers at all, so the check is redone the
+ * moment the reader looks at it again rather than up to a minute later.
+ */
+const RECHECK_MS = 60_000;
+
+/**
+ * The offers that are open RIGHT NOW, on the reader's clock.
+ *
+ * `activeNfos` is filtered at build time, so it is only as fresh as the last
+ * deploy — and a page left open across midnight would go on asserting a window
+ * that shut while it sat there. This narrows that list again on the client.
+ *
+ * The set can only ever shrink: an expired offer cannot un-expire, so the
+ * server's list is always a superset of the client's. That is what keeps the
+ * hydration story simple. `useIsClient` is false during SSR and through the
+ * first hydrating render, so pass one reproduces the server's markup exactly
+ * and any expiry lands on the pass after, as an ordinary update rather than a
+ * mismatch. Reading `new Date()` straight into render would instead make the
+ * two passes disagree the moment the build list held a just-expired offer.
+ */
+function useOpenNfos(): Nfo[] {
+  const isClient = useIsClient();
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const recheck = () => setNow(new Date());
+    const id = setInterval(recheck, RECHECK_MS);
+    const onVisibility = () => {
+      if (!document.hidden) recheck();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
+
+  return useMemo(
+    () => (isClient ? activeNfos.filter((nfo) => isOpenNfo(nfo, now)) : activeNfos),
+    [isClient, now],
+  );
+}
+
 export function NfoBar() {
   const [dismissed, setDismissed] = useState(false);
-  const { trackRef, trackStyle, paused } = useMarquee();
+  const openNfos = useOpenNfos();
+  const { trackRef, trackStyle } = useMarquee();
 
   // No open NFOs is a real state, not an error — render nothing rather than
-  // an empty strip.
-  if (dismissed || activeNfos.length === 0) return null;
+  // an empty strip. This is also what handles the last offer expiring while
+  // the page is open: the whole bar leaves, border and all, instead of
+  // becoming an empty bordered rule above the header.
+  if (dismissed || openNfos.length === 0) return null;
 
   return (
     <motion.div
@@ -46,7 +104,7 @@ export function NfoBar() {
       className="border-b border-hairline bg-accent-wash"
     >
       <Shell className="flex h-11 items-center gap-4">
-        <LiveMark paused={paused} />
+        <LiveMark />
 
         <span className="h-3.5 w-px shrink-0 bg-hairline" aria-hidden="true" />
 
@@ -55,8 +113,8 @@ export function NfoBar() {
           style={{ maskImage: EDGE_FADE, WebkitMaskImage: EDGE_FADE }}
         >
           <div ref={trackRef} className="marquee-track" style={trackStyle}>
-            <TrackCopy />
-            <TrackCopy duplicate />
+            <TrackCopy items={openNfos} />
+            <TrackCopy items={openNfos} duplicate />
           </div>
         </div>
 
@@ -81,19 +139,29 @@ export function NfoBar() {
 }
 
 /**
- * The dot breathes, but the mark never depends on that breathing: the
- * keyframes start and end at full opacity, so with animation suppressed —
- * or with the strip off-screen — it settles as a solid accent dot beside
- * the word LIVE. The meaning is carried by the label, not the motion.
+ * A STATIC accent dot beside the word LIVE.
+ *
+ * It used to breathe on Tailwind's `animate-pulse`, and the argument for that
+ * was always about the dot's meaning rather than about the animation: the
+ * keyframes started and ended at full opacity, so the mark never depended on
+ * the motion. Which is the point — if the pull-out is that the label carries
+ * the meaning, the perpetual animation was carrying nothing.
+ *
+ * It also cost two things it could not pay for. `animate-pulse` is
+ * `2s cubic-bezier(0.4,0,0.6,1) infinite`: neither value exists on the
+ * sanctioned scale (lib/motion DUR/EASE, --duration-micro/--ease-out-quint),
+ * so it was a third easing curve on a site whose contract has one. And a
+ * perpetually animating icon is on the contract's own banned list — it sits
+ * above the header on every page, in the reader's periphery, forever.
+ *
+ * Removing it also removes the `paused` plumbing: `useMarquee` still computes
+ * `paused` for the TRACK, which genuinely needs stopping off-screen, but a
+ * dot that never moves needs no play-state.
  */
-function LiveMark({ paused }: { paused: boolean }) {
+function LiveMark() {
   return (
     <span className="inline-flex shrink-0 items-center gap-2">
-      <span
-        aria-hidden="true"
-        className="h-1.5 w-1.5 animate-pulse rounded-full bg-accent"
-        style={{ animationPlayState: paused ? "paused" : undefined }}
-      />
+      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
       <span className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-accent">
         Live NFO
       </span>
@@ -101,11 +169,19 @@ function LiveMark({ paused }: { paused: boolean }) {
   );
 }
 
-/** One pass of the ticker. The divider trails every item so the seam is invisible. */
-function TrackCopy({ duplicate = false }: { duplicate?: boolean }) {
+/**
+ * One pass of the ticker. The divider trails every item so the seam is
+ * invisible.
+ *
+ * Takes the list as a prop rather than reading `activeNfos` directly, so both
+ * copies are guaranteed to render the same items as each other and as the
+ * length check above — the marquee's whole -50% loop depends on the two copies
+ * being identical.
+ */
+function TrackCopy({ items, duplicate = false }: { items: Nfo[]; duplicate?: boolean }) {
   return (
     <div className="flex shrink-0 items-center" aria-hidden={duplicate || undefined}>
-      {activeNfos.map((nfo) => (
+      {items.map((nfo) => (
         <span key={nfo.id} className="flex items-center">
           <span className="whitespace-nowrap text-[14px] leading-[20px] text-body">
             {nfo.title}
@@ -145,6 +221,10 @@ function useMarquee() {
     };
     measure();
 
+    // This is also the re-measure path when an offer expires mid-session and
+    // the item count drops: `.marquee-track` is `width: max-content`, so
+    // losing an item shrinks the track's own box and the observer fires. The
+    // two-copy invariant survives because both copies render the same list.
     const resize = new ResizeObserver(measure);
     resize.observe(track);
 
@@ -175,5 +255,7 @@ function useMarquee() {
     animationPlayState: paused ? "paused" : undefined,
   };
 
-  return { trackRef, trackStyle, paused };
+  // `paused` stays internal — it is the TRACK's concern. Nothing else on the
+  // strip animates, so nothing else needs it.
+  return { trackRef, trackStyle };
 }

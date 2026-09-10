@@ -20,11 +20,30 @@ import { formatUpdated, navLastUpdated, stats } from "@/lib/data";
  * testimonials, no team roster, no offices — because none of those are known.
  */
 
+/* The trailing "We track every Specialised Investment Fund scheme in the
+   Indian market" ran the description to 207 characters — Google cuts at
+   about 160, so the sentence naming the firm and its founder was the part
+   being thrown away. `openGraph` repeats siteName/locale/type because Next
+   merges metadata shallowly: declaring the key replaces the root layout's
+   block rather than merging into it. */
 export const metadata: Metadata = {
   title: "About",
   description:
-    "SIF Insight is operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®. We track every Specialised Investment Fund scheme in the Indian market.",
+    "SIF Insight is operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
   alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About SIF Insight — who tracks these funds",
+    description:
+      "Operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
+    url: "/about",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /** The founder photo is a 400×400 asset; dimensions are explicit for CLS. */
@@ -32,6 +51,14 @@ const FOUNDER_PHOTO = { width: 400, height: 400 } as const;
 
 /** ₹10,00,000 expressed in lakh — the unit SEBI's framework is quoted in. */
 const MIN_LAKH = stats.minInvestment / 100_000;
+
+/* Same derivation as the site footer, for the same reason: this page carried
+   "official AMC documentation for several SIFs is still awaited" as a flat
+   assertion long after the last document landed. Counted, it cannot go stale
+   in either direction. `disclosedCount` — "have we read a document" — not
+   `fullyDisclosedCount`, which asks the different question of whether that
+   document happened to state all four headline fields. */
+const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
 
 const WHAT_WE_DO = [
   {
@@ -241,7 +268,7 @@ function WhatWeDo() {
 
         <Rise delay={0.1}>
           <p className="mt-12 max-w-[80ch] text-[14px] leading-[24px] text-muted">
-            NAV data fetched from AMFI. Updated daily. Latest values as of{" "}
+            NAV data fetched from AMFI. Latest values as of{" "}
             {formatUpdated(navLastUpdated)} — see the{" "}
             <a
               href="https://www.amfiindia.com/sif"
@@ -252,9 +279,18 @@ function WhatWeDo() {
               AMFI SIF portal
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
-            . Coverage is prepared from information currently in the public
-            domain; official AMC documentation for several SIFs is still
-            awaited.
+            . Scheme terms are read from each scheme&apos;s own information
+            document; where a document does not state a field, we mark it not
+            captured rather than fill it in.
+            {undisclosedSchemes > 0 ? (
+              <>
+                {" "}
+                Official AMC documentation is still awaited for{" "}
+                <span className="tabular">{undisclosedSchemes}</span> of the{" "}
+                <span className="tabular">{stats.strategyCount}</span> schemes,
+                which carry nothing beyond AMFI&apos;s feed.
+              </>
+            ) : null}
           </p>
         </Rise>
       </Shell>

@@ -65,8 +65,13 @@ import {
    exit load, redemption — exist only for the schemes whose information
    documents we have captured. Those four controls therefore range over
    that subset, and the block says so above the pills rather than
-   quietly dropping 17 rows when you touch one. The "Disclosures"
-   control in the first block makes those 17 directly reachable.
+   quietly dropping the uncaptured rows when you touch one.
+
+   Currently that subset IS all 30 — every scheme has an entry — so the
+   four controls drop nothing today. The note above the pills and the
+   "Disclosures" control in the first block both stay: the counts behind
+   them are derived, not asserted, so they recover on their own the day
+   AMFI lists a scheme whose information document nobody has read yet.
    ============================================================ */
 
 type Option = {
@@ -87,9 +92,71 @@ const withCount = (o: Omit<Option, "count">): Option => ({
   count: countWhere(o.match),
 });
 
-/** "No exit load" is the source's own phrasing — match it, don't restate it. */
-const hasNoExitLoad = (s: Strategy) =>
-  s.exitLoad !== null && s.exitLoad.trim().toLowerCase() === "no exit load";
+/* Any rate the value quotes. A scheme that charges on the way out always
+   names the figure — every one of the 25 on file quotes 0.25%, 0.5%, 1% or
+   2% — so a non-zero rate anywhere in the string is the tell, wherever the
+   sentence puts it. Zero is not a charge: "0.00%" is a nil stated in
+   figures. */
+const QUOTED_RATE = /(\d+(?:[.]\d+)?)\s*%/g;
+
+/* A clause that states nil OUTRIGHT, with nothing attached. Whole-string,
+   because bolting a qualifier on — "Nil after 90 days" — describes a scheme
+   that DOES charge, for 90 days. */
+const NIL_EXIT_LOAD =
+  /^(nil|none|no exit load|nil exit load|not applicable|n\/?a|0([.]0+)?%?)$/;
+
+/**
+ * A nil exit load, however the information document phrases it.
+ *
+ * The CELL still prints the source's own words — "match it, don't restate
+ * it" governs what the reader sees, and that stays. This predicate answers a
+ * different question: which bucket the scheme is COUNTED in. Testing for the
+ * exact string "no exit load" made that the only phrasing that counted, so
+ * SIF-40 ("Entry Load: Nil; Exit Load: Nil"), SIF-111 ("NIL") and SIF-138
+ * ("Nil") — three schemes that charge nothing on the way out — were tallied
+ * under "Has an exit load".
+ *
+ * The trap is the CONDITIONAL nil, which is the commonest phrasing on file:
+ * 25 of the 30 values read "1% ... on or before 15 days; Nil after 15 days"
+ * or "No Exit Load if redeemed/switched-out after 15 days". Those DO carry a
+ * load. So a nil has to clear two independent tests:
+ *
+ *  1. The value quotes no non-zero rate ANYWHERE. This is what a conditional
+ *     nil always fails: the clause that charges names its figure. It also
+ *     catches the phrasings clause-splitting cannot, and it is deliberately
+ *     blunt — SIF-21's "first 10% of units redeemable free" is an allowance,
+ *     not a charge, and still reads as one here. Erring toward "has a load"
+ *     is the safe direction: tallying a charging scheme as free is a worse
+ *     error than the one being fixed.
+ *  2. Its LEADING clause is a bare nil. This is what stops a value that
+ *     names no figure — "No exit load after 90 days" — from passing test 1
+ *     on a technicality. Clauses split on `;`, newlines, and a full stop
+ *     followed by whitespace: never on the stop inside "0.50%", so SIF-11,
+ *     which uses full stops as its separator, cannot yield a bare "Nil".
+ *     A clause that LEADS with the entry load is dropped first — that is a
+ *     different charge (SIF-40 states both) — but only when it leads, so
+ *     SIF-21's "Nil after 6 months. Entry load: Not Applicable." stays and
+ *     fails as it should.
+ *
+ * Both tests together also read SIF-146's "Nil. No exit load is chargeable
+ * on switches between different plans/options..." correctly: a bare nil
+ * followed by a scope note is still a nil.
+ */
+const hasNoExitLoad = (s: Strategy) => {
+  if (s.exitLoad === null) return false;
+
+  const rates = s.exitLoad.match(QUOTED_RATE) ?? [];
+  if (rates.some((rate) => parseFloat(rate) > 0)) return false;
+
+  const [lead] = s.exitLoad
+    .split(/[;\n]+|[.](?=\s|$)/)
+    .map((c) => c.trim().toLowerCase())
+    .filter((c) => c.length > 0)
+    .filter((c) => !/^entry\s*load\b/.test(c) || /exit\s*load/.test(c))
+    .map((c) => c.replace(/^exit\s*load\s*[:\-–]\s*/, ""));
+
+  return lead !== undefined && NIL_EXIT_LOAD.test(lead);
+};
 
 const CATEGORIES: Category[] = ["equity", "hybrid", "debt"];
 
@@ -119,6 +186,23 @@ const EXPENSE_RANGE = DISCLOSED_EXPENSES.length
       max: Math.max(...DISCLOSED_EXPENSES),
     }
   : null;
+
+/* Every expense ratio on file is the ISID's MAXIMUM permissible TER, not the
+   ratio being charged. That governs how this whole control is worded: a
+   bucket labelled "Low" ranks ceilings as if they were prices, and a scheme
+   with a lower ceiling is not thereby a cheaper scheme. So the buckets, the
+   sort key and the footnote all name the BOUND and leave the cost judgement
+   to the reader.
+
+   Derived, not asserted — the first charged ratio filed flips every one of
+   them back to neutral wording on its own rather than leaving three labels
+   quietly overstating what we know. */
+const EXPENSE_ALL_CAPS =
+  DISCLOSED_EXPENSES.length > 0 &&
+  strategies.every((s) => s.expenseRatio === null || s.expenseRatioIsCap === true);
+
+/** "Ceiling under 1.5%" while every figure is a cap; a plain bound if not. */
+const EXPENSE_BOUND = EXPENSE_ALL_CAPS ? "Ceiling" : "Ratio";
 
 /* Minimum investment is material disclosure but it is identical across
    every scheme that discloses it, so a column of identical figures would
@@ -153,6 +237,19 @@ const LIVE_NAVS = liveQuotes().map((q) => q.nav.today);
 const NAV_RANGE = LIVE_NAVS.length
   ? { low: Math.min(...LIVE_NAVS), high: Math.max(...LIVE_NAVS) }
   : null;
+
+/* True when at least one scheme's NAV is dated BEFORE the file's own date.
+   `navLastUpdated` is the date of the AMFI file, not a promise about every
+   row in it: a house that files late leaves its scheme on the previous
+   close, and SIF-87 is on 3 Sept against a 4 Sept file today.
+
+   Derived, never asserted — a late filing is a recurring condition, not an
+   anomaly, so the column header has to stop claiming one date for thirty
+   rows on its own the next time it happens, and go back to claiming it on
+   its own the day everybody files on time. */
+const NAV_DATES_DIVERGE = liveQuotes().some(
+  ({ nav }) => nav.asOf !== navLastUpdated,
+);
 
 /** Filters that range over all 30 schemes. */
 const UNIVERSAL_GROUPS: FilterGroup[] = [
@@ -226,15 +323,18 @@ const SCOPED_GROUPS: FilterGroup[] = [
   {
     key: "expense",
     label: "Expense",
+    /* Labelled by the bound, never by cost. "Low · under 1.5%" invited a
+       relative-cost judgement across figures that are ceilings — the reader
+       has no charged ratio here to be low or high against. */
     options: [
       withCount({
         id: "low",
-        label: "Low · under 1.5%",
+        label: `${EXPENSE_BOUND} under 1.5%`,
         match: (s) => s.expenseRatio !== null && s.expenseRatio < 1.5,
       }),
       withCount({
         id: "medium",
-        label: "Medium · 1.5–2.5%",
+        label: `${EXPENSE_BOUND} 1.5–2.5%`,
         match: (s) =>
           s.expenseRatio !== null &&
           s.expenseRatio >= 1.5 &&
@@ -242,7 +342,7 @@ const SCOPED_GROUPS: FilterGroup[] = [
       }),
       withCount({
         id: "high",
-        label: "High · over 2.5%",
+        label: `${EXPENSE_BOUND} over 2.5%`,
         match: (s) => s.expenseRatio !== null && s.expenseRatio > 2.5,
       }),
     ],
@@ -287,29 +387,30 @@ const GROUPS: FilterGroup[] = [...UNIVERSAL_GROUPS, ...SCOPED_GROUPS];
    the data the way the pill counts always have.
    ============================================================ */
 
-/* True when every scheme has a captured information document. The scoping
-   caveat is then vacuous — "scoped to the 30 we hold, the other 0 are
-   excluded" — so it is not printed at all. This flips on its own the moment
-   a new scheme lands in the feed ahead of its documents, which is the normal
-   state of this dataset rather than an edge case. */
-const ALL_DISCLOSED = stats.disclosedCount === stats.strategyCount;
+/* True when every scheme states every field this block filters on. The
+   scoping caveat is then vacuous — "scoped to the 30 we hold, the other 0
+   are excluded" — so it is not printed at all.
 
-const SCOPE_NOTE = ALL_DISCLOSED ? (
+   Counted with `fullyDisclosedCount`, NOT `disclosedCount`. The two differ,
+   and the difference is precisely what this sentence is about: all 30
+   schemes have a researched entry, but four of those entries leave one of
+   the named fields null. Gating on document-presence made the caveat
+   disappear exactly when the fields it describes were incomplete. */
+const ALL_FULLY_DISCLOSED = stats.fullyDisclosedCount === stats.strategyCount;
+
+const SCOPE_NOTE = ALL_FULLY_DISCLOSED ? (
   <>
-    From scheme information documents, which we currently hold for all{" "}
+    From scheme information documents, which we currently hold in full for all{" "}
     <span className="tabular text-ink">{stats.strategyCount}</span> schemes.
   </>
 ) : (
   <>
-    Scoped to the{" "}
-    <span className="tabular text-ink">{stats.disclosedCount}</span> of{" "}
-    <span className="tabular">{stats.strategyCount}</span> schemes whose
-    information documents we hold, so counts here are out of{" "}
-    <span className="tabular">{stats.disclosedCount}</span>. The other{" "}
-    <span className="tabular">
-      {stats.strategyCount - stats.disclosedCount}
-    </span>{" "}
-    are excluded by this filter, not hidden.
+    From scheme information documents, and an entry is not a full set: we hold
+    every named field for{" "}
+    <span className="tabular text-ink">{stats.fullyDisclosedCount}</span> of{" "}
+    <span className="tabular">{stats.strategyCount}</span> schemes. A scheme
+    that states no value for this field matches no option here — excluded by
+    this filter, not hidden.
   </>
 );
 
@@ -324,11 +425,29 @@ const UNIVERSAL_NOTES: Record<string, ReactNode> = {
 };
 
 const SCOPED_NOTES: Record<string, ReactNode> = {
+  /* The range is stated for what the figures ARE. "Every disclosed expense
+     ratio currently sits between 1.33% and 2.25%" read as a spread of prices
+     when it is a spread of ceilings — the same defect `formatExpense` exists
+     to prevent on every individual figure, reappearing in the prose. The
+     phrasing is borrowed from the AMC pages so the site says it one way. */
   expense: EXPENSE_RANGE ? (
     <>
-      Every disclosed expense ratio currently sits between{" "}
-      <span className="tabular">{EXPENSE_RANGE.min.toFixed(2)}%</span> and{" "}
-      <span className="tabular">{EXPENSE_RANGE.max.toFixed(2)}%</span>.
+      {EXPENSE_ALL_CAPS ? "Ceilings of " : "Ratios of "}
+      <span className="tabular">
+        {EXPENSE_RANGE.min.toFixed(2)}–{EXPENSE_RANGE.max.toFixed(2)}%
+      </span>{" "}
+      across the{" "}
+      <span className="tabular">{DISCLOSED_EXPENSES.length}</span> schemes that
+      disclose one.
+      {EXPENSE_ALL_CAPS ? (
+        <>
+          {" "}
+          An expense figure is the maximum ratio the information document
+          permits, not the ratio being charged — that is published on the asset
+          manager&apos;s own site and moves, so these buckets sort by the
+          ceiling, not by what a scheme costs.
+        </>
+      ) : null}
     </>
   ) : undefined,
   risk:
@@ -344,7 +463,7 @@ const SCOPED_NOTES: Record<string, ReactNode> = {
 /* ============================================================
    Sort model.
 
-   Two of the four keys are nullable, so the comparator pushes null
+   Three of the five keys are nullable, so the comparator pushes null
    LAST in every direction and falls back to scheme name, which is
    unique and always present. The sort is therefore total and stable
    regardless of how much disclosure we hold — and it never touches
@@ -361,35 +480,48 @@ const SCOPED_NOTES: Record<string, ReactNode> = {
 type SortDef = {
   id: string;
   label: string;
-  /** True when some schemes have no value for this key. */
-  nullable: boolean;
+  /**
+   * What a row is missing when it has no value for this key, named so the
+   * footnote can say which field it means.
+   *
+   * The noun lives here rather than at the point of use because three keys
+   * are nullable and the footnote used to know about two: `sort.id === "risk"
+   * ? "risk band" : "expense ratio"` told a reader sorting by Change that
+   * schemes had "no expense ratio to sort by". Null means every scheme
+   * carries the key — which is also what keeps `unsortable` at zero, so the
+   * clause never prints and the noun is never needed.
+   */
+  missing: string | null;
   value: (s: Strategy) => string | number | null;
 };
 
 const SORTS: SortDef[] = [
-  { id: "name", label: "Scheme name", nullable: false, value: (s) => s.name },
+  { id: "name", label: "Scheme name", missing: null, value: (s) => s.name },
   {
     id: "amc",
     label: "Asset manager",
-    nullable: false,
+    missing: null,
     value: (s) => amcById.get(s.amcId)?.sifName ?? s.amcId,
   },
   {
     id: "risk",
     label: "Risk band, low first",
-    nullable: true,
+    missing: "risk band",
     value: (s) => riskBandNumber(s.riskBand),
   },
   {
+    /* Ordered by the bound, and labelled as such. "Expense, low first" ranked
+       ceilings as prices; the figure sorted on is the maximum permissible
+       TER, so the key names it and leaves cost out of it. */
     id: "expense",
-    label: "Expense, low first",
-    nullable: true,
+    label: `Expense ${EXPENSE_ALL_CAPS ? "ceiling" : "ratio"}, lowest first`,
+    missing: "expense ratio",
     value: (s) => s.expenseRatio,
   },
   {
     id: "change",
     label: "Change, largest rise first",
-    nullable: true,
+    missing: "published change",
     /* The comparator only sorts ascending, so negate to put the largest rise
        first. A scheme with one published NAV has no move and stays null, which
        sorts it last rather than dropping it from the table. */
@@ -443,7 +575,15 @@ const COLUMNS: Column[] = [
   {
     key: "nav",
     label: "NAV",
-    sub: `as at ${formatUpdated(navLastUpdated)}`,
+    /* The header states the file's date, and says so conditionally: with a
+       scheme dated behind it, "as at 4 Sept" over that row is simply false,
+       and the mobile card and the compare dialog — which both print each
+       scheme's own `asOf` — were contradicting this table about the same
+       scheme. The qualifier appears only while a row actually diverges, so
+       thirty rows are not made to carry a caveat about one. */
+    sub: NAV_DATES_DIVERGE
+      ? `as at ${formatUpdated(navLastUpdated)} unless a row says otherwise`
+      : `as at ${formatUpdated(navLastUpdated)}`,
     align: "right",
   },
   { key: "risk", label: "Risk" },
@@ -499,9 +639,10 @@ export function TrackerTable() {
   );
 
   /** How many of the rows on screen have nothing to sort by. */
-  const unsortable = sort.nullable
-    ? sorted.filter((s) => sort.value(s) === null).length
-    : 0;
+  const unsortable =
+    sort.missing === null
+      ? 0
+      : sorted.filter((s) => sort.value(s) === null).length;
 
   /* Selection is scoped to what is on screen — comparing a scheme you have
      just filtered away would be a quiet lie about what you are looking at. */
@@ -629,49 +770,78 @@ export function TrackerTable() {
           />
 
           {/* The one line that has to stay visible with every menu shut: which
-              controls see all thirty schemes and which see only thirteen. The
-              detail behind it now lives in each scoped panel's footnote. */}
+              controls see all thirty schemes and which see fewer. The detail
+              behind it now lives in each scoped panel's footnote.
+
+              It names four fields, so it counts with `fullyDisclosedCount`.
+              `disclosedCount` answers "have we read a document", which is a
+              different question and currently a rosier one — it was letting
+              this sentence promise all four fields for all thirty schemes
+              while four entries were a field short. */}
           <p className="mt-5 max-w-[86ch] text-[13px] leading-[20px] text-muted">
             Asset manager, category, mandate and disclosures range over all{" "}
             <span className="tabular">{stats.strategyCount}</span> schemes.
             Risk band, expense, exit load and redemption come from scheme
             information documents
-            {ALL_DISCLOSED ? (
+            {ALL_FULLY_DISCLOSED ? (
               <>
-                , which we currently hold for all{" "}
+                , which we currently hold in full for all{" "}
                 <span className="tabular">{stats.strategyCount}</span>
               </>
             ) : (
               <>
-                , so they are scoped to the{" "}
+                , and an entry does not guarantee a field: we hold the complete
+                set for{" "}
                 <span className="tabular text-ink">
-                  {stats.disclosedCount}
+                  {stats.fullyDisclosedCount}
                 </span>{" "}
-                we hold — the other{" "}
-                <span className="tabular">
-                  {stats.strategyCount - stats.disclosedCount}
-                </span>{" "}
-                are excluded by those filters, not hidden. Use{" "}
-                <span className="text-ink">Disclosures → Not captured</span> to
-                list them
+                of the <span className="tabular">{stats.strategyCount}</span>.
+                A scheme that leaves a field blank matches no option in that
+                filter — excluded there, not hidden
+                {/* Only offered when it would return something. Every scheme
+                    currently has an entry, so this pointer would send the
+                    reader to an empty table — a shortfall in the FIELDS is
+                    not reachable through a filter on the DOCUMENT. */}
+                {stats.disclosedCount < stats.strategyCount ? (
+                  <>
+                    . Use{" "}
+                    <span className="text-ink">
+                      Disclosures → Not captured
+                    </span>{" "}
+                    for the{" "}
+                    <span className="tabular">
+                      {stats.strategyCount - stats.disclosedCount}
+                    </span>{" "}
+                    with no document at all
+                  </>
+                ) : null}
               </>
             )}
             .
-            {sort.nullable ? (
+            {/* Gated on the count, not on nullability: three keys are
+                nullable and a sort with nothing missing has nothing to
+                report. The noun comes off the sort itself, so "Change"
+                can no longer print "no expense ratio to sort by". */}
+            {unsortable > 0 ? (
               <>
                 {" "}
                 <span className="tabular text-ink">{unsortable}</span> of the{" "}
                 <span className="tabular">{sorted.length}</span> on screen have
-                no{" "}
-                {sort.id === "risk" ? "risk band" : "expense ratio"} to sort by
-                and are listed last.
+                no {sort.missing} to sort by and are listed last.
               </>
             ) : null}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
+            {/* aria-atomic, because this sentence is assembled from six
+                sibling spans that React swaps individually — one filter
+                change measured five separate childList mutations. Without
+                it a removal is not announced at all, so clearing a clause
+                could announce nothing and a changed count could be read
+                out as a bare number with no sentence around it. */}
             <p
               aria-live="polite"
+              aria-atomic="true"
               className="text-[13px] leading-[20px] text-muted"
             >
               Showing <span className="tabular text-ink">{sorted.length}</span>{" "}
@@ -860,7 +1030,11 @@ export function TrackerTable() {
               each.{" "}
             </>
           )}
-          NAV data fetched from AMFI. Updated daily. NAVs as at{" "}
+          {/* No refresh cadence is claimed. Nothing guarantees one, and
+              "Updated daily" was sitting beside a file five days old. The
+              dated statement that follows is the claim we can stand behind,
+              so it is the only claim made. */}
+          NAV data fetched from AMFI. NAVs as at{" "}
           {formatUpdated(navLastUpdated)}; source: {navSource}.
           {NAV_RANGE ? (
             <>
@@ -942,11 +1116,32 @@ function FilterMenu({
       triggerRef.current?.focus();
     };
 
+    /* Focus leaving the menu shuts it, as APG requires. Tabbing past the
+       last option used to land on the NEXT trigger while this one kept
+       aria-expanded="true"; pressing Enter there opened a second panel, so
+       assistive tech was told two menus were open when one had been
+       abandoned. Nothing is occluded, but the state was a lie.
+
+       On the root, not the panel: the trigger is a sibling of the panel and
+       tabbing trigger -> first option must NOT count as leaving. `focusout`
+       rather than `blur` because only focusout bubbles from the options.
+
+       A null relatedTarget means focus left the DOCUMENT — alt-tab, or the
+       browser chrome — and the reader has not left the panel, so the menu
+       stays open and their place in it is kept. */
+    const onFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget as Node | null;
+      if (next && !rootRef.current?.contains(next)) setOpen(false);
+    };
+
+    const root = rootRef.current;
     document.addEventListener("pointerdown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    root?.addEventListener("focusout", onFocusOut);
     return () => {
       document.removeEventListener("pointerdown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
+      root?.removeEventListener("focusout", onFocusOut);
     };
   }, [open]);
 
@@ -1006,7 +1201,7 @@ function FilterMenu({
                 key={option.id}
                 htmlFor={id}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-2.5 text-[14px] leading-[20px] transition-colors duration-150",
+                  "flex items-center gap-3 px-4 py-2.5 text-[14px] leading-[20px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
                   empty
                     ? "cursor-not-allowed text-pending"
                     : "cursor-pointer text-body hover:bg-accent-wash",
@@ -1054,7 +1249,7 @@ function FilterMenu({
               onClick={onClear}
               disabled={!active}
               className={cn(
-                "w-full rounded-full px-3 py-1.5 text-[13px] leading-[20px] transition-colors duration-200",
+                "w-full rounded-full px-3 py-1.5 text-[13px] leading-[20px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
                 active
                   ? "text-body hover:bg-accent-wash hover:text-ink"
                   : "cursor-not-allowed text-pending",
@@ -1151,7 +1346,7 @@ function ActiveFilters({
       <button
         type="button"
         onClick={onClearAll}
-        className="rounded-full px-3 py-1.5 text-[13px] leading-[20px] text-muted underline decoration-hairline underline-offset-4 transition-colors duration-200 hover:text-ink"
+        className="rounded-full px-3 py-1.5 text-[13px] leading-[20px] text-muted underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink"
       >
         Clear all
       </button>
@@ -1319,6 +1514,15 @@ function Row({ strategy, index, idPrefix, checked, onToggle }: RowProps) {
             <span className="mt-0.5 block">
               <Delta pct={nav.changePct} />
             </span>
+            {/* Only the schemes the header cannot speak for. Printing the
+                date on all thirty would bury the one fact worth seeing —
+                that this figure is older than the rest of the column —
+                under twenty-nine repetitions of the header. */}
+            {nav.asOf !== navLastUpdated ? (
+              <span className="mt-0.5 block text-[12px] leading-[16px] text-muted">
+                as at {formatUpdated(nav.asOf)}
+              </span>
+            ) : null}
           </>
         ) : (
           <PendingBadge />
@@ -1649,8 +1853,9 @@ function CompareDialog({
                   schemes
                 </h2>
                 <p className="mt-1 max-w-[70ch] text-[13px] leading-[20px] text-muted">
-                  Every field exactly as filed. NAV data fetched from AMFI,
-                  updated daily, as at {formatUpdated(navLastUpdated)}.
+                  {/* Dated, not cadenced — see the note under the table. */}
+                  Every field exactly as filed. NAV data fetched from AMFI, as
+                  at {formatUpdated(navLastUpdated)}.
                   {undisclosed > 0 ? (
                     <>
                       {" "}

@@ -4,9 +4,14 @@
    HERO — the banner + the lede.
 
    The banner is a static image (see HeroBanner). It replaced the WebGL
-   Yield Surface, which still lives in components/webgl/ — HeroCanvas and
-   YieldSurface are intact and unimported, so the old treatment is one
-   import away if it is ever wanted back.
+   Yield Surface, and components/webgl/ has since been deleted along with
+   the three.js stack it needed — HeroCanvas and YieldSurface were dead
+   weight no file imported, but their four packages still dragged 55
+   modules and 139MB of node_modules into every install — transitives like
+   @mediapipe/tasks-vision, draco3d and hls.js that no shipped line of code
+   executes. The code is in git history if the old treatment is ever wanted
+   back; restoring it means reinstalling three, @react-three/fiber,
+   @react-three/drei and @types/three.
 
    The proof-tile bento was removed pending a replacement treatment; the
    hero is a single column over the banner for now. Everything the bento

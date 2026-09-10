@@ -9,6 +9,7 @@ import { Magnetic } from "@/components/motion/Magnetic";
 import { Button, Shell } from "@/components/primitives";
 import { cn } from "@/lib/cn";
 import { DUR, EASE } from "@/lib/motion";
+import { pauseSmoothScroll, resumeSmoothScroll } from "@/lib/smooth-scroll-control";
 
 /**
  * Sticky navigation.
@@ -50,6 +51,41 @@ export function SiteHeader() {
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  /* Scroll lock while the panel is open.
+
+     The panel is pinned inside a `sticky` header, so without this the page
+     scrolls underneath it: measured at 390px, a wheel of 600px moved the
+     document from 0 to 599 while the panel sat still at top:53. The menu
+     ends up floating over content it has no relationship to.
+
+     It has to be a CSS lock on the root, not `lenis.stop()`. Lenis is
+     configured with `smoothWheel` only and no `syncTouch`, so TOUCH scrolling
+     — the only kind that matters for a menu that exists below 992px — never
+     passes through Lenis at all and is untouched by stopping it.
+
+     `overflow: hidden` goes on <html> rather than <body>: on <body> alone iOS
+     Safari has historically kept scrolling anyway. The previous inline value
+     is captured and restored rather than blanked, so this composes with
+     anything else that touches it instead of clobbering it.
+
+     And the CSS lock is not sufficient by itself. `overflow: hidden` stops a
+     user scrolling but not `scrollTop` being SET, which is exactly what Lenis
+     does when it swallows a wheel event — with the lock alone, a 600px wheel
+     still moved the document 599px. So the two calls cover two different
+     inputs: the CSS for native touch on a phone, `pauseSmoothScroll` for
+     Lenis-driven wheel on anything with a mouse under 992px. */
+  useEffect(() => {
+    if (!open) return;
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    pauseSmoothScroll();
+    return () => {
+      root.style.overflow = previousOverflow;
+      resumeSmoothScroll();
+    };
   }, [open]);
 
   useEffect(() => {
@@ -118,7 +154,15 @@ export function SiteHeader() {
           aria-expanded={open}
           aria-controls={PANEL_ID}
           aria-label={open ? "Close navigation menu" : "Open navigation menu"}
-          className="col-start-3 inline-flex h-10 w-10 items-center justify-center justify-self-end rounded-full border border-hairline text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent hover:bg-accent-wash min-[992px]:hidden"
+          /* An absolute 44px, not a rem step. h-10 measured 38px of real
+             target and h-11 measured 41px — both under the 44px floor — and
+             the reason h-11 misses is that app/globals.css sets the root to
+             `clamp(15px, 1.1111vw, 19px)`, so 1rem is 15px at phone widths
+             and Tailwind's 2.75rem resolves to 41.25px, not 44. Every rem
+             utility on this site shrinks the same way; a touch target is one
+             of the few things that must not, so it is stated in pixels.
+             This is the only control on a phone that opens the nav. */
+          className="col-start-3 inline-flex h-[44px] w-[44px] items-center justify-center justify-self-end rounded-full border border-hairline text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent hover:bg-accent-wash min-[992px]:hidden"
         >
           <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
             {open ? (
@@ -141,10 +185,14 @@ export function SiteHeader() {
       </Shell>
 
       {/* Always rendered so `aria-controls` always resolves; `hidden` does the hiding. */}
+      {/* `max-h`/`overflow-y-auto` so the panel is reachable on a short
+          viewport — a landscape phone is ~375x400, and seven links plus the
+          CTA do not fit. `overscroll-contain` keeps a scroll that reaches the
+          panel's end from chaining to the document behind it. */}
       <div
         id={PANEL_ID}
         hidden={!open}
-        className="border-b border-hairline bg-surface min-[992px]:hidden"
+        className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto overscroll-contain border-b border-hairline bg-surface min-[992px]:hidden"
       >
         <Shell>
           <nav aria-label="Primary, mobile" onClick={closeOnLink} className="flex flex-col">
@@ -239,11 +287,19 @@ function Logo({ className }: { className: string }) {
       href="/"
       className="inline-flex items-center transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:opacity-70"
     >
+      {/* `sizes` is load-bearing, not decoration. Without it Next builds the
+          srcset around the declared 1024px width and a 2x phone picks the
+          w=2048 candidate — 17KB of WebP, on every route, to paint a mark
+          that is 78px wide. The rendered widths below are h-6/h-7 against
+          the PNG's 1024x313 (3.27:1). Declared width/height stay as they
+          are: they set the aspect ratio that keeps CLS at zero, and `sizes`
+          does not disturb them. */}
       <Image
         src="/sif-insight-logo.png"
         alt="SIF Insight"
         width={1024}
         height={313}
+        sizes="(min-width: 992px) 92px, 78px"
         loading="eager"
         className={cn("w-auto", className)}
       />

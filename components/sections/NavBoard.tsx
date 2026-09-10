@@ -214,22 +214,31 @@ export function NavBoard({ embedded = false }: { embedded?: boolean }) {
                     index={i}
                     className="border-b border-hairline px-6 py-5 last:border-b-0"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p
-                          className={cn(
-                            "text-[15px] leading-[22px]",
-                            pending ? "text-muted" : "text-ink",
-                          )}
-                        >
-                          {strategy.name}
-                        </p>
-                        <p className="mt-0.5 text-[12px] leading-[16px] text-muted">
-                          {amc?.sifName ?? "—"} · {strategy.type}
-                        </p>
-                      </div>
-                      <MandateChip type={strategy.type} />
-                    </div>
+                    {/* No <MandateChip> here, deliberately. The meta line
+                        below already prints the mandate, so the chip was the
+                        SAME string a second time — and being a `shrink-0`
+                        pill it pinned this row's flex base to max-content.
+                        "Active Asset Allocator Long-Short" measures 207px, so
+                        at 320px the row demanded 61 + 15 + 207 = 283px inside
+                        a 228px content box; with no `overflow-x` anywhere up
+                        to <html>, 9px escaped as body scroll on / and
+                        /nav-tracker (clean from 330px up).
+                        Wrapping the row instead would have fixed the scroll
+                        and left a full-width pill echoing the line directly
+                        above it, so the redundancy is what goes. The desktop
+                        table keeps the chip: there the mandate has its own
+                        column and no other carrier. */}
+                    <p
+                      className={cn(
+                        "text-[15px] leading-[22px]",
+                        pending ? "text-muted" : "text-ink",
+                      )}
+                    >
+                      {strategy.name}
+                    </p>
+                    <p className="mt-0.5 text-[12px] leading-[16px] text-muted">
+                      {amc?.sifName ?? "—"} · {strategy.type}
+                    </p>
 
                     <div className="mt-4 flex items-center justify-between gap-4">
                       {nav.status === "live" ? (
@@ -258,11 +267,16 @@ export function NavBoard({ embedded = false }: { embedded?: boolean }) {
 
         {/* Compliance. Not optional. The single-observation caveat is stated
             once here rather than as a "No prior close" cell on all 30 rows. */}
+        {/* No cadence claim in this paragraph. "Updated daily" sat beside a
+            NAV date that was already days old, and nothing in the pipeline
+            guarantees a daily refresh — the dated "Updated <date>" line in the
+            header is the statement we can actually stand behind, and it stays.
+            Do not replace this with another cadence word. */}
         <Rise>
           <p className="mt-5 max-w-[70ch] text-[13px] leading-[20px] text-muted">
-            NAV data fetched from AMFI. Updated daily. Every NAV AMFI has
-            published for each scheme is held, so the figures below are the
-            latest points of a dated series — see the{" "}
+            NAV data fetched from AMFI. Every NAV AMFI has published for each
+            scheme is held, so the figures below are the latest points of a
+            dated series — see the{" "}
             <Link href="/nav-tracker" className="underline">
               NAV tracker
             </Link>{" "}

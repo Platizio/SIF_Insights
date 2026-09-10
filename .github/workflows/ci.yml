@@ -1,0 +1,89 @@
+name: CI
+
+# Gates HUMAN code changes.
+#
+# Until this file existed, update-nav.yml was the only workflow in the repo and
+# the consequence was inverted: the BOT's nightly data commit was typechecked
+# before it landed, while a developer's push to main was gated by nothing. A
+# type error introduced by hand first surfaced the next morning as a red
+# "Update SIF NAV" run — which misattributed a code fault to the data pipeline
+# AND blocked that day's NAV update, because that job refuses to commit when
+# the typecheck fails.
+
+on:
+  push:
+    branches: [main]
+
+    # Do NOT run a full CI pass for the nightly data commit.
+    #
+    # These are exactly the three files pipeline/fetch_nav.py rewrites and
+    # update-nav.yml stages. That job already runs `npm ci && npx tsc --noEmit`
+    # against the new data BEFORE committing, so a second pass here proves
+    # nothing — it only adds queue time to the one commit whose entire purpose
+    # is to reach the host quickly.
+    #
+    # This filter is the REPLACEMENT for the `[skip ci]` token that commit
+    # 1a86a1d removed from the bot's commit message. On the Vercel host that
+    # token means "do not deploy", so it was suppressing the very redeploy the
+    # pipeline exists to trigger — the data landed in git and never reached the
+    # site. The exclusion has to live in CI's own trigger, where only CI reads
+    # it, rather than in a commit message that the host also reads.
+    #
+    # Residual, accepted: a human pushing ONLY these files straight to main
+    # skips CI. Hand edits to generated data should go through a PR, and the
+    # pull_request trigger below is deliberately unfiltered.
+    paths-ignore:
+      - 'lib/data/raw/nav-history.json'
+      - 'lib/data/raw/schemes.json'
+      - 'pipeline/data/nav-history.json'
+
+  # Deliberately NOT given the same paths-ignore.
+  #
+  # `paths-ignore` is evaluated per event, and on `pull_request` GitHub tests it
+  # against every file in the PR's diff — so repeating the list here would skip
+  # any PR whose diff happens to be confined to those three paths, and a skipped
+  # workflow reports NO status rather than a green one (which also leaves a
+  # required check pending forever). The bot never opens a PR — it pushes
+  # straight to main — so there is nothing to exclude on this event. Leaving it
+  # unfiltered is what guarantees a real code PR is never accidentally skipped.
+  pull_request: {}
+
+  workflow_dispatch: {}      # manual re-run after an infra blip, no empty commit
+
+permissions:
+  contents: read
+
+concurrency:
+  # One run per ref. Superseded pushes to a PR are cancelled; runs on main are
+  # not, so every commit on main keeps its own recorded result.
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'   # same major as update-nav.yml, so a data commit
+          cache: npm           # and a code commit are judged by one toolchain
+
+      - name: Install (locked)
+        run: npm ci
+
+      # Separate steps rather than one chained command: the Actions UI names the
+      # failing step, so "which gate did I break" is answered without opening
+      # the log. They run in cost order and fail fast.
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npx eslint .
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

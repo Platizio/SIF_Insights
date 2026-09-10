@@ -1,20 +1,26 @@
 [
   {
+    "_comment": "Entries for the Live NFO ticker. `closesOn` is the ISO date the offer closes, INCLUSIVE — an offer open 'to 30th January' is open ON the 30th and gone on the 31st. It is effectively REQUIRED: isOpenNfo() returns false for any entry without one, so an entry with no `closesOn` never renders however it is flagged, because an offer with no stated end is not evidence that it is open. `active: true` is no longer sufficient on its own — it is only the hand-set 'not withdrawn' flag, and it was `active` with no expiry at all that kept the three January 2026 windows below on screen beside a pulsing 'Live NFO' label until September 2026. Closed offers stay in this file with `active: false` and their real `closesOn` rather than being deleted, so the record survives and the date filter is visibly the thing holding them off the page. Titles here state a day and a month but no year: read the year from the entry's own `date`, since an NFO is announced before its window opens — all three below were posted in Nov/Dec 2025, so their 'January' is the first January after that, 2026. When a year is genuinely ambiguous take the LATEST plausible reading and check it against today: if it is already past the offer is closed either way; if it lands in the future, confirm the real window from the AMC before setting `active`. This first element carries no `active` and no `closesOn`, so the same fail-closed rule makes it unrenderable — it is a comment, not an offer."
+  },
+  {
     "id": 1,
     "title": "Arudha SIF Hybrid Long Short Fund NFO Open from 9th to 22nd January. Consult Now",
     "date": "2025-12-01",
-    "active": true
+    "closesOn": "2026-01-22",
+    "active": false
   },
   {
     "id": 2,
     "title": "iSIF Ex-Top 100 Long Short Fund NFO Open from 16th to 30th January. Consult Now",
     "date": "2025-11-28",
-    "active": true
+    "closesOn": "2026-01-30",
+    "active": false
   },
   {
     "id": 3,
     "title": "iSIF Hybrid Long Short Fund NFO Open from 16th to 30th January. Consult Now",
     "date": "2025-11-25",
-    "active": true
+    "closesOn": "2026-01-30",
+    "active": false
   }
 ]

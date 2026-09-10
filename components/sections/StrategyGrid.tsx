@@ -233,12 +233,21 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
       </div>
 
       <dl className="mt-10 border-t border-hairline">
+        {/* Full grouping — ₹10,00,000 — not the compact "₹10 L" this card used
+            to print. It is the same figure /amc/[id], /sif-tracker,
+            /nav-tracker and /strategies/[category] all render in full, and
+            /strategies embeds THIS GRID directly beneath its own prose saying
+            "₹10,00,000 floor for every SIF" (app/strategies/page.tsx) — so the
+            shorthand put one number on one page in two shapes. A minimum is
+            also a threshold the investor has to clear to the rupee, which is
+            not a figure to round on their behalf. `formatInr` still offers
+            `compact`; its docstring says where that belongs. */}
         <DisclosureRow label="Minimum">
           <DisclosureValue
             value={
               strategy.minInvestment === null
                 ? null
-                : formatInr(strategy.minInvestment, { compact: true })
+                : formatInr(strategy.minInvestment)
             }
           />
         </DisclosureRow>
@@ -269,9 +278,16 @@ function StrategyCard({ strategy }: { strategy: Strategy }) {
 }
 
 /**
- * 17 of the 30 schemes have no captured disclosures. Those render as an
- * explicit "Not captured" rather than a blank cell or a default value —
- * a blank reads as an oversight, and a default would be an invention.
+ * A field we hold no value for renders as an explicit "Not captured", never as
+ * a blank cell and never as a default — a blank reads as an oversight, and a
+ * default would be an invention.
+ *
+ * Every scheme in the feed currently has a disclosures entry carrying all four
+ * of these fields, so nothing reaches the null branch today. It is written as a
+ * condition rather than removed because that state is normal and recurring, not
+ * an anomaly: a scheme is undisclosed from the day AMFI lists it until someone
+ * reads its information document, so the next filing lands here. Deleting the
+ * branch would swap "Not captured" for an empty row on the day it matters.
  */
 function DisclosureValue({ value }: { value: string | null }) {
   if (value === null) {

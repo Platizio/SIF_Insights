@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, type ReactNode } from "react";
+import Link from "next/link";
+import { useActionState, useEffect, useRef, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { GlassField } from "@/components/motion/GlassField";
 import { Magnetic } from "@/components/motion/Magnetic";
@@ -32,6 +33,32 @@ const RANGES = [
   { value: "50L-1Cr", label: "₹50 L–1 Cr" },
   { value: "1Cr+", label: "₹1 Cr+" },
 ] as const;
+
+/**
+ * The placeholder and the four ranges as ONE array, which is the whole
+ * point of it existing.
+ *
+ * The `<select>` used to render a static `<option value="">` as a SIBLING of
+ * `{RANGES.map(...)}`. React then reconciles a children set whose first
+ * element carries no key, and logs "Each child in a list should have a
+ * unique key prop" against `Field` — `Field` because the render-prop that
+ * builds these options executes during Field's render, so Field is the
+ * owner React names, and the warning points at a component that contains
+ * no list at all.
+ *
+ * Keying the stray option would silence it. Building one list removes the
+ * mixed shape that caused it: every `<option>` here is now an array member
+ * with a key, and the placeholder is a first-class entry rather than a
+ * special case sitting outside the map.
+ *
+ * The empty value is load-bearing and must stay empty — `required` on the
+ * select is what makes "" fail the browser's own check, and actions.ts
+ * treats "" as "nothing chosen" rather than as an unknown range.
+ */
+const RANGE_OPTIONS: readonly { value: string; label: string }[] = [
+  { value: "", label: "Select a range" },
+  ...RANGES,
+];
 
 const INITIAL: ContactState = { status: "idle" };
 
@@ -68,6 +95,33 @@ export function ContactForm() {
   const errors = state.status === "invalid" ? state.errors : null;
   const values = "values" in state ? state.values : null;
 
+  /* How long the form has been fillable, measured HERE rather than on the
+     server. `/contact` is statically prerendered: a server-rendered
+     timestamp would be baked into the HTML once, shared by every visitor,
+     and cacheable for a year — it would say when the page was built, not
+     when this person arrived. The effect runs on mount, so the clock
+     starts when the form becomes interactive for this visitor.
+
+     What the server does with the number, and why a number the client
+     supplies is only a speed bump, is argued in `submittedTooFast`. */
+  const readyAt = useRef<number | null>(null);
+  const elapsedField = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    readyAt.current = Date.now();
+  }, []);
+
+  /* Stamped on every input event AND on submit. The submit stamp is the
+     accurate one; the input stamp is what keeps a visitor whose browser
+     autofilled the form and who then sat and read the page from being
+     measured against a time they never took. */
+  const stampElapsed = () => {
+    const startedAt = readyAt.current;
+    const field = elapsedField.current;
+    if (startedAt === null || !field) return;
+    field.value = String(Date.now() - startedAt);
+  };
+
   // A rejected submission that leaves focus on the button gives a
   // keyboard or screen-reader user nothing to act on. `errors` is a fresh
   // object per submission, so a repeated failure re-fires this.
@@ -80,8 +134,25 @@ export function ContactForm() {
   const result = describe(state);
 
   return (
-    <form action={formAction} aria-busy={isPending}>
-      <div className="border border-hairline bg-surface p-6 sm:p-10">
+    <form
+      action={formAction}
+      onInput={stampElapsed}
+      onSubmit={stampElapsed}
+      aria-busy={isPending}
+    >
+      <div className="relative border border-hairline bg-surface p-6 sm:p-10">
+        <HoneyPot />
+
+        {/* Rendered empty. Only a client with JavaScript fills it in, and
+            the server treats an empty value as a submission that made no
+            claim rather than as a failed one — see actions.ts. */}
+        <input
+          ref={elapsedField}
+          type="hidden"
+          name="elapsedMs"
+          defaultValue=""
+        />
+
         <Eyebrow>Send an enquiry</Eyebrow>
         <h2 className="mt-5 text-[22px] font-medium leading-[30px] text-ink">
           What are you weighing up?
@@ -167,8 +238,7 @@ export function ContactForm() {
                   defaultValue={values?.investmentRange ?? ""}
                   className={cn(CONTROL, "appearance-none pr-11")}
                 >
-                  <option value="">Select a range</option>
-                  {RANGES.map((range) => (
+                  {RANGE_OPTIONS.map((range) => (
                     <option key={range.value} value={range.value}>
                       {range.label}
                     </option>
@@ -202,22 +272,52 @@ export function ContactForm() {
         {/* ============================================================
             COMPLIANCE — READ BEFORE THIS FORM COLLECTS DATA IN PRODUCTION.
 
-            A published privacy policy is REQUIRED before this form is
-            allowed to collect personal data live. There is no /privacy
-            page on this site yet, and the footer renders "Privacy Policy"
-            as plain text for exactly that reason.
+            THE BLOCKING CONDITION IS NOW MET. This block used to say a
+            published privacy policy was REQUIRED before the form could
+            collect personal data live, and that there was no /privacy
+            page. `app/privacy/page.tsx` now exists, is reachable from the
+            footer sign-off, and is linked from the copy below — so the
+            gate that was described here has been satisfied rather than
+            argued away.
+
+            WHAT IS STILL TRUE, AND MUST STAY TRUE UNTIL SOMEBODY DECIDES
+            OTHERWISE: `deliverEnquiry` in actions.ts still returns
+            "unconfigured", so nothing is delivered and nothing is stored.
+            That is not an oversight to tidy up alongside this change —
+            /privacy describes exactly that behaviour, in those words, and
+            the two files are now a matched pair. Wiring delivery makes
+            the notice wrong, so wire it and update /privacy in the SAME
+            change, before the first enquiry is sent. The notice names
+            that obligation itself, under "What changes when delivery is
+            wired".
 
             The site this replaces shipped the line "you agree to our
             privacy policy" next to a Privacy link that pointed at `#`.
-            The consent copy below therefore claims nothing about a
-            policy — it states only what is verifiably true about how the
-            details are used. When /privacy ships, link it from here and
-            from the footer in the same change.
+            The copy below still does not claim you have agreed to
+            anything — it states what is verifiably true about these
+            details and points at the page that says the rest. A consent
+            sentence is a different thing from a notice, and only the
+            notice is what exists today.
+
+            The three controls in front of delivery — the honeypot above,
+            the fill-time floor claimed by this client, and the in-process
+            per-IP and per-email rate limit — are unchanged. Their limits,
+            and honestly what each one is and is not worth, are written
+            down in actions.ts, and the rate limit's short-lived record of
+            IP and email is disclosed in the notice because it is
+            processing of personal data whatever else it is for.
             ============================================================ */}
         <p className="mt-8 max-w-[62ch] text-[13px] leading-[20px] text-muted">
           We use these details only to respond to your enquiry about SIF
-          schemes. We do not sell them, share them with the AMCs whose
-          schemes we cover, or add you to a mailing list.
+          schemes. We do not sell them, share them with the AMCs whose schemes
+          we cover, or add you to a mailing list. This form is not connected
+          to a mail service yet, so a submission is not delivered and not
+          stored —{" "}
+          <Link href="/privacy" className={INLINE_LINK}>
+            our privacy notice
+          </Link>{" "}
+          sets out what that means, what the abuse controls keep, and what
+          changes when delivery is wired.
         </p>
 
         <div className="relative isolate mt-8 inline-block">
@@ -256,6 +356,53 @@ export function ContactForm() {
 /* ============================================================
    Pieces
    ============================================================ */
+
+/**
+ * The honeypot.
+ *
+ * A field a person never sees, never tabs to and is never told about, so
+ * anything in it was put there by something filling every input it found.
+ * The server refuses the submission — visibly, not with a fake thank-you;
+ * the reasoning for that is argued where the refusal happens.
+ *
+ * NOT `display: none` and not `hidden`. Both are the first thing a form
+ * filler checks, and a field it can see is skipped. Off-screen with a
+ * one-pixel box is the version that still looks like a field to a script
+ * reading the DOM.
+ *
+ * How it stays away from real people:
+ *   aria-hidden   keeps it out of the accessibility tree, so a screen
+ *                 reader never announces a field with no purpose.
+ *   tabIndex={-1} keeps it out of the tab order, which is also what makes
+ *                 the aria-hidden legitimate — hiding a focusable element
+ *                 from assistive tech while leaving it reachable by
+ *                 keyboard is the anti-pattern this avoids.
+ *   autoComplete  plus the password-manager opt-outs: the realistic false
+ *                 positive here is not a person, it is a manager filling
+ *                 a field named "website" on their behalf.
+ *
+ * `absolute` positions this against the card, which is `relative`.
+ */
+function HoneyPot() {
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden"
+    >
+      <label htmlFor="contact-website">Website</label>
+      <input
+        id="contact-website"
+        name="website"
+        type="text"
+        tabIndex={-1}
+        autoComplete="off"
+        data-lpignore="true"
+        data-1p-ignore
+        defaultValue=""
+      />
+    </div>
+  );
+}
 
 /** `useFormStatus` reads the nearest form ABOVE it, so this cannot be
     inlined into ContactForm — it would always report pending: false. */
@@ -419,6 +566,10 @@ function Chevron() {
    `unconfigured` is the state that matters. It is not an error and it is
    not a success: the submission was valid, and it went nowhere. Saying so
    is the entire point of building the form this way.
+
+   `blocked` is the same discipline applied to a refusal we chose to make.
+   A form that silently accepted a submission it had already decided to
+   throw away would be the original defect wearing a security hat.
    ============================================================ */
 
 type Result = {
@@ -442,6 +593,28 @@ function describe(state: ContactState): Result | null {
         showDirect: false,
       };
     }
+
+    case "blocked":
+      /* The two reasons read differently on purpose. A rate limit is
+         something the visitor can wait out, so the copy says so. The
+         other says only that an automated check refused it: naming which
+         check, or which field gave it away, would be writing the bypass
+         into the page that the check is trying to survive. Both admit
+         the check can be wrong, and both offer a channel that is not
+         this form. */
+      return state.reason === "rate-limited"
+        ? {
+            title: "Not sent — too many enquiries just now",
+            body: "There is a limit on how often the same address or connection can send this form, and it has been reached. Nothing was delivered. Give it a few minutes, or use one of the direct channels below.",
+            tone: "note",
+            showDirect: true,
+          }
+        : {
+            title: "Your details were not sent",
+            body: "An automated check refused this submission, so nothing was delivered and nothing was stored. If that is the wrong call — it is a heuristic, and it can be — the channels below reach a person directly.",
+            tone: "note",
+            showDirect: true,
+          };
 
     case "unconfigured":
       return {

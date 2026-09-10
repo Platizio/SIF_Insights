@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { registerSmoothScroll } from "@/lib/smooth-scroll-control";
 
 /**
  * Scroll smoothing only. No hijacking, no pinning, no scroll-jacked sections.
@@ -19,6 +20,11 @@ export function SmoothScroll() {
       smoothWheel: true,
     });
 
+    /* Published so the mobile nav panel can pause it while it is open.
+       Stopping Lenis is half of that lock; the CSS half lives in
+       SiteHeader. See lib/smooth-scroll-control.ts for why both. */
+    const deregister = registerSmoothScroll(lenis);
+
     let frame = 0;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -27,6 +33,7 @@ export function SmoothScroll() {
     frame = requestAnimationFrame(raf);
 
     return () => {
+      deregister();
       cancelAnimationFrame(frame);
       lenis.destroy();
     };
