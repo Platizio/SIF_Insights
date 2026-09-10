@@ -60,7 +60,7 @@ absent fields stay absent, and that expired NFOs never render.
 ## Stack
 
 Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 ·
-Motion · GSAP · Lenis · React Three Fiber
+Motion · Lenis
 
 Every route is statically rendered. There is no runtime data fetch, no API
 route, no database and no backend — see the pipeline section below for why.
@@ -74,7 +74,6 @@ app/                 Routes. One directory per page; 30 routes total.
 components/
   sections/          Page-level compositions (Hero, NavBoard, SiteFooter…)
   motion/            Reveal primitives — the site's whole motion vocabulary
-  webgl/             R3F canvases (hero, yield surface)
   primitives.tsx     Shell, Section, Card, Eyebrow, RiskBand, PendingBadge
 lib/
   data/index.ts      THE data layer. Types, derivations, formatting, stats.
