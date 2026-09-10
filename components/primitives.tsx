@@ -360,9 +360,13 @@ export function RiskBand({
  * AMFI file dated …", app/amc/[id]/page.tsx; "No net asset value is held for
  * this scheme", app/nav-tracker/NavExplorer.tsx).
  *
- * The old docstring also said "the 5 unlaunched funds". There are currently
- * none: all 30 schemes carry a NAV, so on the NAV surfaces this badge is
- * unreachable against today's feed and exists for the day that changes.
+ * Every scheme in the current AMFI file carries a NAV, so on the NAV surfaces
+ * this badge is unreachable against today's feed. It stays because `getNav()`
+ * can return `pending` for any scheme on any day — a house filing late, a
+ * suspended scheme, one newly listed and not yet struck — and each of those is
+ * a recurring condition rather than a one-off. Reached through a derived check,
+ * so it appears by itself the day the feed drops a value and disappears again
+ * when the value returns; nothing has to be switched on for it.
  *
  * Two callers use it for a different absence — a CATEGORY with no schemes at
  * all (app/strategies/page.tsx, app/what-is-sif/page.tsx, both of which pair

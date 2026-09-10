@@ -9,7 +9,7 @@ import type { Amc } from "@/lib/data";
  * TWO constraints drive every decision here, and both have caused visible
  * bugs when they were forgotten:
  *
- * 1. The eight PNGs we hold have **no alpha channel**. Each is a flat
+ * 1. The PNGs we hold have **no alpha channel**. Each is a flat
  *    rectangle with a baked-in background, tones running from near-white
  *    (edelweiss ~239 luminance) to near-black (iti ~28). They therefore
  *    cannot be flattened to a single ink — a `brightness-0` filter turns
@@ -28,8 +28,8 @@ import type { Amc } from "@/lib/data";
  * text lockup, so both kinds of tile behave identically under the pointer.
  * It reads `group-hover`, so the caller must be a `group`.
  *
- * Fixed tile + `fill` keeps CLS at zero without hard-coding eight
- * different intrinsic sizes.
+ * Fixed tile + `fill` keeps CLS at zero without hard-coding a different
+ * intrinsic size per mark.
  */
 
 const SIZES = {

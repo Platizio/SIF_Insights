@@ -1,6 +1,13 @@
 "use client";
 
-import { Fragment, useId, useState, type ReactNode } from "react";
+import {
+  Fragment,
+  useEffect,
+  useId,
+  useRef,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import { Odometer } from "@/components/motion/Odometer";
 import { Rule } from "@/components/motion/Reveal";
 import { NavSeriesChart } from "@/components/NavSeriesChart";
@@ -52,14 +59,128 @@ const groups = mandates.map(({ type, count }) => ({
 /** Flattened in render order — keyboard order must match the eye's order. */
 const ordered: Strategy[] = groups.flatMap((g) => g.schemes);
 
+/* ============================================================
+   Selection <-> URL
+
+   The selected scheme lives in the URL, not in component state, so
+   `/nav-tracker?scheme=<id>` is a link to one fund's chart —
+   shareable, bookmarkable, and restored on reload. That matters
+   more here than on a typical tab strip: this is the page a reader
+   sends to someone to make a point about one scheme, and there are
+   thirty of them behind the control.
+
+   REPLACED, never pushed. Thirty tabs each pushing an entry would
+   turn Back into an undo log for a control the reader is skimming,
+   and bury the page they arrived from under thirty presses. The URL
+   still identifies the selection; the history stack stays as long
+   as the reader's actual journey, so Back leaves the page rather
+   than stepping back through selections. `popstate` is still
+   subscribed to, because a Back that lands HERE from another page
+   has to re-read the URL rather than trust a stale render.
+
+   NOT `useSearchParams`. It is the framework's reader, but on a
+   prerendered route it forces the client tree up to the nearest
+   <Suspense> to be client-side rendered, and the production build
+   fails outright without that boundary — see
+   next/dist/docs/01-app/03-api-reference/04-functions/use-search-params.md.
+   The route stays static either way; what the hook costs is the
+   prerendered HTML of this whole section — selector, detail card
+   and chart — on every visit, including the ones carrying no
+   `?scheme` at all. Reading `window.location` instead keeps that
+   HTML intact and charges the deep link, not the default load.
+   ============================================================ */
+
+const SCHEME_PARAM = "scheme";
+const defaultId = ordered[0].id;
+
+/* The server has no URL to read, so it renders the default — which is what
+   the prerendered HTML must contain for hydration to match. The split
+   between this snapshot and the client's is exactly what
+   useSyncExternalStore is for; lib/use-is-client.ts sets out why that beats
+   setting state from an effect. */
+const serverScheme = () => defaultId;
+
+/**
+ * The scheme the current URL names.
+ *
+ * Absent, empty and unknown ids all resolve to the default: a stale or
+ * mistyped link lands on the default panel, never on a blank one. Returns a
+ * plain string, so React's snapshot comparison is stable without caching.
+ */
+function readScheme(): string {
+  const id = new URLSearchParams(window.location.search).get(SCHEME_PARAM);
+  return id && ordered.some((s) => s.id === id) ? id : defaultId;
+}
+
+const listeners = new Set<() => void>();
+
+function subscribe(onStoreChange: () => void) {
+  listeners.add(onStoreChange);
+  window.addEventListener("popstate", onStoreChange);
+  return () => {
+    listeners.delete(onStoreChange);
+    window.removeEventListener("popstate", onStoreChange);
+  };
+}
+
+/** Write the selection to the URL, then tell React to re-read it. */
+function select(id: string) {
+  const url = new URL(window.location.href);
+
+  /* The default is what a bare /nav-tracker already shows, so it is spelled
+     by omission: the canonical URL stays clean, and arrowing away from the
+     default and back to it leaves no residue in the address bar. */
+  if (id === defaultId) url.searchParams.delete(SCHEME_PARAM);
+  else url.searchParams.set(SCHEME_PARAM, id);
+
+  /* Next patches replaceState and keeps its own router in sync with it — the
+     documented way to write a param without a navigation, per
+     next/dist/docs/01-app/01-getting-started/04-linking-and-navigating.md
+     ("Native History API"). */
+  window.history.replaceState(
+    null,
+    "",
+    `${url.pathname}${url.search}${url.hash}`,
+  );
+  for (const onStoreChange of listeners) onStoreChange();
+}
+
+/* Matches the tabs' own `scroll-mt-10`: the height of the sticky mandate
+   header that would otherwise cover a tab scrolled to the list's top edge. */
+const STICKY_H = 40;
+
 export function NavExplorer() {
   const uid = useId();
   const panelId = `${uid}-panel`;
   const listLabelId = `${uid}-list`;
   const tabId = (id: string) => `${uid}-tab-${id}`;
 
-  const [activeId, setActiveId] = useState(() => ordered[0].id);
+  const activeId = useSyncExternalStore(subscribe, readScheme, serverScheme);
+  /* Second guard, and the only one that also runs on the server: even if an
+     id slipped past `readScheme`, the panel falls back rather than blanking. */
   const active = ordered.find((s) => s.id === activeId) ?? ordered[0];
+  const activeTabId = tabId(active.id);
+
+  const listRef = useRef<HTMLDivElement>(null);
+
+  /* A deep link can select the twenty-eighth of thirty tabs, and the list is
+     a 460px scroll box — without this the panel would be right while the list
+     showed no selection at all. Moves the LIST's own scrollTop, never
+     `scrollIntoView`, which walks up to the window and would hijack where a
+     freshly loaded page lands. Idempotent, so it agrees with the
+     `scrollIntoView` the keyboard handler already does instead of fighting it. */
+  useEffect(() => {
+    const list = listRef.current;
+    const tab = document.getElementById(activeTabId);
+    if (!list || !tab) return;
+
+    const top = tab.offsetTop - STICKY_H;
+    const bottom = tab.offsetTop + tab.offsetHeight;
+    if (top < list.scrollTop) list.scrollTop = top;
+    else if (bottom > list.scrollTop + list.clientHeight) {
+      list.scrollTop = bottom - list.clientHeight;
+    }
+  }, [activeTabId]);
 
   /* Vertical tablist: Up/Down (and Left/Right) move selection, Home/End jump
      to the ends, and focus follows selection — the standard tabs pattern.
@@ -91,7 +212,7 @@ export function NavExplorer() {
 
     event.preventDefault();
     const target = ordered[next];
-    setActiveId(target.id);
+    select(target.id);
     const node = document.getElementById(tabId(target.id));
     node?.focus();
     node?.scrollIntoView({ block: "nearest" });
@@ -113,6 +234,7 @@ export function NavExplorer() {
             </p>
 
             <div
+              ref={listRef}
               role="tablist"
               aria-orientation="vertical"
               aria-labelledby={listLabelId}
@@ -149,7 +271,7 @@ export function NavExplorer() {
                         aria-selected={selected}
                         aria-controls={panelId}
                         tabIndex={selected ? 0 : -1}
-                        onClick={() => setActiveId(strategy.id)}
+                        onClick={() => select(strategy.id)}
                         /* AMFI's official names run long and are truncated to
                            keep the column from setting the page width — the
                            title restores the full string on hover. */
@@ -203,7 +325,7 @@ export function NavExplorer() {
           <div
             id={panelId}
             role="tabpanel"
-            aria-labelledby={tabId(active.id)}
+            aria-labelledby={activeTabId}
             tabIndex={0}
             className="min-w-0"
           >

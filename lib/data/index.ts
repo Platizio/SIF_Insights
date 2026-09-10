@@ -532,10 +532,16 @@ export const stats = {
   /**
    * How many hold ALL FOUR fields the summary copy names.
    *
-   * `disclosedCount` counts the presence of an entry, so sentences promising
-   * "risk band, expense, exit load and minimum" over it overstated coverage:
-   * four schemes are each missing one of those fields while still counting as
-   * disclosed. Derived, so the two can never drift apart.
+   * `disclosedCount` counts the presence of an entry, which is a weaker claim:
+   * a scheme can hold a researched entry and still leave one of these four
+   * fields null, so copy promising "risk band, expense, exit load and minimum"
+   * over that count overstates what we have.
+   *
+   * Currently the two are equal — every entry states all four — so no sentence
+   * differs today. Both counts stay because the gap is the normal state, not a
+   * backlog: a scheme is entered from its information document field by field,
+   * and any ISID that omits one reopens it. Derived on both sides, so the copy
+   * follows the data rather than having to be remembered.
    */
   fullyDisclosedCount: strategies.filter(hasFullDisclosures).length,
   /** Of those, how many a second reader confirmed against the source document. */
@@ -549,10 +555,22 @@ export const stats = {
   /** Schemes with enough history to plot a line (two points or more). */
   chartableCount: strategies.filter((s) => navHistory(s.id).length > 1).length,
   /** Earliest published NAV we hold, across all schemes. */
-  navHistoryFrom: Object.values(seriesByStrategy)
-    .filter((p) => p.length > 0)
-    .map((p) => p[0].date)
-    .sort()[0],
+  /**
+   * Earliest published NAV we hold, across every scheme — or null if we hold
+   * no history at all.
+   *
+   * Nullable on purpose. This used to be typed `string` while the expression
+   * behind it (`.sort()[0]`) returns `undefined` on an empty list, so a feed
+   * that arrived with no series would have handed `formatUpdated` an
+   * `undefined` and rendered the string "Invalid Date" into the page meta —
+   * a date-shaped claim about data we do not have. Unreachable today with
+   * 30 series on file, which is exactly why it needed to be in the type
+   * rather than left to a reader noticing.
+   */
+  navHistoryFrom: (Object.values(seriesByStrategy)
+    .map((points) => points[0]?.date)
+    .filter((date): date is string => date !== undefined)
+    .sort()[0] ?? null) as string | null,
   minInvestment: 1_000_000,
   maxUnhedgedShortPct: 25,
 };
@@ -561,10 +579,42 @@ export const stats = {
    Formatting — Indian numbering, tabular-safe
    ============================================================ */
 
+/** The lakh/crore mantissa, at the precision `formatInr` documents below. */
+function compactRupees(mantissa: number, unit: "L" | "Cr"): string {
+  return `₹${mantissa.toLocaleString("en-IN", { maximumFractionDigits: 2 })} ${unit}`;
+}
+
+/**
+ * A rupee figure in Indian grouping — ₹10,00,000. `compact` renders the
+ * lakh/crore shorthand instead — ₹12.35 L, ₹1.25 Cr.
+ *
+ * DECIMALS ARE BOUNDED AT TWO, and that bound is the reason the option is
+ * still here. Unbounded, `1_234_567` rendered "₹12.34567 L" — one character
+ * LONGER than the ₹12,34,567 it was shortening, which is the one thing a
+ * compact form must never be. Two places is not an arbitrary pick either:
+ * `formatPct` and `formatExpense` already fix every inexact number on this
+ * site at two, so the compact form reuses that policy rather than inventing a
+ * third. Trailing zeros are dropped, so an exact ten lakh still reads "₹10 L"
+ * rather than "₹10.00 L", and the mantissa itself goes through en-IN grouping
+ * so a four-figure crore reads "₹1,000 Cr". (A figure within ₹500 of a crore
+ * rounds to "₹100 L" rather than promoting to "₹1 Cr" — accepted, because
+ * nothing that needs the boundary read exactly should be compacting it.)
+ *
+ * NOTHING PASSES `compact` TODAY, and that is deliberate rather than an
+ * oversight waiting to be tidied. Its one caller was the homepage strategy
+ * card's minimum investment — the same figure /amc/[id], /sif-tracker,
+ * /nav-tracker and /strategies/[category] all print in full — so the card now
+ * prints it in full too and the site states one number one way. The option
+ * survives that removal because the defect was the precision, not the
+ * notation: the shorthand belongs to a large APPROXIMATE quantity — an AUM, a
+ * chart axis — and this site simply has none yet, since AMFI's SIF feed
+ * carries no such number. It does not belong on a disclosed term an investor
+ * has to meet to the rupee.
+ */
 export function formatInr(value: number, opts: { compact?: boolean } = {}): string {
   if (opts.compact) {
-    if (value >= 10_000_000) return `₹${value / 10_000_000} Cr`;
-    if (value >= 100_000) return `₹${value / 100_000} L`;
+    if (value >= 10_000_000) return compactRupees(value / 10_000_000, "Cr");
+    if (value >= 100_000) return compactRupees(value / 100_000, "L");
   }
   return `₹${value.toLocaleString("en-IN")}`;
 }

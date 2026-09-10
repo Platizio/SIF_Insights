@@ -166,6 +166,13 @@ const COPY: Record<
     lines: string[];
     standfirst: (f: Facts) => ReactNode;
     metaTitle: string;
+    /* Google truncates the snippet around 155-160 characters, so anything
+       past that is written for a reader who never sees the end of it. Equity
+       and hybrid both ran to 246 and were cut mid-clause, losing the
+       disclosure fields — the part a searcher is actually looking for. Keep
+       new ones inside 120-160, and interpolate the scheme count from `stats`
+       rather than typing the digit: a page that says "all 16" must not be
+       able to disagree with the 16 cards printed under it. */
     metaDescription: string;
   }
 > = {
@@ -197,8 +204,7 @@ const COPY: Record<
       </>
     ),
     metaTitle: "Equity strategies",
-    metaDescription:
-      "Every equity Specialised Investment Fund offered in India, with the mandate and NAV AMFI publishes for each, and the risk band, exit load, expense ratio, benchmark and redemption frequency where the asset manager's disclosures have been captured.",
+    metaDescription: `Every equity Specialised Investment Fund in India — all ${stats.equityCount}, with long-short mandate, AMFI NAV, risk band, charges and redemption as disclosed.`,
   },
   hybrid: {
     eyebrow: "Hybrid",
@@ -231,8 +237,7 @@ const COPY: Record<
       </>
     ),
     metaTitle: "Hybrid strategies",
-    metaDescription:
-      "Every hybrid Specialised Investment Fund offered in India, with the mandate and NAV AMFI publishes for each, and the risk band, exit load, expense ratio, benchmark and redemption frequency where the asset manager's disclosures have been captured.",
+    metaDescription: `Every hybrid Specialised Investment Fund in India — all ${stats.hybridCount}, with multi-asset long-short mandate, AMFI NAV, risk band, charges and redemption as disclosed.`,
   },
   debt: {
     eyebrow: "Debt",
@@ -654,9 +659,16 @@ function TallyRow<T extends string | number>({
 /* ============================================================
    The schemes — one detail card each.
 
-   Ordered captured-disclosures first, then the rest, and the
-   intro says so. Sorting on a field 17 of 30 schemes do not have
-   must never make those schemes quietly disappear.
+   Ordered captured-disclosures first, then the rest, and the intro
+   says so. Sorting on a field a scheme does not have must never make
+   that scheme quietly disappear, so the comparator ranks on whether
+   the entry EXISTS rather than on anything inside it, and every row
+   survives the sort.
+
+   Currently nothing sorts to the back — every scheme has an entry, so
+   `missing` is zero and the intro prints its complete-coverage branch.
+   Both are derived rather than asserted, so they recover on their own
+   the day AMFI lists a scheme ahead of its information document.
    ============================================================ */
 
 function Schemes({ list, facts }: { list: Strategy[]; facts: Facts }) {

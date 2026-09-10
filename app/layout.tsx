@@ -52,10 +52,17 @@ const instrument = Instrument_Serif({
    allowed exports (see node_modules/next/dist/build/webpack/plugins/
    next-types-plugin), and any extra named export fails `next build`.
 
+   `description` is the homepage meta description AND the fallback for
+   every route that does not write its own, so it is kept inside the ~155
+   characters Google renders before truncating. Measure the RESOLVED text,
+   not the template: React escapes every apostrophe to `&#x27;`, so the
+   served attribute always runs longer than this source reads.
+
    `alternates` is deliberately NOT set here. It would be inherited by
    every route that does not override it, which would point canonicals
    at the homepage — the one metadata field where a wrong value is worse
-   than none.
+   than none. Every route declares its own instead, app/page.tsx included:
+   that file, not this one, is where "/" gets its canonical and og:url.
    ============================================================ */
 export const metadata: Metadata = {
   metadataBase: new URL(ORIGIN),
@@ -63,7 +70,7 @@ export const metadata: Metadata = {
     default: "SIF Insight — India's SIF market, in full view",
     template: "%s | SIF Insight",
   },
-  description: `Independent coverage of India's ${stats.strategyCount} Specialised Investment Fund schemes — every NAV and disclosure from all ${stats.amcCount} asset managers, SEBI's 2025 fund category.`,
+  description: `Independent coverage of India's ${stats.strategyCount} Specialised Investment Fund schemes — every NAV and disclosure from all ${stats.amcCount} asset managers, SEBI's 2025 category.`,
   openGraph: {
     title: "SIF Insight — India's SIF market, in full view",
     description: `Every Specialised Investment Fund in India, independently tracked: ${stats.strategyCount} schemes, ${stats.amcCount} asset managers, NAVs and disclosures as filed.`,

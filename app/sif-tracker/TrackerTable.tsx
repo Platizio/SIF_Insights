@@ -65,8 +65,13 @@ import {
    exit load, redemption — exist only for the schemes whose information
    documents we have captured. Those four controls therefore range over
    that subset, and the block says so above the pills rather than
-   quietly dropping 17 rows when you touch one. The "Disclosures"
-   control in the first block makes those 17 directly reachable.
+   quietly dropping the uncaptured rows when you touch one.
+
+   Currently that subset IS all 30 — every scheme has an entry — so the
+   four controls drop nothing today. The note above the pills and the
+   "Disclosures" control in the first block both stay: the counts behind
+   them are derived, not asserted, so they recover on their own the day
+   AMFI lists a scheme whose information document nobody has read yet.
    ============================================================ */
 
 type Option = {
@@ -1196,7 +1201,7 @@ function FilterMenu({
                 key={option.id}
                 htmlFor={id}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-2.5 text-[14px] leading-[20px] transition-colors duration-150",
+                  "flex items-center gap-3 px-4 py-2.5 text-[14px] leading-[20px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
                   empty
                     ? "cursor-not-allowed text-pending"
                     : "cursor-pointer text-body hover:bg-accent-wash",
@@ -1244,7 +1249,7 @@ function FilterMenu({
               onClick={onClear}
               disabled={!active}
               className={cn(
-                "w-full rounded-full px-3 py-1.5 text-[13px] leading-[20px] transition-colors duration-200",
+                "w-full rounded-full px-3 py-1.5 text-[13px] leading-[20px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
                 active
                   ? "text-body hover:bg-accent-wash hover:text-ink"
                   : "cursor-not-allowed text-pending",
@@ -1341,7 +1346,7 @@ function ActiveFilters({
       <button
         type="button"
         onClick={onClearAll}
-        className="rounded-full px-3 py-1.5 text-[13px] leading-[20px] text-muted underline decoration-hairline underline-offset-4 transition-colors duration-200 hover:text-ink"
+        className="rounded-full px-3 py-1.5 text-[13px] leading-[20px] text-muted underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink"
       >
         Clear all
       </button>

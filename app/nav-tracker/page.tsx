@@ -13,7 +13,11 @@ import { NavExplorer } from "./NavExplorer";
    only, so the interactive half lives in ./NavExplorer — the split Next
    prescribes in next/dist/docs/.../generate-metadata.md. */
 
-/** Counted, never asserted — 17 of the 30 schemes carry no disclosures. */
+/** Counted, never asserted — derived from the data rather than a figure typed
+    into a sentence. Currently zero: every scheme carries a disclosures entry,
+    so the clause about the ones that do not is rendered conditionally below
+    instead of standing as a claim, and it comes back on its own the day a
+    scheme arrives without them. */
 const notCaptured = stats.strategyCount - stats.disclosedCount;
 
 /* `openGraph` repeats siteName/locale/type because Next merges metadata
@@ -58,7 +62,12 @@ export default function NavTrackerPage() {
           "Source: AMFI",
           `Updated ${formatUpdated(navLastUpdated)}`,
           `${stats.liveNavCount} of ${stats.strategyCount} schemes priced`,
-          `Series from ${formatUpdated(stats.navHistoryFrom)}`,
+          /* Dropped entirely rather than shown empty when we hold no series:
+             a "Series from —" reads as a broken figure, where its absence
+             reads as one fewer thing claimed. */
+          ...(stats.navHistoryFrom
+            ? [`Series from ${formatUpdated(stats.navHistoryFrom)}`]
+            : []),
         ]}
       />
 

@@ -40,8 +40,14 @@ import {
    AMFI's feed carries scheme code, ISIN, name, category and NAV.
    It carries no minimum, expense, exit load or risk band, so those
    exist only for schemes whose information document we have read.
-   Nine of the seventeen houses have none captured at all — this
-   page has to read correctly for those, not just tolerate them.
+   Every house currently has all of its schemes read, so the
+   undisclosed path below is unexercised against today's data. It is
+   written to READ CORRECTLY for a house with none captured, not
+   merely to tolerate one, because that is the state every house is
+   in from the day AMFI lists it until someone opens its ISID — it
+   recurs with each new filing rather than being a backlog we are
+   working off. `disclosedCount` is counted here for the same reason
+   it is not assumed.
    ============================================================ */
 
 function schemesOf(amcId: string): Strategy[] {

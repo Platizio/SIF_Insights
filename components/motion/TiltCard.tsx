@@ -17,11 +17,12 @@ import { SPRING } from "@/lib/motion";
 const MAX_DEG = 4.5;
 
 /**
- * Pointer tilt plus a warm border-follow highlight.
+ * Pointer tilt plus an accent border-follow highlight.
  *
  * High perspective (1400px) gives subtle realism; low perspective is
- * dramatic and cheap. The glow is a warm amber wash — on cream paper a
- * white glow is invisible and reads as a rendering bug.
+ * dramatic and cheap. The glow is a wash of the aqua accent, the same hue
+ * as the `hover:border-accent-dim` below — on cream paper a white glow is
+ * invisible and reads as a rendering bug.
  *
  * The lift is a pseudo-layer's opacity, never an animated box-shadow
  * (which repaints every frame), and it respects the no-shadow rule by
@@ -111,7 +112,7 @@ export function TiltCard({
           "hover:border-accent-dim",
         )}
       >
-        {/* Warm follow-highlight. Opacity only — no repaint cost. */}
+        {/* Accent follow-highlight. Opacity only — no repaint cost. */}
         <motion.span
           aria-hidden="true"
           style={{ background: glow }}

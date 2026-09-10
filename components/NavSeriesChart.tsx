@@ -9,10 +9,10 @@ import { formatNav, formatUpdated, type NavPoint } from "@/lib/data";
    One scheme's published NAVs, plotted against its own axis.
 
    ONE scheme per chart, always. Two of the thirty are priced off a
-   different face value (₹943 and ₹1,022 against ~₹10), so a shared
-   axis or any side-by-side scale would rank them top and imply a
-   performance they have not demonstrated. Each chart therefore
-   carries its own min/max and states them.
+   ~₹1,000 face value against ~₹10 for the rest, so a shared axis or
+   any side-by-side scale would rank them top and imply a performance
+   they have not demonstrated. Each chart therefore carries its own
+   min/max and states them.
 
    The x-axis is real time, not observation count: a scheme that
    published nothing for four days shows a longer flat run rather

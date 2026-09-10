@@ -61,7 +61,7 @@ import { cn } from "@/lib/cn";
 export const metadata: Metadata = {
   title: "Privacy",
   description:
-    "What SIF Insight collects and what it does not. No cookies, no analytics, no embeds. The enquiry form is not connected to a mail service, so submissions are neither delivered nor stored.",
+    "What SIF Insight collects and what it does not. No cookies, no analytics, no embeds, and an enquiry form that neither delivers nor stores what you type.",
   alternates: { canonical: "/privacy" },
 };
 
