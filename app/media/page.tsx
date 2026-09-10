@@ -31,7 +31,7 @@ import { cn } from "@/lib/cn";
  * the most confident possible way to present nothing.
  *
  * The paths made it worse rather than better. `metadataBase` in
- * app/layout.tsx is `https://sifinsight.com`, so `sifinsight.com/blogs-1/…`
+ * app/layout.tsx is `https://www.sifinsight.com`, so `sifinsight.com/blogs-1/…`
  * is a path on THIS APP'S OWN future origin, inherited from the legacy CMS
  * this app replaces. After cutover those links become 404s that this very
  * application serves, since no `/blogs-1` route exists here.

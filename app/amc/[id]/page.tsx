@@ -154,8 +154,12 @@ export async function generateMetadata({
   };
 }
 
-/** Matches `metadataBase` in app/layout.tsx. JSON-LD needs absolute URLs. */
-const ORIGIN = "https://sifinsight.com";
+/** Matches `metadataBase` in app/layout.tsx. JSON-LD needs absolute URLs.
+    Also mirrored in app/robots.ts and app/sitemap.ts — four in total, and
+    they move together. `www` because the apex 307s to it; a BreadcrumbList
+    naming a redirect is a trail Google has to resolve before it can use it.
+    See the note in app/layout.tsx. */
+const ORIGIN = "https://www.sifinsight.com";
 
 /**
  * BreadcrumbList — Home → Asset managers → this house.

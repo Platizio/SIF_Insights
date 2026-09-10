@@ -8,9 +8,23 @@ import { SiteFooter } from "@/components/sections/SiteFooter";
 import { stats } from "@/lib/data";
 import "./globals.css";
 
-/** Matches `ORIGIN` in app/robots.ts and app/sitemap.ts. If the domain
-    moves, all three change together. */
-const ORIGIN = "https://sifinsight.com";
+/* The canonical host is `www`, and the `www` is load-bearing rather than a
+   stylistic preference. The apex answers 307 to https://www.sifinsight.com/
+   — measured against production — so an apex origin here named a URL that
+   redirects in every canonical, every og:url and every sitemap entry. A
+   canonical is supposed to be the destination, not a signpost to it; naming
+   a redirect makes crawlers resolve one before they can trust it, and a
+   sitemap of redirects is a sitemap of things that are not the page.
+
+   If the apex is ever made to serve directly, this is the line to change
+   back — and only after checking what the apex actually answers, not what
+   it is assumed to.
+
+   FOUR files hold this origin, not three: app/robots.ts, app/sitemap.ts and
+   app/amc/[id]/page.tsx (JSON-LD needs absolute URLs) each declare their own
+   `ORIGIN`. They must move together. The count is stated because the comment
+   here used to say "all three" while a fourth already existed. */
+const ORIGIN = "https://www.sifinsight.com";
 
 const geist = Geist({
   subsets: ["latin"],
