@@ -50,6 +50,19 @@ export const metadata: Metadata = {
   description:
     "Video explainers on India's Specialised Investment Funds — SIF basics, minimum investment, market analysis and how SIFs differ from mutual funds.",
   alternates: { canonical: "/media" },
+  openGraph: {
+    title: "SIF explainers and analysis, on camera",
+    description:
+      "Video explainers on India's Specialised Investment Funds — SIF basics, minimum investment, market analysis and how SIFs differ from mutual funds.",
+    url: "/media",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 type Video = { id: string; title: string };
@@ -218,6 +231,40 @@ function VideoCard({ video, lead }: { video: Video; lead: boolean }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
+              /* A ladder, because `maxresdefault` alone was the ONLY candidate
+                 and every viewport paid 1280x720 for it. Measured from
+                 img.youtube.com: mqdefault 320x180 = 17KB, hqdefault 480x360
+                 = 34KB, maxresdefault 1280x720 = 139KB. Five cards at 139KB
+                 was 695KB of stills on a page that is five links.
+
+                 mqdefault and hqdefault are the two YouTube guarantees for
+                 every video — sddefault and hq720 are not, and a 404 in a
+                 srcset is a broken image, so neither is offered here.
+
+                 hqdefault is 4:3 with the 16:9 frame letterboxed inside it,
+                 which is fine and not a compromise: the box is `aspect-video`
+                 and the image is `object-cover`, so the crop takes the middle
+                 16:9 of the source — exactly the content area, with the bars
+                 falling outside. Worked at a 342px card: cover scales 480x360
+                 by 0.7125 to 342x256.5, the content band is 192.4 tall, the
+                 box shows the middle 192. The bars are never in frame.
+
+                 Measured across five device classes, total for the five
+                 stills: 1x devices — budget Android phones and non-retina
+                 laptops — drop from 590KB to 160KB and pick hqdefault. Every
+                 2x device still picks maxresdefault and stays at 590KB, which
+                 is the right call and not a shortfall: a 342px card at 2x
+                 genuinely needs ~780px, and the next candidate down is 480.
+                 There is no honest middle rung to add — sddefault is 640 but
+                 4:3, and is one of the variants YouTube does not guarantee.
+
+                 So this is a real saving for 1x traffic and a deliberate
+                 no-op for retina, rather than an across-the-board win. Do not
+                 shrink `sizes` below the true rendered width to force the
+                 smaller file: that buys the bytes by serving a visibly soft
+                 image, which is a different defect, not a fix. */
+              srcSet={`https://img.youtube.com/vi/${video.id}/mqdefault.jpg 320w, https://img.youtube.com/vi/${video.id}/hqdefault.jpg 480w, https://img.youtube.com/vi/${video.id}/maxresdefault.jpg 1280w`}
+              sizes="(min-width: 1536px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
               alt=""
               width={1280}
               height={720}

@@ -83,8 +83,22 @@ const COLUMNS: FooterColumn[] = [
    one false claim for another. The "not captured" sentence covers those. */
 const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
 
+/* `inline-block py-[5px]` is for the thumb, not the eye. The bare line box
+   measured 21px tall on a phone, under the 24px minimum in WCAG 2.5.8, in
+   the densest stack of links on the site. 5px top and bottom takes each row
+   to 31px and, with the list's existing gap, leaves adjacent targets clearly
+   separated.
+
+   Stated in pixels, not `py-1`, for the same reason the header's hamburger
+   is: app/globals.css sets the root to `clamp(15px, 1.1111vw, 19px)`, so a
+   rem-based utility resolves SMALLER exactly where the target matters most —
+   `py-1` is 3.75px at phone widths, not 4px. A tap target that shrinks on
+   phones is the wrong way round.
+
+   The underline wipe is positioned against the inner span, so padding on the
+   anchor does not drag the rule away from the text. */
 const LINK_CLASS =
-  "group text-[16px] leading-[24px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
+  "group inline-block py-[5px] text-[16px] leading-[24px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
 
 /* The sign-off row under the disclaimer sets its own 14px, so a link in it
    cannot borrow LINK_CLASS — 16px there would out-shout the copyright line
@@ -117,16 +131,28 @@ export function SiteFooter() {
           </div>
 
           <GroupItem className="flex flex-col items-start gap-6 lg:shrink-0">
-            {/* No plate behind the logo — it sits natively on warm paper. */}
-            <span className="inline-flex items-center">
+            {/* No plate behind the logo — it sits natively on warm paper.
+
+                A link, not a bare <span>: a site logo is the one element a
+                visitor will click expecting to be taken home, and the header
+                mark already behaves that way. This one used to be inert, so
+                the affordance answered in one place and not the other.
+
+                `sizes` for the same reason as the header mark — h-11 against
+                a 1024x313 PNG is 144px of rendered width, not 2048. */}
+            <Link
+              href="/"
+              className="inline-flex items-center transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:opacity-70"
+            >
               <Image
                 src="/sif-insight-logo.png"
                 alt="SIF Insight"
                 width={1024}
                 height={313}
+                sizes="144px"
                 className="h-11 w-auto"
               />
-            </span>
+            </Link>
             <p className="text-[14px] leading-[20px] text-muted">
               Powered by Platizio Services LLP
             </p>

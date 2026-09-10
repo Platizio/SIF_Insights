@@ -263,9 +263,33 @@ export async function generateMetadata({
   const { category } = await params;
   if (!isCategory(category)) return {};
 
+  const copy = COPY[category];
+
+  /* `alternates` and `openGraph` are declared HERE, per category, and cannot
+     be inherited from app/layout.tsx. The layout deliberately sets no
+     canonical — inheriting one would point all three of these routes at the
+     homepage — and Next merges metadata SHALLOWLY, so a route that omits
+     `openGraph` does not fall back field-by-field: it takes the layout's
+     object whole, and these three pages shipped share cards that read
+     "India's SIF market, in full view" over homepage copy.
+
+     `images` is restated for the same reason downloads/page.tsx restates it:
+     declaring `openGraph` drops the image the root app/opengraph-image.png
+     file convention contributes, silently downgrading the card to
+     twitter:card=summary. */
   return {
-    title: COPY[category].metaTitle,
-    description: COPY[category].metaDescription,
+    title: copy.metaTitle,
+    description: copy.metaDescription,
+    alternates: { canonical: `/strategies/${category}` },
+    openGraph: {
+      title: `${copy.metaTitle} — SIF Insight`,
+      description: copy.metaDescription,
+      url: `/strategies/${category}`,
+      images: "/opengraph-image.png",
+      siteName: "SIF Insight",
+      locale: "en_IN",
+      type: "website",
+    },
   };
 }
 

@@ -63,6 +63,19 @@ export const metadata: Metadata = {
   description:
     "What SIF Insight collects and what it does not. No cookies, no analytics, no embeds, and an enquiry form that neither delivers nor stores what you type.",
   alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "What this site collects, and what it does not",
+    description:
+      "No cookies, no analytics, no embeds, and an enquiry form that neither delivers nor stores what you type.",
+    url: "/privacy",
+    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
+       file convention contributes, which silently downgrades the card to
+       twitter:card=summary. Restated, not inherited. */
+    images: "/opengraph-image.png",
+    siteName: "SIF Insight",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 /**
@@ -251,7 +264,11 @@ function Collection() {
           <Clause index={2} heading="What changes when delivery is wired">
             <P>
               Once a mail provider is connected, a submitted enquiry becomes
-              an email to info@sifinsight.com and lives in that mailbox. That
+              an email to{" "}
+              <a href="mailto:info@sifinsight.com" className={INLINE_LINK}>
+                info@sifinsight.com
+              </a>{" "}
+              and lives in that mailbox. That
               is a real change to what this page describes, so it is a change
               to this page too: the notice must be updated in the same change
               that switches delivery on, before the first enquiry is sent.
