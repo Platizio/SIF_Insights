@@ -31,9 +31,12 @@ import { amcs, navLastUpdated, strategiesByCategory } from "@/lib/data";
    ============================================================ */
 
 /** Absolute, because sitemap entries must be. Matches `metadataBase` in
-    app/layout.tsx; app/robots.ts holds the same origin for the same
-    reason. If the domain moves, both change. */
-const ORIGIN = "https://sifinsight.com";
+    app/layout.tsx; app/robots.ts and app/amc/[id]/page.tsx hold the same
+    origin for the same reason. Four in total, and they move together.
+
+    `www` because the apex 307s to it, so an apex origin would have made
+    every URL in this file a redirect rather than a page. See app/layout.tsx. */
+const ORIGIN = "https://www.sifinsight.com";
 
 /**
  * Routes that render nothing out of the NAV dataset — neither page

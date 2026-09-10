@@ -8,7 +8,8 @@ Operated by Platizio Services LLP, a distributor of Mutual Funds and SIFs. The
 site is editorial and informational: it is not an AMC, not an investment
 adviser, and nothing it renders is advice.
 
-Production: <https://sifinsight.com>
+Production: <https://www.sifinsight.com> — the apex redirects here, so `www`
+is the canonical host and the one four `ORIGIN` constants must name.
 
 ---
 

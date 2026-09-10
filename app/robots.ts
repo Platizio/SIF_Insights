@@ -15,8 +15,10 @@ import type { MetadataRoute } from "next";
    major crawler — so the origin is repeated here rather than derived.
    ============================================================ */
 
-/** Matches `metadataBase` in app/layout.tsx and `ORIGIN` in app/sitemap.ts. */
-const ORIGIN = "https://sifinsight.com";
+/** Matches `metadataBase` in app/layout.tsx and `ORIGIN` in app/sitemap.ts
+    and app/amc/[id]/page.tsx — four in total, and they move together. `www`
+    because the apex 307s to it; see the note in app/layout.tsx. */
+const ORIGIN = "https://www.sifinsight.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {
