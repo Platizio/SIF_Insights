@@ -187,8 +187,8 @@
       "type": "Active Asset Allocator Long-Short",
       "amfiSchemeCode": "SIF-124",
       "isin": "INF109K30059",
-      "nav": 10.3593,
-      "navAsOf": "2026-09-10"
+      "nav": 10.3236,
+      "navAsOf": "2026-09-11"
     },
     {
       "id": "icici-hybrid",
@@ -209,8 +209,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-87",
       "isin": "INF579M30075",
-      "nav": 10.5056,
-      "navAsOf": "2026-09-10"
+      "nav": 10.4868,
+      "navAsOf": "2026-09-11"
     },
     {
       "id": "quant-qsif-active-asset-allocator-long-short-fund-growth-option",
