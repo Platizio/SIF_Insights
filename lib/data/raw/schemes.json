@@ -187,8 +187,8 @@
       "type": "Active Asset Allocator Long-Short",
       "amfiSchemeCode": "SIF-124",
       "isin": "INF109K30059",
-      "nav": 10.3824,
-      "navAsOf": "2026-09-18"
+      "nav": 10.3857,
+      "navAsOf": "2026-09-21"
     },
     {
       "id": "icici-hybrid",
@@ -209,8 +209,8 @@
       "type": "Hybrid Long-Short",
       "amfiSchemeCode": "SIF-87",
       "isin": "INF579M30075",
-      "nav": 10.5135,
-      "navAsOf": "2026-09-18"
+      "nav": 10.5062,
+      "navAsOf": "2026-09-21"
     },
     {
       "id": "quant-qsif-active-asset-allocator-long-short-fund-growth-option",
@@ -331,6 +331,39 @@
       "amfiSchemeCode": "SIF-29",
       "isin": "INF277K30013",
       "nav": 10.0637,
+      "navAsOf": "2026-09-21"
+    },
+    {
+      "id": "apex-apex-equity-long-short",
+      "amcId": "apex",
+      "name": "Apex Equity Long-Short Fund - Regular Plan - Growth",
+      "category": "equity",
+      "type": "Equity Long-Short",
+      "amfiSchemeCode": "SIF-154",
+      "isin": "INF209K30107",
+      "nav": 9.96,
+      "navAsOf": "2026-09-21"
+    },
+    {
+      "id": "apex-apex-equity-ex-top-100-long-short",
+      "amcId": "apex",
+      "name": "Apex Equity Ex-Top 100 Long-short Fund - Regular Plan - Growth",
+      "category": "equity",
+      "type": "Equity Ex-Top 100 Long-Short",
+      "amfiSchemeCode": "SIF-156",
+      "isin": "INF209K30081",
+      "nav": 10.03,
+      "navAsOf": "2026-09-21"
+    },
+    {
+      "id": "sbi-magnum-equity-ex-top-100-long-short",
+      "amcId": "sbi",
+      "name": "Magnum Equity Ex-Top 100 Long Short Fund - Regular Plan - Growth",
+      "category": "equity",
+      "type": "Equity Ex-Top 100 Long-Short",
+      "amfiSchemeCode": "SIF-157",
+      "isin": "INF200K30072",
+      "nav": 9.8877,
       "navAsOf": "2026-09-21"
     }
   ],

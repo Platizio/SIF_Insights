@@ -271,6 +271,56 @@
       "category": "equity",
       "plan": "Regular",
       "option": "Growth"
+    },
+    {
+      "code": "SIF-154",
+      "name": "Apex Equity Long-Short Fund - Regular Plan - Growth",
+      "amcId": "apex",
+      "amc": "Aditya Birla Sun Life Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-156",
+      "name": "Apex Equity Ex-Top 100 Long-short Fund - Regular Plan - Growth",
+      "amcId": "apex",
+      "amc": "Aditya Birla Sun Life Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    },
+    {
+      "code": "SIF-157",
+      "name": "Magnum Equity Ex-Top 100 Long Short Fund - Regular Plan - Growth",
+      "amcId": "sbi",
+      "amc": "SBI Mutual Fund",
+      "category": "equity",
+      "plan": "Regular",
+      "option": "Growth"
+    }
+  ],
+  "excludedNote": "Codes seen in the AMFI feed that the site deliberately does NOT list. check_roster.py consults this so a settled decision stays settled: without it the alarm fires on the same rows every night and gets muted. Direct plans and IDCW variants are excluded by shape and need no entry here - this list is only for rows the feed does not classify, where a person had to decide.",
+  "excluded": [
+    {
+      "code": "SIF-33",
+      "reason": "Direct plan of SIF-34 (iSIF Equity Ex-Top 100 Long-Short). The feed states no Plan or Option for either row; identified as Direct because its NAV is the higher of the pair, which is what a lower TER produces.",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "code": "SIF-127",
+      "reason": "Direct plan of SIF-126 (iSIF Equity Long-Short). Same blank-column pair, same higher-NAV reasoning.",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "code": "SIF-125",
+      "reason": "Direct plan of SIF-124 (iSIF Active Asset Allocator Long-Short). Same blank-column pair, same higher-NAV reasoning.",
+      "reviewed": "2026-09-22"
+    },
+    {
+      "code": "SIF-36",
+      "reason": "Direct plan of SIF-35 (iSIF Hybrid Long-Short). Same blank-column pair, same higher-NAV reasoning.",
+      "reviewed": "2026-09-22"
     }
   ]
 }

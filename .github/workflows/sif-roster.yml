@@ -1,0 +1,68 @@
+name: SIF Roster
+
+# Watches for SIF schemes AMFI lists that the site does not carry.
+#
+# update-nav.yml answers "are our codes still there?" — it looks up the codes in
+# pipeline/sifs.json and fails when one stops resolving. That is a check for a
+# scheme DISAPPEARING, and it is structurally blind to a scheme APPEARING: the
+# job never reads a row it was not already looking for. Nothing in the pipeline
+# watched the roster, so three funds (SIF-154, SIF-156 and SIF-157) sat live on
+# AMFI for weeks and were only found because someone asked.
+#
+# WHY THIS IS NOT A STEP INSIDE update-nav.yml
+#
+# A fund launching elsewhere in the market is not a reason to refuse tonight's
+# NAV. Folding this in would mean an unrelated launch blocks our own price
+# update — and the NAV data would be perfectly good. It fails on its own instead
+# and leaves the data commit alone.
+#
+# WHAT IT DELIBERATELY IGNORES
+#
+# The site lists one share class per fund: Regular Plan, Growth option. The feed
+# carries roughly 122 rows against 33 tracked schemes, nearly all of them Direct
+# plans and IDCW variants. An alarm that fired on those would be red every night
+# and muted within a week, so check_roster.py classifies by Plan/Option and only
+# fails on Regular+Growth — plus anything the feed leaves unclassifiable, which
+# a person then rules on once in sifs.json's `excluded` list.
+
+on:
+  schedule:
+    # 04:00 UTC = 09:30 IST, daily.
+    #
+    # Half an hour after nav-freshness.yml so both morning alarms land together
+    # in IST, and well clear of the 18:00 UTC NAV job. Cadence is daily rather
+    # than weekly because the cost is one HTTP request and the thing being
+    # watched — a fund becoming purchasable — is worth knowing about the day it
+    # happens, not up to six days later.
+    - cron: '0 4 * * *'
+  workflow_dispatch: {}
+
+# Read-only: this job reports, it never writes. Adding a scheme means editing
+# two catalogs and re-running fetch_nav.py, which is a human decision — the
+# scheme's id, AMC, category and mandate are not derivable from the feed.
+permissions:
+  contents: read
+
+concurrency:
+  group: sif-roster
+  cancel-in-progress: false
+
+jobs:
+  roster:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      # Only `requests` is needed; pandas/openpyxl in requirements.txt belong to
+      # the one-off Excel backfill and are dead weight in a daily job.
+      - name: Install requests
+        run: pip install requests
+
+      - name: Check the AMFI roster against pipeline/sifs.json
+        run: python pipeline/check_roster.py
