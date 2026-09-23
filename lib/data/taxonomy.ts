@@ -72,12 +72,15 @@ export function strategyLabel(slug: StrategySlug): string {
  * `tri` marks an equity index whose total-return variant is the one named.
  * Every equity benchmark on file today names the TRI; an ISID that names the
  * price index would resolve to the plain id instead, never be folded into the
- * TRI one — they are different series.
+ * TRI one — they are different series. The hybrid composites carry no flag:
+ * they are built from a total-return equity leg and a debt index, with no
+ * separate price variant, so "(Total Return Index)" after one is a
+ * restatement, not a second series.
  */
 const INDICES: { id: string; label: string; test: RegExp; tri?: boolean }[] = [
   {
     id: "nifty-50-hybrid-composite-debt-50-50",
-    label: "NIFTY 50 Hybrid Composite Debt 50:50 Index",
+    label: "Nifty 50 Hybrid Composite Debt 50:50 Index",
     test: /\bnifty 50 hybrid composite debt 50 ?: ?50\b/,
   },
   {

@@ -251,4 +251,11 @@ export function hasFullDisclosures(s: Strategy): boolean {
    FAQ
    ============================================================ */
 
-export const faqs: Faq[] = faqsRaw as Faq[];
+/**
+ * The FAQs a page may print. An answer marked `approved: false` is drafted
+ * copy waiting on compliance sign-off — the PRD's new questions land that
+ * way — so it stays in the file and out of the export, the same gate
+ * lib/content applies to articles. An entry with no flag predates the flag
+ * and was already live, so it stays live.
+ */
+export const faqs: Faq[] = (faqsRaw as Faq[]).filter((f) => f.approved !== false);

@@ -53,6 +53,10 @@ export const DEFAULT_SCREEN: ScreenState = {
 const RESERVED = new Set(["q", "sort", "cols", "nulls", "pick"]);
 const CODE = /^SIF-\d+$/;
 const MAX_QUERY = 120;
+/* A bound past this prints in exponent form ("1e+21"), which the parser
+   rightly refuses — so it could never survive a round trip. No field on the
+   site comes within ten orders of it. */
+const MAX_BOUND = 1e15;
 
 type Input = string | URLSearchParams | Record<string, string | string[] | undefined>;
 
@@ -109,7 +113,7 @@ function parseBound(text: string, dates: boolean): number | null | undefined {
   if (dates) return isoDay(t) ?? undefined;
   if (!/^-?\d+(\.\d+)?$/.test(t)) return undefined;
   const n = Number(t);
-  return Number.isFinite(n) ? n : undefined;
+  return Number.isFinite(n) && Math.abs(n) < MAX_BOUND ? n : undefined;
 }
 
 /** "5~" / "~1.5" / "2~5" / "5" → a range; malformed → null (drop). */
@@ -147,7 +151,7 @@ function normaliseFilter(id: string, value: FilterValue): FilterValue | null {
     return ids.length ? { t: "set", ids } : null;
   }
   if (value.t === "range") {
-    const ok = (n: number | null) => n === null || Number.isFinite(n);
+    const ok = (n: number | null) => n === null || (Number.isFinite(n) && Math.abs(n) < MAX_BOUND);
     if (!ok(value.min) || !ok(value.max) || (value.min === null && value.max === null)) {
       return null;
     }
@@ -155,9 +159,12 @@ function normaliseFilter(id: string, value: FilterValue): FilterValue | null {
       const integral = (n: number | null) => n === null || Number.isInteger(n);
       if (!integral(value.min) || !integral(value.max)) return null;
     }
-    return value.min !== null && value.max !== null && value.min > value.max
-      ? { t: "range", min: value.max, max: value.min }
-      : { t: "range", min: value.min, max: value.max };
+    /* −0 prints as "0", so it is folded here or the round trip would not be exact. */
+    const min = value.min === 0 ? 0 : value.min;
+    const max = value.max === 0 ? 0 : value.max;
+    return min !== null && max !== null && min > max
+      ? { t: "range", min: max, max: min }
+      : { t: "range", min, max };
   }
   return { t: "flag", v: value.v };
 }
@@ -331,6 +338,10 @@ export function screenHref(state: ScreenState, path = "/sif-screener"): string {
  * The `ids` param → AMFI codes: case-insensitive, de-duplicated, at most
  * four, and (given `known`) unknown codes dropped. Accepts the raw string or
  * Next's decoded `searchParams.ids` (string | string[] | undefined).
+ *
+ * Unlike a Screener set, an ENCODED comma separates here too: no AMFI code
+ * contains one, and `URLSearchParams.toString()` — the obvious way for a page
+ * to build this link — writes every comma as %2C.
  */
 export function parseCompareIds(
   raw: string | string[] | undefined | null,
@@ -339,7 +350,7 @@ export function parseCompareIds(
   const text = Array.isArray(raw) ? raw.join(",") : (raw ?? "");
   const codes = text
     .split(",")
-    .map((p) => decodePart(p, /%/.test(p)) ?? "")
+    .flatMap((p) => (decodePart(p, /%/.test(p)) ?? "").split(","))
     .filter(Boolean);
   return normaliseCodes(codes, known);
 }

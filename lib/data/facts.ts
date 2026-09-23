@@ -34,6 +34,14 @@ const factsFile = factsRaw as {
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+/** A real calendar date — "2026-02-31" matches the pattern but is not one. */
+const isIsoDate = (v: unknown): v is string =>
+  typeof v === "string" &&
+  ISO_DATE.test(v) &&
+  !Number.isNaN(Date.parse(`${v}T00:00:00Z`)) &&
+  new Date(`${v}T00:00:00Z`).toISOString().slice(0, 10) === v;
+
 const BUCKETS: ReadonlySet<string> = new Set<LiquidityBucket>([
   "daily",
   "twice-weekly",
@@ -55,7 +63,7 @@ const isRecord = (v: unknown): v is Record<string, unknown> =>
  * something the page cannot state as the field it claims to be.
  */
 const VALID: { [K in keyof SchemeFacts]: (v: unknown) => boolean } = {
-  allotmentDate: (v) => typeof v === "string" && ISO_DATE.test(v),
+  allotmentDate: isIsoDate,
   faceValue: isPositive,
   fundManagers: (v) =>
     Array.isArray(v) && v.length > 0 && v.every((m) => isRecord(m) && isText(m.name)),

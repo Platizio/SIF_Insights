@@ -199,7 +199,7 @@ function universe<T extends string>(
  * SEBI's seven strategies. Duplicated from lib/data/taxonomy.ts because this
  * module may not value-import the data layer; the `Record<StrategySlug, …>`
  * makes the compiler reject a missing or extra slug, and
- * tests/screener-fields.test.ts checks every label against SEBI_STRATEGIES.
+ * tests/taxonomy.test.ts checks every entry against SEBI_STRATEGIES.
  */
 export const STRATEGIES: Record<StrategySlug, { label: string; category: Category }> = {
   "equity-long-short": { label: "Equity Long-Short", category: "equity" },

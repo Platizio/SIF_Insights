@@ -165,10 +165,9 @@ export function absentLabel(reason: Absent): string {
    ============================================================ */
 
 /**
- * Upper bounds of grades 1–3 by period; anything at or beyond the last bound
- * is grade 4. Short periods move less, so a flat reading on a day is not the
- * same size as a flat reading on a month — one scale for both would paint
- * every 1D cell pale and every 6M cell dark.
+ * The three band edges by period (spec §9). Short periods move less, so a
+ * flat reading on a day is not the same size as a flat reading on a month —
+ * one scale for both would paint every 1D cell pale and every 6M cell dark.
  */
 const HEAT_BOUNDS_SHORT = [0.25, 1, 2.5] as const;
 const HEAT_BOUNDS_LONG = [1, 3, 7] as const;
@@ -176,25 +175,22 @@ const HEAT_BOUNDS_LONG = [1, 3, 7] as const;
 /**
  * A return's heatmap grade, −4..4, 0 = flat.
  *
- * The magnitude bands are half-open — [0, a) is 1, [a, b) is 2, [b, c) is 3,
- * [c, ∞) is 4 — with a/b/c = 0.25/1/2.5 for 1D and 1W and 1/3/7 for every
- * longer period. Zero is reserved for an exactly unchanged value, the same
- * test `formatPct` uses to drop the sign: a cell that prints "+0.00%" is a
- * (tiny) gain and grades +1, so the colour never contradicts the printed
- * sign. The grade is decoration on top of that printed signed figure, never
- * a replacement for it — colour alone must not carry gain or loss.
+ * The bands are the spec's own words taken literally — "<a, a–b, b–c, >c",
+ * with a/b/c = 0.25/1/2.5 for 1D and 1W and 1/3/7 for every longer period.
+ * Its two strict ends are kept strict: grade 1 is BELOW a, so exactly a is
+ * grade 2; grade 4 is ABOVE c, so exactly c is grade 3. The one shared bound,
+ * b, closes the band that names it first (1–3 takes 3). Zero is reserved for
+ * an exactly unchanged value, the same test `formatPct` uses to drop the
+ * sign: a cell that prints "+0.00%" is a (tiny) gain and grades +1, so the
+ * colour never contradicts the printed sign. The grade is decoration on top
+ * of that printed signed figure, never a replacement for it — colour alone
+ * must not carry gain or loss.
  */
 export function heatGrade(pct: number, period: Period): number {
   if (!Number.isFinite(pct) || pct === 0) return 0;
-  const bounds = period === "1D" || period === "1W" ? HEAT_BOUNDS_SHORT : HEAT_BOUNDS_LONG;
+  const [a, b, c] = period === "1D" || period === "1W" ? HEAT_BOUNDS_SHORT : HEAT_BOUNDS_LONG;
   const size = Math.abs(pct);
-  let grade = 4;
-  for (let i = 0; i < bounds.length; i++) {
-    if (size < bounds[i]) {
-      grade = i + 1;
-      break;
-    }
-  }
+  const grade = size < a ? 1 : size <= b ? 2 : size <= c ? 3 : 4;
   return pct > 0 ? grade : -grade;
 }
 
