@@ -1,0 +1,8 @@
+{
+  "_comment": "Scheme-level assets under management in INR CRORE, MONTH-END (never average AUM), keyed by AMFI scheme code: { \"SIF-3\": [ { \"month\": \"2026-08\", \"aumCr\": 1234.56, \"src\": \"<sourceId>\", \"locator\": \"...\", \"verified\": true } ] }. `src` names an entry in `sources`. Only verified entries are read. AMC, industry and per-strategy totals are DERIVED in lib/data/aum.ts from one common month, with completeness flags — never store a total here. Check the unit on every read: factsheets mix lakh and crore.",
+  "schemaVersion": 1,
+  "unit": "INR_CRORE",
+  "basis": "month-end",
+  "sources": {},
+  "schemes": {}
+}

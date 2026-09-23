@@ -1,0 +1,7 @@
+{
+  "_comment": "The TER actually CHARGED on the Regular plan, dated, keyed by AMFI scheme code: { \"SIF-3\": [ { \"asOf\": \"2026-09-01\", \"terPct\": 1.95, \"src\": \"<sourceId>\", \"locator\": \"...\", \"verified\": true } ] }. Source: the AMC's TER disclosure page or the factsheet. The ISID's MAXIMUM permissible TER stays in disclosures.json (expenseRatio with expenseRatioIsCap) — the two are different claims and are never mixed or substituted for each other.",
+  "schemaVersion": 1,
+  "plan": "Regular",
+  "sources": {},
+  "schemes": {}
+}

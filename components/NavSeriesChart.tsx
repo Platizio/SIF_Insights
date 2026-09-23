@@ -3,7 +3,8 @@
 import { useMemo } from "react";
 import { DrawnDot, DrawnPath } from "@/components/motion/DrawnPath";
 import { cn } from "@/lib/cn";
-import { formatNav, formatUpdated, type NavPoint } from "@/lib/data";
+import type { NavPoint } from "@/lib/data/types";
+import { formatNav, formatUpdated } from "@/lib/format";
 
 /* ============================================================
    One scheme's published NAVs, plotted against its own axis.

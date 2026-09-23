@@ -1,0 +1,6 @@
+{
+  "_comment": "Hand-researched scheme facts, keyed by AMFI scheme code. EVERY value is a Fact: { \"value\": <T>, \"src\": \"<sourceId>\", \"locator\": \"p.3 'Date of allotment'\", \"verified\": true }, and `src` must name an entry in this file's `sources` dict ({ url, publisher, publisherKind: AMC|AMFI|SEBI, docType: ISID|SID|KIM|SAI|factsheet|portfolio|addendum|ter-disclosure|press-release|amfi-data|sebi-filing, title, asOf, retrievedOn }). lib/data/facts.ts merges ONLY facts with verified:true whose src resolves; anything else renders 'Not captured', never a default. Per-scheme fields, all optional: allotmentDate (ISO), faceValue (rupees per unit), fundManagers ([{name, since?, role?}]), objective, subscription ({bucket: daily|twice-weekly|weekly|fortnightly|monthly|other, text}), redemptionTerms ({days?: string[], noticeDays?, settlement?}), minAdditional (rupees), options (string[]), assetAllocation ([{asset, minPct, maxPct}]). A scheme with no entry simply has nothing captured — the build never throws on a missing one. Kept apart from schemes.json and nav-history.json so the nightly NAV pipeline and research never write the same file.",
+  "schemaVersion": 1,
+  "sources": {},
+  "schemes": {}
+}
