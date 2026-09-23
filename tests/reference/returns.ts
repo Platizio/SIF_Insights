@@ -29,6 +29,11 @@
  *   - monthly = month-end to month-end for completed months, each end
  *     point within 7 days of its month end
  */
+/* The compliance threshold is a signed-off constant, not a derivation — the
+   reference reads the same number rather than assuming 0, so the day
+   compliance sets it the two implementations still agree by default. */
+import { PERFORMANCE_MIN_AGE_DAYS } from "@/lib/compliance";
+
 import { rawFactsFile, rawSchemesFile, seriesFor } from "../raw-source";
 
 export type RefPoint = { date: string; nav: number };
@@ -138,9 +143,10 @@ export function refTrailingReturn(
   if (points.length === 0) return { status: "insufficient-history" };
   const to = points[points.length - 1];
 
-  if ((o.minAgeDays ?? 0) > 0) {
+  const minAge = o.minAgeDays ?? PERFORMANCE_MIN_AGE_DAYS;
+  if (minAge > 0) {
     const began = inceptionDate(code);
-    if (began === null || span(began, to.date) < (o.minAgeDays ?? 0)) {
+    if (began === null || span(began, to.date) < minAge) {
       return { status: "withheld" };
     }
   }

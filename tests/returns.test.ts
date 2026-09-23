@@ -14,9 +14,11 @@ import {
   PERIODS,
   RETURN_RULES,
   getNav,
+  inception,
   maxDrawdown,
   monthlyReturns,
   navHistory,
+  schemeFacts,
   trailingReturn,
   volatility,
   type ReturnResult,
@@ -163,11 +165,19 @@ describe("trailingReturn — relationships", () => {
   });
 
   it("a scheme with only its first NAV has no 1D and no since-first-NAV return", () => {
-    // Synthetic cut at each scheme's first published date.
+    // Synthetic cut at each scheme's first published date. SI can still be
+    // measured there once research sources the allotment date and face value
+    // — from face value, never from the lone NAV to itself.
     for (const s of rawSchemes) {
       const first = seriesFor(s.amfiSchemeCode)[0][0];
       expect(trailingReturn(s.id, "1D", { asOf: first }).status).toBe("insufficient-history");
-      expect(trailingReturn(s.id, "SI", { asOf: first }).status).toBe("insufficient-history");
+      const si = trailingReturn(s.id, "SI", { asOf: first });
+      const facts = schemeFacts(s.amfiSchemeCode);
+      if (facts.allotmentDate && facts.faceValue && facts.allotmentDate.value <= first) {
+        expect(si.status === "ok" && si.basis).toBe("face-value");
+      } else {
+        expect(si.status).toBe("insufficient-history");
+      }
     }
   });
 
@@ -180,9 +190,11 @@ describe("trailingReturn — relationships", () => {
 
   it("withholds performance for schemes younger than the minimum age", () => {
     for (const s of rawSchemes) {
+      // Age runs from inception — the allotment date once sourced, else the
+      // first published NAV — to the scheme's last NAV.
       const points = navHistory(s.id);
-      const age =
-        (Date.parse(points.at(-1)!.date) - Date.parse(points[0].date)) / (24 * 60 * 60 * 1000);
+      const began = inception(s.id)!.date;
+      const age = (Date.parse(points.at(-1)!.date) - Date.parse(began)) / (24 * 60 * 60 * 1000);
       for (const p of PERIODS) {
         const tooYoung = trailingReturn(s.id, p, { minAgeDays: age + 1 });
         expect(tooYoung.status).toBe("withheld");
@@ -223,7 +235,12 @@ describe("risk metrics — relationships", () => {
       expect(months).toEqual([...months].sort());
       const launch = seriesFor(s.amfiSchemeCode)[0][0].slice(0, 7);
       expect(months).not.toContain(launch);
-      expect(months).not.toContain(rawSchemesFile.navAsOf.slice(0, 7));
+      // The file's own month is still running — unless the file is dated on
+      // its last day, when that month has just completed and belongs in.
+      const asOf = rawSchemesFile.navAsOf;
+      const [y, m] = asOf.split("-").map(Number);
+      const isMonthEnd = new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10) === asOf;
+      if (!isMonthEnd) expect(months).not.toContain(asOf.slice(0, 7));
     }
   });
 });
