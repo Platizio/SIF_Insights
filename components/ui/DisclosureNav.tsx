@@ -86,7 +86,7 @@ export function DisclosureNav({
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape" || event.defaultPrevented) return;
       setOpen(false);
       buttonRef.current?.focus();
     };
@@ -120,7 +120,9 @@ export function DisclosureNav({
       className={cn("relative", accordion && "border-b border-hairline")}
       onClick={onLinkClick}
     >
-      <div className={cn("flex items-center", accordion ? "justify-between" : "gap-1")}>
+      {/* gap-2 on the bar, not less: the chevron's focus ring (2px, offset
+          2px) reaches 4px past its box, and at gap-1 it touched the label. */}
+      <div className={cn("flex items-center", accordion ? "justify-between" : "gap-2")}>
         <Link
           href={item.href}
           aria-current={pathname === item.href ? "page" : undefined}

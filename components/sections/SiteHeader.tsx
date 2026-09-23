@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { CloseIcon, MenuIcon } from "@/components/icons";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Button, Shell } from "@/components/primitives";
@@ -30,8 +30,9 @@ import { PRIMARY_CTA, PRIMARY_NAV, isPathActive } from "@/lib/nav";
 
 /** The nav collapses at 992px, which is between Tailwind's md and lg stops.
     Re-measured for the PRD's labels (two chevrons and a longer CTA) at
-    992 / 1024 / 1120 / 1280: logo, nav and CTA hold one row with clear
-    space at every width from 992 up. */
+    992 / 1024 / 1120 / 1280 / 1440 against `next start`: one row, every
+    label on one line, no horizontal scroll. Tightest at 992 with the 10px
+    scrollbar showing — 32px logo↔nav and 32px nav↔CTA. */
 const PANEL_ID = "site-nav-panel";
 
 /** Scroll depth at which the header stops floating and gains its hairline. */
@@ -43,11 +44,20 @@ const LINK_CLASS =
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [grounded, setGrounded] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
+  /* Escape hands focus back to the toggle. Without that, Escape pressed on
+     a link or an accordion chevron inside the panel hides the element that
+     held focus, and the browser drops focus to <body> — measured at 390px,
+     a keyboard user was sent back to the top of the document. */
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
+      /* defaultPrevented: a dialog open over the panel consumed this
+         Escape (ui/Dialog marks it), and it closes the dialog only. */
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      setOpen(false);
+      toggleRef.current?.focus();
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
@@ -137,6 +147,7 @@ export function SiteHeader() {
         </Magnetic>
 
         <button
+          ref={toggleRef}
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}

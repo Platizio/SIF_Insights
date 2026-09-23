@@ -120,7 +120,13 @@ export function Dialog({
 
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
+      /* Both, because they reach different listeners. stopPropagation
+         stops React handlers above the portal; the document-level Escape
+         listeners (the mobile menu, the nav dropdowns) sit on the same
+         node React delegates from, so they only see defaultPrevented — and
+         check it, so one Escape closes the dialog and nothing under it. */
       event.stopPropagation();
+      event.preventDefault();
       onCloseRef.current();
       return;
     }
