@@ -24,33 +24,51 @@ import type { Amc } from "@/lib/data";
  *    geometry, so a grid, a column or a marquee stays even. Never a gap;
  *    never a stand-in glyph implying a brand we do not have.
  *
- * `hover` turns on grayscale-at-rest → colour, and muted → ink for the
- * text lockup, so both kinds of tile behave identically under the pointer.
- * It reads `group-hover`, so the caller must be a `group`.
+ * `tone` decides what the mark looks like at rest:
+ *
+ * - `"colour"` (default) — the house's own colours, always. The client's
+ *   review asked for exactly this: marks that "adopt clearly to the color
+ *   of the respective brands", after the grayscale strip read as washed out.
+ * - `"hover-reveal"` — grayscale at rest → colour under the pointer, and
+ *   body → ink for the text lockup. It reads `group-hover`, so the caller
+ *   must be a `group`. Kept for surfaces where seventeen full-colour marks
+ *   in one grid would out-shout the content around them.
+ *
+ * `hover` is the older spelling of `tone="hover-reveal"` and still works,
+ * so the callers written against it render exactly as they did. An explicit
+ * `tone` wins over it.
  *
  * Fixed tile + `fill` keeps CLS at zero without hard-coding a different
  * intrinsic size per mark.
  */
 
+/* Literal class strings, one per size — Tailwind scans source text, so a
+   size cannot be assembled from parts. */
 const SIZES = {
   sm: { box: "h-9 w-[64px]", pad: "p-1.5", text: "text-[10px]", sizes: "64px" },
   md: { box: "h-14 w-[124px]", pad: "p-2.5", text: "text-[13px]", sizes: "124px" },
   lg: { box: "h-16 w-[144px]", pad: "p-3", text: "text-[15px]", sizes: "144px" },
+  xl: { box: "h-20 w-[184px]", pad: "p-3.5", text: "text-[17px]", sizes: "184px" },
 } as const;
+
+export type AmcMarkTone = "colour" | "hover-reveal";
 
 export function AmcMark({
   amc,
   size = "sm",
+  tone,
   hover = false,
   className,
 }: {
   amc: Amc | undefined;
   size?: keyof typeof SIZES;
-  /** Requires the caller to be a `group`. */
+  tone?: AmcMarkTone;
+  /** Legacy alias for `tone="hover-reveal"`. Requires the caller to be a `group`. */
   hover?: boolean;
   className?: string;
 }) {
   const s = SIZES[size];
+  const reveal = (tone ?? (hover ? "hover-reveal" : "colour")) === "hover-reveal";
   const tile = cn(
     "relative inline-flex shrink-0 items-center justify-center overflow-hidden border border-hairline bg-white",
     s.box,
@@ -66,9 +84,12 @@ export function AmcMark({
           className={cn(
             "text-center font-medium leading-tight",
             s.text,
-            hover
+            /* At rest the lockup is INK. It used to be `text-ground/80` —
+               off-white on the white tile, i.e. invisible — which went
+               unnoticed only because no house reaches this branch today. */
+            reveal
               ? "text-body transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-ink"
-              : "text-ground/80",
+              : "text-ink",
           )}
         >
           {amc.sifName}
@@ -80,7 +101,7 @@ export function AmcMark({
   const art = cn(
     "object-contain",
     s.pad,
-    hover &&
+    reveal &&
       "grayscale transition-[filter] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:grayscale-0",
   );
 

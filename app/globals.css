@@ -82,6 +82,57 @@
   --color-risk-4: oklch(0.61 0.165 50);
   --color-risk-5: oklch(0.545 0.195 28);
 
+  /* --- Performance heat ramp (grade 1 faint → 4 strong) -------
+     Hues match --color-gain (152) and --color-loss (26), so a heat cell
+     and a <Delta> read as the same system. Colour is NEVER the only
+     signal: every cell also prints the signed % (U+2212 for minus).
+
+     Each grade is PAIRED with a text colour, and the pairing is the
+     constraint that set the lightness — not taste. Grades 1–2 carry
+     `text-ink`; grades 3–4 carry `text-surface` (pure white); N/A carries
+     `text-muted`. There is no lightness in between at which one text
+     colour clears 4.5:1 for all four grades, which is why the text flips
+     at grade 3 and why the 2→3 step is the widest in the ramp.
+
+     Measured (oklch → linear sRGB → WCAG 2.1, sRGB-clipped; the same
+     conversion reproduces --color-muted's canvas-measured #686c75):
+       pos-1 #cdefd5  ink 14.85      neg-1 #fbdcd9  ink 14.36
+       pos-2 #8cd19e  ink 10.31      neg-2 #f0a9a1  ink 9.57
+       pos-3 #1e8347  white 4.78     neg-3 #c13c39  white 5.29
+       pos-4 #156234  white 7.42     neg-4 #922524  white 8.36
+       na    #eff0f3  muted 4.62 · ink 16.19
+     Re-sampled in Chromium off a 2D canvas (getComputedStyle returns
+     lab(), which is not RGB): every ratio identical to two decimals.
+     pos-3 is the tightest pair. Lightening it past 0.54 drops white under
+     4.6 and inside rounding distance of the floor — re-measure before
+     touching any of these. Grade thresholds belong to the data layer
+     (heatGrade), not to this file. */
+  --color-heat-pos-1: oklch(0.92 0.05 152);
+  --color-heat-pos-2: oklch(0.8 0.1 152);
+  --color-heat-pos-3: oklch(0.54 0.13 152);
+  --color-heat-pos-4: oklch(0.44 0.105 152);
+  --color-heat-neg-1: oklch(0.92 0.035 26);
+  --color-heat-neg-2: oklch(0.8 0.085 26);
+  --color-heat-neg-3: oklch(0.55 0.17 26);
+  --color-heat-neg-4: oklch(0.44 0.145 26);
+  --color-heat-na: oklch(0.955 0.004 265);
+
+  /* --- Chart series (compare, up to four schemes) -------------
+     Kept clear of the gain/loss hues on purpose: a rebased line in green
+     would read as "this one went up". Series also differ by dash pattern
+     and carry direct labels, so hue is never the only key.
+     Line contrast (WCAG 1.4.11, ≥3:1 for graphics):
+       1 accent #007475  ground 5.23 · surface 5.59 · surface-2 4.91
+       2 ink    #111419  ground 17.25
+       3 violet #7347af  ground 6.04 · surface 6.46 · surface-2 5.67
+       4 ochre  #ad721c  ground 3.77 · surface 4.04 · surface-2 3.55
+     Series 4 is a LINE colour only — under 4.5:1 on every ground, so its
+     direct label is set in ink beside a swatch, never in ochre text. */
+  --color-series-1: var(--color-accent);
+  --color-series-2: var(--color-ink);
+  --color-series-3: oklch(0.5 0.16 300);
+  --color-series-4: oklch(0.6 0.12 70);
+
   /* --- Type --------------------------------------------------- */
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -348,6 +399,24 @@
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
+  }
+
+  /* The "Data as of …" line under every figure block (see <AsOf>).
+     Italic is SYNTHESISED: Geist ships no italic face, so the browser
+     slants the roman. That is deliberate — the line should read as a
+     quieter aside than the meta around it without importing a new face,
+     and the serif is reserved for the two `em.swap` words.
+     Stays in Geist rather than taking `.tabular`'s mono: a mono date in
+     an italic sentence reads as a code span. Tabular digits still apply.
+     Colour is --color-muted, which clears 4.5:1 on all four grounds
+     (see the token note above); in components so a utility can override. */
+  .asof {
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--color-muted);
+    font-style: italic;
+    font-synthesis-style: auto;
+    font-variant-numeric: tabular-nums;
   }
 }
 

@@ -5,11 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
+import { CloseIcon, MenuIcon } from "@/components/icons";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Button, Shell } from "@/components/primitives";
+import { DisclosureNav } from "@/components/ui/DisclosureNav";
+import { lockPageScroll } from "@/components/ui/scroll-lock";
 import { cn } from "@/lib/cn";
 import { DUR, EASE } from "@/lib/motion";
-import { pauseSmoothScroll, resumeSmoothScroll } from "@/lib/smooth-scroll-control";
+import { PRIMARY_CTA, PRIMARY_NAV, isPathActive } from "@/lib/nav";
 
 /**
  * Sticky navigation.
@@ -17,21 +20,18 @@ import { pauseSmoothScroll, resumeSmoothScroll } from "@/lib/smooth-scroll-contr
  * No border and no shadow at rest — the header separates from content by
  * whitespace alone. It is opaque `bg-ground`, so scrolled content passes
  * cleanly beneath it; past ~40px a single hairline fades in to ground it.
+ *
+ * The tree is lib/nav.ts (the PRD's order: Home · SIF Tracker ▾ · SIF
+ * Screener · Compare · AMCs · Learn ▾ · About Us). Items with children
+ * render through <DisclosureNav>: the label is a link to the hub page and a
+ * separate chevron opens the list, so every hub is still one click away —
+ * and reachable with JavaScript off.
  */
 
-/* Real routes now, not homepage anchors. The old site's URLs are preserved
-   exactly so inbound links and rankings survive the redesign. */
-const NAV_LINKS = [
-  { label: "What is a SIF", href: "/what-is-sif" },
-  { label: "Strategies", href: "/strategies" },
-  { label: "SIF Tracker", href: "/sif-tracker" },
-  { label: "NAV", href: "/nav-tracker" },
-  { label: "AMCs", href: "/amc" },
-  { label: "Media", href: "/media" },
-  { label: "About", href: "/about" },
-] as const;
-
-/** The nav collapses at 992px, which is between Tailwind's md and lg stops. */
+/** The nav collapses at 992px, which is between Tailwind's md and lg stops.
+    Re-measured for the PRD's labels (two chevrons and a longer CTA) at
+    992 / 1024 / 1120 / 1280: logo, nav and CTA hold one row with clear
+    space at every width from 992 up. */
 const PANEL_ID = "site-nav-panel";
 
 /** Scroll depth at which the header stops floating and gains its hairline. */
@@ -60,32 +60,13 @@ export function SiteHeader() {
      document from 0 to 599 while the panel sat still at top:53. The menu
      ends up floating over content it has no relationship to.
 
-     It has to be a CSS lock on the root, not `lenis.stop()`. Lenis is
-     configured with `smoothWheel` only and no `syncTouch`, so TOUCH scrolling
-     — the only kind that matters for a menu that exists below 992px — never
-     passes through Lenis at all and is untouched by stopping it.
-
-     `overflow: hidden` goes on <html> rather than <body>: on <body> alone iOS
-     Safari has historically kept scrolling anyway. The previous inline value
-     is captured and restored rather than blanked, so this composes with
-     anything else that touches it instead of clobbering it.
-
-     And the CSS lock is not sufficient by itself. `overflow: hidden` stops a
-     user scrolling but not `scrollTop` being SET, which is exactly what Lenis
-     does when it swallows a wheel event — with the lock alone, a 600px wheel
-     still moved the document 599px. So the two calls cover two different
-     inputs: the CSS for native touch on a phone, `pauseSmoothScroll` for
-     Lenis-driven wheel on anything with a mouse under 992px. */
+     Both halves of the lock — the CSS one for native touch, the Lenis pause
+     for wheel on anything with a mouse under the breakpoint — now live in
+     components/ui/scroll-lock.ts, shared with the dialogs, and are counted
+     so a dialog opened over the menu cannot unlock the page under it. */
   useEffect(() => {
     if (!open) return;
-    const root = document.documentElement;
-    const previousOverflow = root.style.overflow;
-    root.style.overflow = "hidden";
-    pauseSmoothScroll();
-    return () => {
-      root.style.overflow = previousOverflow;
-      resumeSmoothScroll();
-    };
+    return lockPageScroll();
   }, [open]);
 
   useEffect(() => {
@@ -122,29 +103,36 @@ export function SiteHeader() {
 
         <nav
           aria-label="Primary"
-          /* Seven items: the gap tightens at the 992px breakpoint so the row
-             does not collide with the logo or the CTA, and opens up again
-             once there is room for it. */
-          className="hidden justify-self-center min-[992px]:flex min-[992px]:items-center min-[992px]:gap-5 xl:gap-8"
+          className="hidden justify-self-center min-[992px]:block"
         >
-          {NAV_LINKS.map((link) => (
-            <NavLink key={link.href} href={link.href}>
-              {link.label}
-            </NavLink>
-          ))}
+          {/* A list, as the disclosure pattern expects: the dropdowns are
+              list items whose children are a nested list of links. The gap
+              tightens at the breakpoint so the row does not collide with the
+              logo or the CTA, and opens up once there is room for it. */}
+          <ul className="flex items-center gap-4 xl:gap-7">
+            {PRIMARY_NAV.map((item) =>
+              item.children ? (
+                <DisclosureNav key={item.href} item={item} />
+              ) : (
+                <li key={item.href}>
+                  <NavLink href={item.href}>{item.label}</NavLink>
+                </li>
+              ),
+            )}
+          </ul>
         </nav>
 
         <Magnetic className="hidden justify-self-end min-[992px]:block">
           {/* Trimmed from the shared 15px/px-7/py-3.5 so the CTA sits inside a
               64px band with air around it. tailwind-merge resolves these
               against Button own classes, so this is an override, not a
-              duplicate. */}
+              duplicate. The arrow comes from <Button>; the label carries none. */}
           <Button
-            href="/contact"
+            href={PRIMARY_CTA.href}
             variant="primary"
             className="px-5 py-2.5 text-[14px]"
           >
-            Book a consultation
+            {PRIMARY_CTA.label}
           </Button>
         </Magnetic>
 
@@ -164,49 +152,46 @@ export function SiteHeader() {
              This is the only control on a phone that opens the nav. */
           className="col-start-3 inline-flex h-[44px] w-[44px] items-center justify-center justify-self-end rounded-full border border-hairline text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent hover:bg-accent-wash min-[992px]:hidden"
         >
-          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" aria-hidden="true">
-            {open ? (
-              <path
-                d="m2 1 12 10M14 1 2 11"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                d="M0 1.5h16M0 10.5h16"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            )}
-          </svg>
+          {open ? <CloseIcon size={16} /> : <MenuIcon size={16} />}
         </button>
       </Shell>
 
-      {/* Always rendered so `aria-controls` always resolves; `hidden` does the hiding. */}
-      {/* `max-h`/`overflow-y-auto` so the panel is reachable on a short
-          viewport — a landscape phone is ~375x400, and seven links plus the
-          CTA do not fit. `overscroll-contain` keeps a scroll that reaches the
-          panel's end from chaining to the document behind it. */}
+      {/* Always rendered so `aria-controls` always resolves; `hidden` does
+          the hiding. This is the one panel that is NOT an AnimatePresence
+          overlay, deliberately: it is the whole mobile nav, it has always
+          shipped in the HTML, and `hidden` is not an opacity — nothing here
+          waits on JavaScript to become visible, it waits on a tap.
+
+          `max-h`/`overflow-y-auto` so the panel is reachable on a short
+          viewport — a landscape phone is ~375x400, and seven links plus two
+          expanded sections and the CTA do not fit. `overscroll-contain`
+          keeps a scroll that reaches the panel's end from chaining to the
+          document behind it. `data-lenis-prevent` because the lock above
+          pauses Lenis, and a paused Lenis still swallows wheel events — so
+          without it the panel could not be wheel-scrolled at all. */}
       <div
         id={PANEL_ID}
         hidden={!open}
+        data-lenis-prevent=""
         className="max-h-[calc(100dvh-3.5rem)] overflow-y-auto overscroll-contain border-b border-hairline bg-surface min-[992px]:hidden"
       >
         <Shell>
-          <nav aria-label="Primary, mobile" onClick={closeOnLink} className="flex flex-col">
-            {NAV_LINKS.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                className="border-b border-hairline py-4"
-              >
-                {link.label}
-              </NavLink>
-            ))}
-            <Button href="/contact" variant="primary" className="my-6 self-start">
-              Book a consultation
+          <nav aria-label="Primary, mobile" onClick={closeOnLink}>
+            <ul className="flex flex-col">
+              {PRIMARY_NAV.map((item) =>
+                item.children ? (
+                  <DisclosureNav key={item.href} item={item} variant="accordion" />
+                ) : (
+                  <li key={item.href} className="border-b border-hairline">
+                    <NavLink href={item.href} className="block py-4">
+                      {item.label}
+                    </NavLink>
+                  </li>
+                ),
+              )}
+            </ul>
+            <Button href={PRIMARY_CTA.href} variant="primary" className="my-6">
+              {PRIMARY_CTA.label}
             </Button>
           </nav>
         </Shell>
@@ -232,7 +217,7 @@ export function SiteHeader() {
 /**
  * Nav link with a hairline that wipes in from the left on hover.
  * scaleX on a child span, never a border toggle: a permanent underline
- * would turn the nav into five competing rules on a page whose whole
+ * would turn the nav into seven competing rules on a page whose whole
  * structure is already drawn in hairlines.
  */
 function NavLink({
@@ -245,14 +230,13 @@ function NavLink({
   className?: string;
 }) {
   const pathname = usePathname();
-  // Section-aware: /strategies/equity should still light "Strategies".
-  const active =
-    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+  // Section-aware: /amc/icici should still light "AMCs".
+  const active = isPathActive(pathname, href);
 
   return (
     <Link
       href={href}
-      aria-current={active ? "page" : undefined}
+      aria-current={pathname === href ? "page" : undefined}
       className={cn(LINK_CLASS, active && "text-ink", className)}
     >
       <span className="relative inline-block">
@@ -277,6 +261,9 @@ function NavLink({
  * On the warm-paper ground it reads natively, so there is NO plate behind
  * it — removing that white box was an explicit client instruction. Hover
  * is opacity only; tinting or boxing the mark is off the table.
+ *
+ * Always links to "/" — the PRD asks for exactly that, and it is the one
+ * element a visitor clicks expecting to be taken home.
  *
  * Explicit intrinsic dimensions (the PNG is 1024×313) keep CLS at zero.
  * `loading="eager"` rather than `priority`, which Next 16 deprecated.

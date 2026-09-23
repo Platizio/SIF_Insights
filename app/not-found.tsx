@@ -14,8 +14,9 @@ import { Eyebrow, Section, Shell } from "@/components/primitives";
  * There is no SEO to win here: an unmatched URL already returns HTTP 404
  * with `noindex`, which Next injects for any 404 response. What this page
  * is for is the person who mistyped a scheme slug or followed a stale
- * link from a WhatsApp forward, and the three routes below are the ones
- * worth landing on instead.
+ * link from a WhatsApp forward, and the four routes below are the ones
+ * worth landing on instead — the front door and the three hubs every
+ * journey through the site starts from.
  *
  * No `metadata` export: Next documents that only `global-not-found.js`
  * takes one (node_modules/next/dist/docs/.../not-found.md). The title
@@ -25,19 +26,24 @@ import { Eyebrow, Section, Shell } from "@/components/primitives";
 
 const DESTINATIONS = [
   {
+    href: "/",
+    label: "Home",
+    blurb: "What SIF Insight covers, and where to start.",
+  },
+  {
     href: "/sif-tracker",
     label: "SIF Tracker",
-    blurb: "Every scheme in one filterable table, side by side.",
+    blurb: "The whole market: NFOs, performance and the latest NAVs.",
   },
   {
-    href: "/amc",
-    label: "Asset managers",
-    blurb: "Every house running a SIF, and what we hold on each.",
+    href: "/sif-screener",
+    label: "SIF Screener",
+    blurb: "Filter every SIF by strategy, AMC, risk, cost and returns.",
   },
   {
-    href: "/what-is-sif",
-    label: "What is a SIF",
-    blurb: "SEBI's 2025 fund category, and how it differs.",
+    href: "/learn",
+    label: "Learn",
+    blurb: "Videos, articles and FAQs on how SIFs work.",
   },
 ];
 
