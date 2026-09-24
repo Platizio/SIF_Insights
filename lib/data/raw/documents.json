@@ -1,0 +1,6 @@
+{
+  "_comment": "Scheme documents by AMFI scheme code: { \"SIF-3\": [ { \"kind\": \"SID|KIM|SAI|ISID|factsheet|portfolio|addendum\", \"title\": \"...\", \"url\": \"https://...\", \"date\": \"2026-08-31\", \"publisher\": \"...\", \"verified\": true } ] }. Each entry is itself the source, so this file has no `sources` dict. Only verified entries with an https URL are shown. `amcs` is reserved for house-level documents, keyed by amcId.",
+  "schemaVersion": 1,
+  "schemes": {},
+  "amcs": {}
+}

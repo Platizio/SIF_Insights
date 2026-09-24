@@ -16,6 +16,7 @@ import {
   formatUpdated,
   riskBandNumber,
 } from "@/lib/data";
+import * as fmt from "@/lib/format";
 
 import { rawSchemes } from "./raw-source";
 
@@ -132,5 +133,101 @@ describe("formatUpdated", () => {
         new RegExp(`^${day} \\S+ ${year}$`),
       );
     }
+  });
+});
+
+/* ============================================================
+   The client-safe additions — imported from lib/format directly,
+   which is the path a client island uses.
+   ============================================================ */
+
+describe("formatCr", () => {
+  it("prints crore in Indian grouping, whole crore from ₹1,000 Cr", () => {
+    expect(fmt.formatCr(12_345.67)).toBe("₹12,346 Cr");
+    expect(fmt.formatCr(1_00_000)).toBe("₹1,00,000 Cr");
+    expect(fmt.formatCr(1000)).toBe("₹1,000 Cr");
+  });
+
+  it("keeps up to two places below ₹1,000 Cr, dropping trailing zeros", () => {
+    expect(fmt.formatCr(84.5)).toBe("₹84.5 Cr");
+    expect(fmt.formatCr(999.456)).toBe("₹999.46 Cr");
+    expect(fmt.formatCr(500)).toBe("₹500 Cr");
+  });
+});
+
+describe("formatDays", () => {
+  it("pluralises and groups", () => {
+    expect(fmt.formatDays(1)).toBe("1 day");
+    expect(fmt.formatDays(15)).toBe("15 days");
+    expect(fmt.formatDays(0)).toBe("0 days");
+    expect(fmt.formatDays(1095)).toBe("1,095 days");
+  });
+});
+
+describe("absentLabel", () => {
+  it("maps every reason to one of exactly three phrases", () => {
+    const phrases = new Set(
+      (["insufficient-history", "not-captured", "not-applicable", "withheld"] as const).map(
+        fmt.absentLabel,
+      ),
+    );
+    expect(phrases).toEqual(
+      new Set(["N/A — Insufficient history", "Not captured", "Not applicable"]),
+    );
+  });
+});
+
+describe("heatGrade", () => {
+  const LONG = ["1M", "3M", "6M", "1Y", "2Y", "SI"] as const;
+
+  it("is 0 only for an exactly unchanged (or non-finite) value", () => {
+    for (const p of [...LONG, "1D", "1W"] as const) {
+      expect(fmt.heatGrade(0, p)).toBe(0);
+      expect(fmt.heatGrade(-0, p)).toBe(0);
+      expect(fmt.heatGrade(Number.NaN, p)).toBe(0);
+      expect(fmt.heatGrade(0.0001, p)).toBe(1);
+      expect(fmt.heatGrade(-0.0001, p)).toBe(-1);
+    }
+  });
+
+  it("grades ≥1M periods at <1, 1–3, 3–7, >7", () => {
+    for (const p of LONG) {
+      expect([0.99, 1, 2.9, 3, 3.01, 7, 7.01, 40].map((x) => fmt.heatGrade(x, p))).toEqual([
+        1, 2, 2, 2, 3, 3, 4, 4,
+      ]);
+    }
+  });
+
+  it("grades 1D and 1W at <0.25, 0.25–1, 1–2.5, >2.5", () => {
+    for (const p of ["1D", "1W"] as const) {
+      expect([0.24, 0.25, 1, 1.01, 2.5, 2.51].map((x) => fmt.heatGrade(x, p))).toEqual([
+        1, 2, 2, 3, 3, 4,
+      ]);
+    }
+  });
+
+  it("is symmetric in sign, so a loss is graded like the gain of the same size", () => {
+    for (const p of [...LONG, "1D", "1W"] as const) {
+      for (const x of [0.1, 0.5, 1.5, 2, 5, 9]) {
+        expect(fmt.heatGrade(-x, p)).toBe(-fmt.heatGrade(x, p));
+      }
+    }
+  });
+
+  it("never contradicts the printed sign", () => {
+    for (const x of [-12, -3.2, -0.004, 0, 0.004, 0.8, 5]) {
+      const printed = fmt.formatPct(x);
+      const g = fmt.heatGrade(x, "3M");
+      if (printed.startsWith("+")) expect(g).toBeGreaterThan(0);
+      else if (printed.startsWith("−")) expect(g).toBeLessThan(0);
+      else expect(g).toBe(0);
+    }
+  });
+});
+
+describe("formatMonth", () => {
+  it("names the month in UTC, whatever the reader's zone", () => {
+    expect(fmt.formatMonth("2026-01")).toBe("Jan 2026");
+    expect(fmt.formatMonth("2026-12")).toMatch(/^\S+ 2026$/);
   });
 });

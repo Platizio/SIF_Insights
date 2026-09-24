@@ -1,0 +1,57 @@
+{
+  "_comment": "The SIF Insight YouTube catalogue. `id` is the YouTube video id; `title` is the video's own title, verbatim. `durationSec` and `publishedAt` stay null until read from YouTube itself — never estimated. `featuredOrder` 1-4 picks the home-page videos (null = library only); the final pick is the client's. `excluded` records ids that must NEVER be shown, with the reason, so a copy-paste from the old site cannot bring one back.",
+  "channel": {
+    "url": "https://www.youtube.com/@sifinsight",
+    "handle": "@sifinsight"
+  },
+  "videos": [
+    {
+      "id": "UVpPGY8GuPQ",
+      "title": "SIFs vs Mutual Funds: The Regulatory Limits That Change Everything",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": 1
+    },
+    {
+      "id": "Y6wZcsjc17s",
+      "title": "qsif Equity Long-Short Fund December Factsheet | Why the Fund Stayed Strongly \"Long-Biased\"",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": 2
+    },
+    {
+      "id": "OfF8djLO9Rg",
+      "title": "The Secret Behind SIF's Downside Protection-Part 4 | Unhedged Shorting",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": 3
+    },
+    {
+      "id": "Ea2M4Ds7zmk",
+      "title": "Tata Mutual Fund Titanium Hybrid Long-Short SIF | Tata's NEW Titanium SIF Explained",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": 4
+    },
+    {
+      "id": "HQ4N1ZuZLNM",
+      "title": "SBI Magnum SIF Update: India's Fastest-Growing Hybrid Long-Short Fund? Full October Breakdown",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": null
+    },
+    {
+      "id": "3uci9zH8nok",
+      "title": "Quant vs SBI vs Edelweiss SIF | Best Hybrid Long Short Fund 2025? | Full Comparison",
+      "durationSec": null,
+      "publishedAt": null,
+      "featuredOrder": null
+    }
+  ],
+  "excluded": [
+    {
+      "id": "dQw4w9WgXcQ",
+      "reason": "Rick Astley — mislabelled on the old site"
+    }
+  ]
+}
