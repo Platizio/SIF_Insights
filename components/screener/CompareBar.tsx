@@ -79,7 +79,7 @@ function Bar({ picked, notice, onClear }: { picked: SifRow[]; notice: string; on
     >
       <Shell className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 py-3.5">
         <div className="min-w-0">
-          <p className="text-[15px] leading-[22px] text-ink">
+          <p className="text-[14px] leading-[20px] text-ink">
             <span className="tabular font-medium">{picked.length}</span> SIFs Selected
           </p>
           <p className="hidden truncate text-[12px] leading-[16px] text-muted sm:block sm:max-w-[60vw]">

@@ -66,7 +66,7 @@ export default function SifScreenerPage() {
             <span className="tabular">{stats.amcCount}</span> AMCs
           </Fragment>,
           <Fragment key="metrics">
-            <span className="tabular">{metricCount}</span> metrics to filter, sort and show
+            <span className="tabular">{metricCount}</span> metrics to screen on
           </Fragment>,
           <Fragment key="nav">Latest NAV {formatUpdated(navLastUpdated)}</Fragment>,
         ]}
@@ -78,19 +78,19 @@ export default function SifScreenerPage() {
                 aria-current={j.href ? undefined : "page"}
                 className="grid grid-cols-[40px_1fr] gap-x-3 border-b border-hairline py-4"
               >
-                <span className="tabular pt-0.5 text-[12px] leading-[20px] text-muted">{j.step}</span>
+                <span className="tabular pt-px text-[12px] leading-[20px] text-muted">{j.step}</span>
                 <span>
                   {j.href ? (
                     <Link
                       href={j.href}
-                      className="text-[15px] leading-[22px] text-ink underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:decoration-current"
+                      className="text-[14px] leading-[20px] text-ink underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:decoration-current"
                     >
                       {j.name}
                     </Link>
                   ) : (
-                    <span className="text-[15px] font-medium leading-[22px] text-accent-dim">{j.name}</span>
+                    <span className="text-[14px] font-medium leading-[20px] text-accent-dim">{j.name}</span>
                   )}
-                  <span className="block text-[13px] leading-[20px] text-muted">{j.line}</span>
+                  <span className="block text-[14px] leading-[20px] text-muted">{j.line}</span>
                 </span>
               </li>
             ))}
@@ -108,13 +108,18 @@ export default function SifScreenerPage() {
           <div className="mt-12 grid gap-10 lg:grid-cols-[400px_1fr] lg:gap-16">
             <Rise>
               <Eyebrow>Data date &amp; sources</Eyebrow>
-              <AsOf iso={navLastUpdated} format={formatUpdated} className="mt-4" />
-              <p className="mt-2 text-[14px] leading-[22px] text-body">
+              <p className="mt-4 text-[14px] leading-[22px] text-body">
+                <AsOf as="span" iso={navLastUpdated} format={formatUpdated} />
+                <span aria-hidden="true" className="text-muted"> · </span>
                 <span className="text-muted">Sources: </span>
                 {SOURCES.map((s, i) => (
                   <Fragment key={s}>
-                    {i > 0 ? <span aria-hidden="true" className="text-muted"> | </span> : null}
-                    {i > 0 ? <span className="sr-only">, </span> : null}
+                    {i > 0 ? (
+                      <>
+                        <span aria-hidden="true" className="text-muted"> | </span>
+                        <span className="sr-only">, </span>
+                      </>
+                    ) : null}
                     {s}
                   </Fragment>
                 ))}

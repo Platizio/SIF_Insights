@@ -136,7 +136,8 @@ function Bound({
     },
     { same: sameNumber },
   );
-  const invalid = parseNumber(draft) === undefined;
+  /* A lone "-" is a negative bound being typed, not a mistake. */
+  const invalid = parseNumber(draft) === undefined && draft.trim() !== "-";
   const { prefix, suffix } = unitAffix(field);
 
   return (

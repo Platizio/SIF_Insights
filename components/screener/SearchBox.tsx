@@ -25,7 +25,7 @@ export function SearchBox({ q, commit }: { q: string; commit: Commit }) {
   return (
     <div role="search" className="relative">
       <label htmlFor={id} className="sr-only">
-        Search SIFs
+        Search by SIF name, AMC, strategy or fund manager
       </label>
       <SearchIcon
         size={18}
@@ -45,7 +45,7 @@ export function SearchBox({ q, commit }: { q: string; commit: Commit }) {
           if (e.key === "Enter") flush();
         }}
         className={cn(
-          "h-14 w-full rounded-[4px] border border-hairline bg-surface pl-12 pr-14 text-[16px] leading-[24px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-muted hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+          "h-14 w-full text-ellipsis rounded-[4px] border border-hairline bg-surface pl-12 pr-14 text-[16px] leading-[24px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-muted hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
           "[&::-webkit-search-cancel-button]:appearance-none",
         )}
       />

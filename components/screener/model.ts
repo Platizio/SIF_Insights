@@ -289,6 +289,12 @@ const BARE = new Set(["cat", "str", "amc", "risk"]);
 
 export type ChipSpec = { key: string; group?: string; text: string; remove: (s: ScreenState) => ScreenState };
 
+const words = (t: string) => new Set(t.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 2));
+const sharesWord = (a: string, b: string) => {
+  const wb = words(b);
+  return [...words(a)].some((w) => wb.has(w));
+};
+
 /** One chip per chosen option, one per range or flag — in canonical order. */
 export function chipsFor(state: ScreenState, rows: SifRow[]): ChipSpec[] {
   const out: ChipSpec[] = [];
@@ -321,7 +327,8 @@ export function chipsFor(state: ScreenState, rows: SifRow[]): ChipSpec[] {
 
     if (v.t === "flag") {
       const text = f.kind === "flag" ? f.labels[v.v ? 0 : 1] : String(v.v);
-      out.push({ key: id, group: f.kind === "flag" ? undefined : label, text, remove: (s) => withFilter(s, id, null) });
+      /* "No exit load" says what it is; "All four captured" needs "Key disclosures". */
+      out.push({ key: id, group: sharesWord(text, label) ? undefined : label, text, remove: (s) => withFilter(s, id, null) });
       continue;
     }
 
@@ -356,6 +363,15 @@ export function sortLabels(f: Field): { asc: string; desc: string } {
   return { asc: "Ascending", desc: "Descending" };
 }
 
+/**
+ * With no key chosen the engine orders by name, A–Z, so that is what the
+ * headers report (and a first click on the name header reverses it rather
+ * than doing nothing visible).
+ */
+export function effectiveSort(sort: ScreenState["sort"]): ScreenState["sort"] {
+  return sort.length ? sort : [{ id: "name", dir: "asc" }];
+}
+
 /** The direction a header's first click sorts: figures high→low, words A→Z. */
 export function firstDir(f: Field): "asc" | "desc" {
   return f.kind === "number" ? "desc" : "asc";
@@ -367,7 +383,7 @@ export function firstDir(f: Field): "asc" | "desc" {
  * explicitly chosen secondary key (the Sort control's "Then by") alone.
  */
 export function headerSort(sort: ScreenState["sort"], f: Field): ScreenState["sort"] {
-  const [primary, secondary] = sort;
+  const [primary, secondary] = effectiveSort(sort);
   const keep = secondary && secondary.id !== f.id ? [secondary] : [];
   if (primary?.id === f.id) {
     if (primary.dir === firstDir(f)) {

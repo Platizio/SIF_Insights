@@ -26,7 +26,7 @@ import { COLUMN_GROUPS, sortLabels, sortableFields } from "./model";
    ============================================================ */
 
 const SELECT =
-  "h-10 w-full min-w-0 cursor-pointer appearance-none rounded-[4px] border border-hairline bg-surface pl-3 pr-9 text-[13px] leading-[20px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+  "h-10 w-full min-w-0 cursor-pointer appearance-none rounded-[4px] border border-hairline bg-surface pl-3 pr-9 text-[16px] leading-[20px] sm:text-[13px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 function Options({ fields, rows, exclude }: { fields: Field[]; rows: SifRow[]; exclude?: string }) {
   const groups = [

@@ -8,7 +8,7 @@ import { fieldLabel, isSortable, type Field, type ScreenState } from "@/lib/scre
 import { CategoryChip, MiniRow, SelectBox, TEXT_BUTTON } from "./bits";
 import type { Commit } from "./controls";
 import { FieldValue } from "./FieldValue";
-import { headerSort, sortLabels } from "./model";
+import { effectiveSort, headerSort, sortLabels } from "./model";
 
 /* ============================================================
    Results — a real table from md up, cards below it.
@@ -42,7 +42,7 @@ type Props = {
 const sifHref = (r: SifRow) => `/sif/${r.id}`;
 
 export function ResultsTable({ rows, universe, columns, state, commit, picked, onPick, onClear, hiddenTotal }: Props) {
-  const [primary, secondary] = state.sort;
+  const [primary, secondary] = effectiveSort(state.sort);
 
   return (
     <div
@@ -201,8 +201,8 @@ function SortGlyph({ dir }: { dir: "asc" | "desc" | null }) {
 function Empty({ onClear, hiddenTotal }: { onClear: () => void; hiddenTotal: number }) {
   return (
     <div className="max-w-[60ch]">
-      <p className="text-[15px] leading-[24px] text-ink">No SIF matches all of these criteria.</p>
-      <p className="mt-1 text-[14px] leading-[22px] text-muted">
+      <p className="text-[14px] leading-[22px] text-ink">No SIF matches all of these criteria.</p>
+      <p className="mt-1 text-[13px] leading-[20px] text-muted">
         {hiddenTotal > 0
           ? "Some SIFs were set aside only because a value is missing — use “Show them” above, or remove a filter to widen the screen."
           : "Remove a filter to widen the screen."}
@@ -247,7 +247,7 @@ export function ResultCards({ rows, universe, columns, picked, onPick, amcs, onC
                     <div className="min-w-0">
                       <Link
                         href={sifHref(r)}
-                        className="block text-[15px] font-medium leading-[22px] text-ink underline decoration-transparent underline-offset-4 hover:decoration-current"
+                        className="block text-[14px] font-medium leading-[20px] text-ink underline decoration-transparent underline-offset-4 hover:decoration-current"
                       >
                         {r.shortName}
                       </Link>

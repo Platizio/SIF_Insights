@@ -129,7 +129,7 @@ export function MoreFilters({
                   href="/methodology"
                   className="text-ink underline decoration-hairline underline-offset-4 hover:decoration-current"
                 >
-                  How we decide
+                  See the methodology
                 </Link>
               </p>
             ) : (

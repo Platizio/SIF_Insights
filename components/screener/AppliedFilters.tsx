@@ -65,7 +65,7 @@ export function AppliedFilters({
       ) : null}
 
       <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-        <p aria-live="polite" aria-atomic="true" className="text-[15px] leading-[24px] text-body">
+        <p aria-live="polite" aria-atomic="true" className="text-[14px] leading-[22px] text-body">
           {screening ? (
             <>
               <span className="tabular font-medium text-ink">{matchCount}</span>{" "}

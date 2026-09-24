@@ -19,7 +19,7 @@ export const TEXT_BUTTON =
 
 /** Form controls are the one place a 4px radius is allowed. */
 export const INPUT =
-  "h-10 w-full min-w-0 rounded-[4px] border border-hairline bg-surface px-3 text-[14px] leading-[20px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-muted hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-pending";
+  "h-10 w-full min-w-0 rounded-[4px] border border-hairline bg-surface px-3 text-[16px] leading-[20px] text-ink sm:text-[14px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] placeholder:text-muted hover:border-body focus-visible:border-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-pending";
 
 export const CHECKBOX =
   "h-4 w-4 shrink-0 cursor-pointer rounded-[4px] border border-hairline accent-accent disabled:cursor-not-allowed";
