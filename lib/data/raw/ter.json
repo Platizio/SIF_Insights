@@ -368,7 +368,8 @@
         "terPct": 3.26,
         "src": "g3:mir-ter-2026-09-22",
         "locator": "row TER Date 22-09-2026, 'Regular Plan - Total TER (%)' 0.0326 (BER 0.013, brokerage 0.002, txn 0.0007, levies 0.0169; stored as fractions)",
-        "verified": true
+        "verified": true,
+        "berPct": 1.3
       }
     ],
     "SIF-80": [
@@ -377,14 +378,16 @@
         "terPct": 2.78,
         "src": "g4:apex-ter-hls-2026-09-22",
         "locator": "row 'APEX HYBRID LONG-SHORT FUND' 22-SEP-2026 Regular: BER 1.41, brokerage 0.35, transaction 0.06, statutory levies 0.96, Total TER 2.78",
-        "verified": true
+        "verified": true,
+        "berPct": 1.41
       },
       {
         "asOf": "2026-08-31",
         "terPct": 2.81,
         "src": "g4:apex-ter-hls-2026-09-22",
         "locator": "row 31-AUG-2026 Regular: BER 1.41, brokerage 0.33, transaction 0.07, statutory levies 1, Total TER 2.81",
-        "verified": true
+        "verified": true,
+        "berPct": 1.41
       }
     ],
     "SIF-13": [
@@ -393,14 +396,16 @@
         "terPct": 1.48,
         "src": "g4:sbi-ter-fy2627",
         "locator": "row 'Magnum Hybrid Long Short Fund' 22/09/2026: Regular BER 0.92, brokerage 0.08, transaction 0.03, statutory levies 0.45, Total TER 1.48",
-        "verified": true
+        "verified": true,
+        "berPct": 0.92
       },
       {
         "asOf": "2026-08-31",
         "terPct": 1.65,
         "src": "g4:sbi-fs-2026-08-31",
         "locator": "p.3 'BER\\TER (Regular Plan) 0.92% \\1.65%'",
-        "verified": true
+        "verified": true,
+        "berPct": 0.92
       }
     ],
     "SIF-157": [
@@ -409,7 +414,8 @@
         "terPct": 5.28,
         "src": "g4:sbi-ter-fy2627",
         "locator": "row 'Magnum Equity Ex-Top 100Long Short Fund' 22/09/2026: Regular BER 1.82, brokerage 0.88, transaction 0.13, statutory levies 2.45, Total TER 5.28",
-        "verified": true
+        "verified": true,
+        "berPct": 1.82
       }
     ],
     "SIF-146": [
@@ -418,21 +424,24 @@
         "terPct": 3.3146,
         "src": "g4:kotak-ter-daily",
         "locator": "row 'Infinity Hybrid Long-Short Fund | 22/09/2026' Regular: BER 1.39, brokerage 0.2592, transaction 0.0754, statutory levies 1.59, Total TER(%) 3.3146",
-        "verified": true
+        "verified": true,
+        "berPct": 1.39
       },
       {
         "asOf": "2026-08-31",
         "terPct": 3.2338,
         "src": "g4:kotak-ter-daily",
         "locator": "row '31/08/2026' Regular: BER 1.4, brokerage 0.1807, transaction 0.0831, statutory levies 1.57, Total TER(%) 3.2338",
-        "verified": true
+        "verified": true,
+        "berPct": 1.4
       },
       {
         "asOf": "2026-07-31",
         "terPct": 1.66,
         "src": "g4:kotak-ter-daily",
         "locator": "row '31/07/2026' Regular: BER 1.41, brokerage 0, transaction 0, statutory levies 0.25, Total TER(%) 1.66",
-        "verified": true
+        "verified": true,
+        "berPct": 1.41
       }
     ],
     "SIF-114": [
