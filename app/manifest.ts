@@ -31,9 +31,11 @@ import { stats } from "@/lib/data";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "SIF Insight — India's SIF market, in full view",
+    /* Tracks the default <title> in app/layout.tsx; the old tagline was
+       retired from both at once. */
+    name: "SIF Insight — Understand, track and compare India's SIFs",
     short_name: "SIF Insight",
-    description: `Independent coverage of India's ${stats.strategyCount} Specialised Investment Fund schemes from all ${stats.amcCount} asset managers.`,
+    description: `Understand, track and compare India's Specialised Investment Funds: ${stats.strategyCount} schemes from ${stats.amcCount} asset managers.`,
     start_url: "/",
     display: "browser",
     background_color: "#f9f6f1",

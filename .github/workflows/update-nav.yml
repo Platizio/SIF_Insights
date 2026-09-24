@@ -8,7 +8,7 @@ name: Update SIF NAV
 # It appends the day's observation to each scheme's series and commits, which
 # triggers the host to rebuild and redeploy.
 #
-# If the source format drifts or one of the 30 scheme codes stops resolving,
+# If the source format drifts or one of the 33 scheme codes stops resolving,
 # fetch_nav.py exits non-zero and this job FAILS (GitHub emails the repo owner)
 # rather than committing bad or partial data.
 
@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r pipeline/requirements.txt
 
-      - name: Fetch latest NAV (validates all 30 codes, else fails)
+      - name: Fetch latest NAV (validates all 33 codes, else fails)
         run: python pipeline/fetch_nav.py
 
       # The app imports lib/data/raw/*.json, so a data change must be type-safe

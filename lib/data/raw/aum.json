@@ -1,0 +1,584 @@
+{
+  "_comment": "Scheme-level assets under management in INR CRORE, MONTH-END (never average AUM), keyed by AMFI scheme code: { \"SIF-3\": [ { \"month\": \"2026-08\", \"aumCr\": 1234.56, \"src\": \"<sourceId>\", \"locator\": \"...\", \"verified\": true } ] }. `src` names an entry in `sources`. Only verified entries are read. AMC, industry and per-strategy totals are DERIVED in lib/data/aum.ts from one common month, with completeness flags — never store a total here. Check the unit on every read: factsheets mix lakh and crore.",
+  "schemaVersion": 1,
+  "unit": "INR_CRORE",
+  "basis": "month-end",
+  "sources": {
+    "g1:quant-dash-2026-08": {
+      "url": "https://www.qsif.com/Admin/disclouser/Investment_Strategy_Dashboard_August_2026.xls",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "qsif Investment Strategy Dashboard (statutory monthly dashboard, sheet 'All schemes') - 2026-08",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-dash-2026-07": {
+      "url": "https://www.qsif.com/Admin/disclouser/Investment_Strategy_Dashboard_July_2026.xls",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "qsif Investment Strategy Dashboard (statutory monthly dashboard, sheet 'All schemes') - 2026-07",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-dash-2026-06": {
+      "url": "https://www.qsif.com/Admin/disclouser/Investment_Strategy_Dashboard_June_2026.xls",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "qsif Investment Strategy Dashboard (statutory monthly dashboard, sheet 'All schemes') - 2026-06",
+      "asOf": "2026-06-30",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-port-2026-08": {
+      "url": "https://sif.itiamc.com/Files/PortfolioDisclosureFiles/DIVINITI%20SIF_Monthly%20Portfolio_August%202026.xlsx",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "Diviniti SIF Monthly Portfolio Statement as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-port-2026-07": {
+      "url": "https://sif.itiamc.com/Files/PortfolioDisclosureFiles/DIVINITI%20SIF_Monthly%20Portfolio_July%202026.xlsx",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "Diviniti SIF Monthly Portfolio Statement as on July 31, 2026",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-port-2026-06": {
+      "url": "https://sif.itiamc.com/Files/PortfolioDisclosureFiles/DIVINITI%20SIF_Monthly%20Portfolio_June%202026.xlsx",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "Diviniti SIF Monthly Portfolio Statement as on June 30, 2026",
+      "asOf": "2026-06-30",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-port-els-2026-07": {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Long_Short_Fund_cab8cd6b74.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "WSIF Equity Long Short Fund - Portfolio as on 31-JUL-2026",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-port-extop-2026-07": {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Ex_Top_100_Long_Short_Fund_4917ad3372.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "WSIF Equity Ex Top 100 Long Short Fund - Portfolio as on 31-JUL-2026",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-port-2026-08": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Files/Monthly%20Portfolio%20Disclosures/2026/Aug/SIF/iSIF%20Monthly-Portfolio-Disclosure-August-2026.zip",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "iSIF Monthly Portfolio Disclosure August 2026 (zip of per-strategy xlsx; 'Portfolio as on Aug 31,2026')",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-fs-2026-08": {
+      "url": "https://arudhasif.com/downloads/assest/file/downloads/Arudha_Factsheet_August_2026.pdf",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Arudha SIF Factsheet August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:hsbc-fs-2026-08": {
+      "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/a594e539-3e76-4367-a6ab-7d2090b73beb/redhex-sif-factsheet-as-on-august-2026.pdf",
+      "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "RedHex SIF Factsheet as on - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-fs-2026-08-31": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Factsheet_as_on_August_31_2026_f2e1b89cd6.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "DynaSIF Factsheet as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-fs-extop-2026-08-31": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Factsheet/Factsheets/Altiva_Equity_ExTop_100_LongShort_Fund_Portfolio_Update_August_2026_10092026100149.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Altiva Equity Ex-Top 100 Long-Short Fund - Portfolio Update / Fund Update August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-fs-hybrid-2026-08-31": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Factsheet/Factsheets/Altiva_Hybrid_LongShort_Fund_Portfolio_Update_August_2026_03092026093750.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Altiva Hybrid Long-short Fund - Portfolio Update August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:mir-fs-2026-08-31": {
+      "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/09/Platinum-SIF-Factsheet-September-2026.pdf",
+      "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Platinum SIF Factsheet September 2026 (Monthly Factsheet as on 31st Aug 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-fs-2026-08-31": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/SIF_Factsheet_August_2026_72ec3dd3e9.pdf",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Apex SIF Factsheet - August 2026 (Apex Hybrid Long-Short Fund only)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-port-2026-08-31": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/Monthly_Portfolio_SIF_31082026_6418736d7e.zip",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "Monthly Portfolios as on August 31, 2026 (zip: SIF_31082026_ABSLMF_MonthlyDisclosure.xls; sheets SIFAHLS, SIFAE100, SIFAELS; Rs. in Lakhs)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-fs-2026-08-31": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-scheme-facsheets/magnum-sif-as-on-august-2026-final.pdf?sfvrsn=38eb72b9_6",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Magnum SIF Investment update - Report as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-web-extop-details": {
+      "url": "https://www.sbimf.com/magnumsif-scheme-details/magnum-equity-ex-top-100-long-short-fund-10002",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Magnum Equity Ex-Top 100 Long Short Fund - scheme details page on the Magnum SIF site (rendered 2026-09-23; re-read 2026-09-24 showing NAV as on 23 Sep 2026, allotment and AUM text unchanged)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:kotak-fs-2026-08-31": {
+      "url": "https://vatseelabs-s3.kotakmf.com/Images/InfinityHybridLongShortFundFactsheetAug2026.pdf",
+      "publisher": "Kotak Mahindra Asset Management Company Limited (Infinity SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Infinity Hybrid Long-Short Fund Factsheet - August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:arth-fs-2026-08": {
+      "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/factsheets-portfolios/factsheets/arthaya-sif-factsheet-august-2026.pdf?sfvrsn=eb9fe6b1_5",
+      "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Arthaya SIF Factsheet - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:ft-fs-2026-08": {
+      "url": "https://franklintempletonprod.widen.net/content/eci8iba796/original/Sapphire-SIF-Factsheet-as-on-August-31-2026.pdf?u=pl55mb&download=true",
+      "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Sapphire SIF Factsheet as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:sm-fs-2026-08": {
+      "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/factsheet/summit-sif---factsheet-aug-2026.pdf?sfvrsn=33e540cd_1",
+      "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Summit SIF Factsheet - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-fs-2026-08": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-09/TitaniumSIF%20Factsheet%20as%20on%2031%20August%202026.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Titanium SIF Factsheet as on 31 August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    }
+  },
+  "schemes": {
+    "SIF-3": [
+      {
+        "month": "2026-08",
+        "aumCr": 892.19,
+        "src": "g1:quant-dash-2026-08",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Long Short Fund', column 'Month end AUM (Rs. in crore)': 892.187945158 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-07",
+        "aumCr": 758.21,
+        "src": "g1:quant-dash-2026-07",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Long Short Fund', column 'Month end AUM (Rs. in crore)': 758.209939516 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-06",
+        "aumCr": 627.97,
+        "src": "g1:quant-dash-2026-06",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Long Short Fund', column 'Month end AUM (Rs. in crore)': 627.97 (rounded to 2 dp)",
+        "verified": true
+      }
+    ],
+    "SIF-25": [
+      {
+        "month": "2026-08",
+        "aumCr": 765.26,
+        "src": "g1:quant-dash-2026-08",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Ex-Top 100 Long Short Fund', column 'Month end AUM (Rs. in crore)': 765.260515621 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-07",
+        "aumCr": 419.99,
+        "src": "g1:quant-dash-2026-07",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Ex-Top 100 Long Short Fund', column 'Month end AUM (Rs. in crore)': 419.989167759 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-06",
+        "aumCr": 276.29,
+        "src": "g1:quant-dash-2026-06",
+        "locator": "Sheet 'All schemes', row 'qsif Equity Ex-Top 100 Long Short Fund', column 'Month end AUM (Rs. in crore)': 276.29 (rounded to 2 dp)",
+        "verified": true
+      }
+    ],
+    "SIF-7": [
+      {
+        "month": "2026-08",
+        "aumCr": 298.0,
+        "src": "g1:quant-dash-2026-08",
+        "locator": "Sheet 'All schemes', row 'qsif Hybrid Long-Short Fund', column 'Month end AUM (Rs. in crore)': 297.998786495 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-07",
+        "aumCr": 213.71,
+        "src": "g1:quant-dash-2026-07",
+        "locator": "Sheet 'All schemes', row 'qsif Hybrid Long-Short Fund', column 'Month end AUM (Rs. in crore)': 213.706179291 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-06",
+        "aumCr": 169.76,
+        "src": "g1:quant-dash-2026-06",
+        "locator": "Sheet 'All schemes', row 'qsif Hybrid Long-Short Fund', column 'Month end AUM (Rs. in crore)': 169.76 (rounded to 2 dp)",
+        "verified": true
+      }
+    ],
+    "SIF-93": [
+      {
+        "month": "2026-08",
+        "aumCr": 420.06,
+        "src": "g1:quant-dash-2026-08",
+        "locator": "Sheet 'All schemes', row 'qsif Active Asset Allocator Long-Short Fund', column 'Month end AUM (Rs. in crore)': 420.05822674 (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-07",
+        "aumCr": 167.45,
+        "src": "g1:quant-dash-2026-07",
+        "locator": "Sheet 'All schemes', row 'qsif Active Asset Allocator Long-Short Fund', column 'Month end AUM (Rs. in crore)': 167.453352302 (cell shows 167.45335230199998) (rounded to 2 dp)",
+        "verified": true
+      },
+      {
+        "month": "2026-06",
+        "aumCr": 92.35,
+        "src": "g1:quant-dash-2026-06",
+        "locator": "Sheet 'All schemes', row 'qsif Active Asset Allocator Long-Short Fund', column 'Month end AUM (Rs. in crore)': 92.35 (rounded to 2 dp)",
+        "verified": true
+      }
+    ],
+    "SIF-117": [
+      {
+        "month": "2026-06",
+        "aumCr": 45.66,
+        "src": "g1:quant-dash-2026-06",
+        "locator": "Sheet 'All schemes', row 'qsif Sector Rotation Long-Short Fund', column 'Month end AUM (Rs. in crore)': 45.66 (rounded to 2 dp)",
+        "verified": true
+      }
+    ],
+    "SIF-21": [
+      {
+        "month": "2026-08",
+        "aumCr": 291.47,
+        "src": "g1:iti-port-2026-08",
+        "locator": "Sheet DIVLSF 'Monthly Portfolio Statement as on August 31,2026': 'GRAND TOTAL' 29147.13 (Market/Fair Value Rs. in Lakhs) = 291.47 crore (lakh/100)",
+        "verified": true
+      },
+      {
+        "month": "2026-07",
+        "aumCr": 316.81,
+        "src": "g1:iti-port-2026-07",
+        "locator": "Sheet DIVLSF 'Monthly Portfolio Statement as on July 31,2026': 'GRAND TOTAL' 31680.76 (Rs. in Lakhs) = 316.81 crore (lakh/100)",
+        "verified": true
+      },
+      {
+        "month": "2026-06",
+        "aumCr": 333.78,
+        "src": "g1:iti-port-2026-06",
+        "locator": "Sheet DIVLSF 'Monthly Portfolio Statement as on June 30,2026': 'GRAND TOTAL' 33377.56 (Rs. in Lakhs) = 333.78 crore (lakh/100)",
+        "verified": true
+      }
+    ],
+    "SIF-111": [
+      {
+        "month": "2026-07",
+        "aumCr": 33.73,
+        "src": "g1:wsif-port-els-2026-07",
+        "locator": "Sheet WSLS 'Portfolio as on 31-JUL-2026': 'Grand Total' 3372.8577737 (Market Value In Rs. lakh) = 33.73 crore (lakh/100, rounded)",
+        "verified": true
+      }
+    ],
+    "SIF-105": [
+      {
+        "month": "2026-07",
+        "aumCr": 48.45,
+        "src": "g1:wsif-port-extop-2026-07",
+        "locator": "Sheet WSXT 'Portfolio as on 31-JUL-2026': 'Grand Total' 4845.2974467 (Market Value In Rs. lakh) = 48.45 crore (lakh/100, rounded)",
+        "verified": true
+      }
+    ],
+    "SIF-34": [
+      {
+        "month": "2026-08",
+        "aumCr": 2475.27,
+        "src": "g2:icici-port-2026-08",
+        "locator": "xlsx 'iSIF Equity Ex-Top 100 Long-Short Fund', 'Total Net Assets' 247526.6030368 (Rs.Lakh) = 2475.27 cr (Rs. lakh / 100 = Rs. crore); factsheet Aug p.10 'Closing AUM as on 31-Aug-26 : Rs. 2,475.27 crores' agrees",
+        "verified": true
+      }
+    ],
+    "SIF-126": [
+      {
+        "month": "2026-08",
+        "aumCr": 599.34,
+        "src": "g2:icici-port-2026-08",
+        "locator": "xlsx 'iSIF Equity Long-Short Fund', 'Total Net Assets' 59933.8060329 (Rs.Lakh) = 599.34 cr (Rs. lakh / 100 = Rs. crore); factsheet Aug p.7 'Closing AUM as on 31-Aug-26 : Rs. 599.34 crores' agrees",
+        "verified": true
+      }
+    ],
+    "SIF-124": [
+      {
+        "month": "2026-08",
+        "aumCr": 983.83,
+        "src": "g2:icici-port-2026-08",
+        "locator": "xlsx 'iSIF Active Asset Allocator Long-Short Fund', 'Total Net Assets' 98383.03815 (Rs.Lakh) = 983.83 cr (Rs. lakh / 100 = Rs. crore); dashboard Aug 'AUM (Rs. In Crore) as on 31 August 2026' 983.83 agrees",
+        "verified": true
+      }
+    ],
+    "SIF-35": [
+      {
+        "month": "2026-08",
+        "aumCr": 1323.11,
+        "src": "g2:icici-port-2026-08",
+        "locator": "xlsx 'iSIF Hybrid Long- Short Fund', 'Total Net Assets' 132310.9131633 (Rs.Lakh) = 1323.11 cr (Rs. lakh / 100 = Rs. crore); factsheet Aug p.14 'Closing AUM as on 31-Aug-26 : Rs. 1,323.11 crores' agrees",
+        "verified": true
+      }
+    ],
+    "SIF-62": [
+      {
+        "month": "2026-08",
+        "aumCr": 127.87,
+        "src": "g2:bandhan-fs-2026-08",
+        "locator": "Factsheet Aug p.3 'Month end AUM: ` 127.87 Crores'; portfolio 31-08-2026 'GRAND TOTAL' 12787.41 (Rs. in Lakhs) = 127.87 cr agrees",
+        "verified": true
+      }
+    ],
+    "SIF-40": [
+      {
+        "month": "2026-08",
+        "aumCr": 146.93,
+        "src": "g2:bandhan-fs-2026-08",
+        "locator": "Factsheet Aug p.2 'Month end AUM: ` 146.93 Crores'; portfolio 31 August 2026 'GRAND TOTAL' 14693.32 (Rs. in Lakhs) = 146.93 cr agrees",
+        "verified": true
+      }
+    ],
+    "SIF-128": [
+      {
+        "month": "2026-08",
+        "aumCr": 1072.84,
+        "src": "g2:hsbc-fs-2026-08",
+        "locator": "Factsheet Aug p.4 'AUM (as on 31.08.26) ₹ 1072.84 Cr.' (separate 'AAUM ... ₹ 916.33 Cr.'); portfolio 'Total Net Assets as on 31-August-2026' 107284.21 (Rs in Lacs) agrees",
+        "verified": true
+      }
+    ],
+    "SIF-55": [
+      {
+        "month": "2026-08",
+        "aumCr": 407.12,
+        "src": "g3:dyna-fs-2026-08-31",
+        "locator": "p.1 'AUM as on August 31, 2026 Net AUM 407.12 Monthly Average AUM 395.91'",
+        "verified": true
+      }
+    ],
+    "SIF-87": [
+      {
+        "month": "2026-08",
+        "aumCr": 295.61,
+        "src": "g3:dyna-fs-2026-08-31",
+        "locator": "p.3 'AUM as on August 31, 2026 ... Net AUM 295.61 Monthly Average AUM 233.48'",
+        "verified": true
+      }
+    ],
+    "SIF-143": [
+      {
+        "month": "2026-08",
+        "aumCr": 235.69,
+        "src": "g3:dyna-fs-2026-08-31",
+        "locator": "p.5 'AUM as on August 31, 2026 ... Net AUM 235.69 Monthly Average AUM 193.00'",
+        "verified": true
+      }
+    ],
+    "SIF-122": [
+      {
+        "month": "2026-08",
+        "aumCr": 1391.0,
+        "src": "g3:edel-fs-extop-2026-08-31",
+        "locator": "p.5: 'AUM (in INR Cr) Month end: Rs. 1,391 Cr | Monthly Avg: Rs. 1,167 Cr'",
+        "verified": true
+      }
+    ],
+    "SIF-11": [
+      {
+        "month": "2026-08",
+        "aumCr": 9279.0,
+        "src": "g3:edel-fs-hybrid-2026-08-31",
+        "locator": "p.6 Scheme details: 'AUM Month End: Rs. 9,279 cr'",
+        "verified": true
+      }
+    ],
+    "SIF-136": [
+      {
+        "month": "2026-08",
+        "aumCr": 369.66,
+        "src": "g3:mir-fs-2026-08-31",
+        "locator": "p.3 'Monthly Factsheet as on 31st Aug 2026' Fund Information: 'Net AUM (Cr.) ... 369.66'",
+        "verified": true
+      }
+    ],
+    "SIF-80": [
+      {
+        "month": "2026-08",
+        "aumCr": 176.29,
+        "src": "g4:apex-fs-2026-08-31",
+        "locator": "p.6 Scheme Details (flattened table text): 'Month End AUM 176.29 Monthly Average AUM 137.96 AUM as on August 31, 2026 (₹ Cr)'",
+        "verified": true
+      }
+    ],
+    "SIF-154": [
+      {
+        "month": "2026-08",
+        "aumCr": 103.51,
+        "src": "g4:apex-port-2026-08-31",
+        "locator": "sheet SIFAELS 'Portfolio Statement as on August 31, 2026' 'GRAND TOTAL (AUM) 10,350.92' (Market value Rs. in Lakhs); 10,350.92 lakh / 100 = 103.5092 cr",
+        "verified": true
+      }
+    ],
+    "SIF-156": [
+      {
+        "month": "2026-08",
+        "aumCr": 201.14,
+        "src": "g4:apex-port-2026-08-31",
+        "locator": "sheet SIFAE100 'Portfolio Statement as on August 31, 2026' 'GRAND TOTAL (AUM) 20,113.59' (Market value Rs. in Lakhs); 20,113.59 lakh / 100 = 201.1359 cr",
+        "verified": true
+      }
+    ],
+    "SIF-13": [
+      {
+        "month": "2026-08",
+        "aumCr": 4004.89,
+        "src": "g4:sbi-fs-2026-08-31",
+        "locator": "p.2 'AUM as on August 31, 2026 ` 4,004.89 Crores'; p.3 'Month End AUM (Rs. in Crores) ` 4,004.89'",
+        "verified": true
+      }
+    ],
+    "SIF-157": [
+      {
+        "month": "2026-08",
+        "aumCr": 1116.32,
+        "src": "g4:sbi-web-extop-details",
+        "locator": "rendered scheme details block: 'AUM (As On 31 Aug 2026)' '₹ 1116.32 Cr' (stated in crore)",
+        "verified": true
+      }
+    ],
+    "SIF-146": [
+      {
+        "month": "2026-08",
+        "aumCr": 1771.57,
+        "src": "g4:kotak-fs-2026-08-31",
+        "locator": "p.2 Snapshot 'AUM - 1,771.57' 'AAUM - 1,314.05' ('Data as on August 31, 2026'); unit not printed next to the figure",
+        "verified": true
+      }
+    ],
+    "SIF-114": [
+      {
+        "month": "2026-08",
+        "aumCr": 133.73,
+        "src": "g5:arth-fs-2026-08",
+        "locator": "p.3 Assets Under Management: 'As on 31st August 2026 : ₹133.73 crore'",
+        "verified": true
+      }
+    ],
+    "SIF-96": [
+      {
+        "month": "2026-08",
+        "aumCr": 216.02,
+        "src": "g5:ft-fs-2026-08",
+        "locator": "p.4 FUND SIZE (AUM): 'Month End ₹ 216.02 crores'",
+        "verified": true
+      }
+    ],
+    "SIF-150": [
+      {
+        "month": "2026-08",
+        "aumCr": 290.94,
+        "src": "g5:sm-fs-2026-08",
+        "locator": "p.2 fund details: 'AuM as on 31st August, 2026: ₹ 290.94 Crores'",
+        "verified": true
+      }
+    ],
+    "SIF-102": [
+      {
+        "month": "2026-08",
+        "aumCr": 321.22,
+        "src": "g5:tata-fs-2026-08",
+        "locator": "p.6 Titanium Equity Long-Short Fund portfolio table: 'Net Assets 3,21,21,78,651 100.00'",
+        "verified": true
+      }
+    ],
+    "SIF-29": [
+      {
+        "month": "2026-08",
+        "aumCr": 602.6,
+        "src": "g5:tata-fs-2026-08",
+        "locator": "p.3 Titanium Hybrid Long-Short Fund scheme page: 'Month End AUM (₹) : 602.60 Cr.'",
+        "verified": true
+      }
+    ]
+  }
+}

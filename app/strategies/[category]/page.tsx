@@ -7,6 +7,7 @@ import { Odometer } from "@/components/motion/Odometer";
 import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { ConsultCta } from "@/components/ConsultCta";
 import { PageHeader } from "@/components/PageHeader";
+import { ExpenseValue } from "@/components/ui/ExpenseValue";
 import {
   Delta,
   Eyebrow,
@@ -17,6 +18,7 @@ import {
 } from "@/components/primitives";
 import {
   amcById,
+  currentTer,
   formatExpense,
   formatInr,
   formatNav,
@@ -285,7 +287,7 @@ export async function generateMetadata({
       title: `${copy.metaTitle} — SIF Insight`,
       description: copy.metaDescription,
       url: `/strategies/${category}`,
-      images: "/opengraph-image.png",
+      images: "/opengraph-image",
       siteName: "SIF Insight",
       locale: "en_IN",
       type: "website",
@@ -548,7 +550,7 @@ function AtAGlance({ facts }: { facts: Facts }) {
                     `summarise`. Printing the raw ratio with a "%" glued on
                     would state a ceiling as a charge. */}
                 <TallyRow
-                  label="Expense ratio"
+                  label="Base expense cap"
                   scope={scopeOf(facts.expenses)}
                   counts={facts.expenses}
                   render={(v) => <span className="tabular">{v}</span>}
@@ -770,6 +772,7 @@ function Schemes({ list, facts }: { list: Strategy[]; facts: Facts }) {
 function StrategyDetail({ strategy }: { strategy: Strategy }) {
   const amc = amcById.get(strategy.amcId);
   const nav = getNav(strategy.id);
+  const ter = currentTer(strategy.amfiSchemeCode);
 
   return (
     <article className="border border-hairline bg-surface">
@@ -793,7 +796,12 @@ function StrategyDetail({ strategy }: { strategy: Strategy }) {
           </div>
 
           <h3 className="mt-8 text-[clamp(22px,2.2vw,28px)] font-medium leading-[1.24] text-ink">
-            {strategy.name}
+            <Link
+              href={`/sif/${strategy.id}`}
+              className="underline decoration-hairline underline-offset-[6px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent hover:decoration-current"
+            >
+              {strategy.name}
+            </Link>
           </h3>
           <p className="mt-2 text-[13px] leading-[20px] text-muted">
             {strategy.type}
@@ -855,12 +863,15 @@ function StrategyDetail({ strategy }: { strategy: Strategy }) {
             )}
           </DetailRow>
           <DetailRow label="Expense ratio">
-            {strategy.expenseRatio === null ? (
-              <NotCaptured />
+            {ter || strategy.expenseRatio !== null ? (
+              <ExpenseValue
+                ter={ter}
+                ratio={strategy.expenseRatio}
+                isCap={strategy.expenseRatioIsCap}
+                noteClassName="mt-1 block text-[13px] leading-[20px] text-muted"
+              />
             ) : (
-              <span className="tabular">
-                {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
-              </span>
+              <NotCaptured />
             )}
           </DetailRow>
           <DetailRow label="Exit load">

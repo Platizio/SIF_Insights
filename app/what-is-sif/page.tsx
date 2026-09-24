@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
        file convention contributes, which silently downgrades the card to
        twitter:card=summary. Restated, not inherited. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
@@ -153,19 +153,20 @@ export default function WhatIsSifPage() {
       <Definition />
       <DefiningFeatures />
 
-      {/* The SIF vs MF vs PMS vs AIF table. It belongs here more than
-          anywhere, and its "See the strategies" button resolves to the
-          #strategies section below. */}
-      <CategoryComparison />
+      {/* "Where SIFs sit": the SIF vs MF vs PMS vs AIF table. It belongs here
+          more than anywhere; its button jumps to the strategy types below. */}
+      <CategoryComparison
+        cta={{ label: "See the strategy types", href: "#strategies" }}
+      />
 
       <WhoShouldInvest />
       <StrategyTypes />
 
-      {/* Five questions, and a "Talk to us" button that resolves to #consult. */}
+      {/* The approved questions — the same set /learn#faqs carries. Its
+          "Talk to us" button goes to /contact. */}
       <Faq />
 
-      {/* id="consult": the imported <Faq /> links to #consult. */}
-      <ConsultCta id="consult" lines={["Consult before", "you commit."]} />
+      <ConsultCta lines={["Consult before", "you commit."]} />
     </>
   );
 }

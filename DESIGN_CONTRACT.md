@@ -516,3 +516,445 @@ faster than ~40px/s · confetti · card tilt above 8° · parallax on content ·
 glow/bloom (dark-bg idioms; they vanish or look broken on cream) · animating
 `box-shadow`/`width`/`height`/`top`/`left` · springs on any value representing a
 quantity · sound.
+
+## 9. Amendments — PRD rebuild (September 2026)
+
+The client review of 21 Sep 2026 (`SIF Insight review 21-09.pdf`) replaced the
+information architecture: Home · SIF Tracker · SIF Screener · Compare · AMCs ·
+Learn · About Us, with a persistent Book a Consultation CTA, a lead popup and a
+WhatsApp button. Where it conflicted with the rules above, **the client brief
+won and the conflict is recorded here**, per area. Everything not amended below
+still binds. Items the brief itself marks for compliance approval (legal pages,
+footer disclaimer, the trust line, popup consent) are drafts until approved.
+
+Standing amendments that cut across areas:
+
+- **Client islands never value-import `@/lib/data`.** They take serialisable props
+  from a server wrapper; `tests/client-imports.test.ts` enforces it. (Before the
+  rebuild every page shipped the full NAV history via the layout.)
+- **Retired routes redirect (308)**: `/nav-tracker` → `/sif-tracker#latest-navs` (or
+  `/sif/{id}` for `?scheme=`), `/media` → `/learn#videos`, and the legacy Wix paths.
+- **Costs since 1 April 2026**: SEBI caps the *base* expense ratio; the charged total
+  TER adds brokerage, transaction costs and statutory levies and routinely exceeds
+  the cap. Show Total TER, Base expense ratio and the cap as three labelled
+  figures — never substitute one for another.
+- **Post-build HTML check**: `scripts/verify-static-html.mjs` runs in CI after the
+  build (reveal invariant, dead links, banned copy).
+
+### 9.1 Data foundation (lib/data, lib/screener, tests)
+
+For the integrator to fold into `DESIGN_CONTRACT.md` / the shared spec. None of
+these change a visual rule. They record where F1 had to settle something the
+spec left open, or added to it, so the W2 pages build on the same reading.
+
+#### Design contract
+
+- **No visual amendments.** F1 ships no UI. The server-wrapper and client-island
+  splits of Hero, AmcMarquee, Faq, StrategyGrid and NfoBar change no markup or
+  class.
+
+#### Data contract (spec §5–§9): clarifications and additions
+
+- **`withheld` prints the insufficient-history phrase.** `ABSENT_LABEL.withheld`
+  is "N/A — Insufficient history", so the site still uses exactly three
+  missing-value texts. `absentLabel(reason)` in `lib/format.ts` is the one
+  mapping. Pages should call it rather than switching on the reason.
+- **`SifRow` has five fields beyond §5.** All are serialisable:
+  - `benchmarkText`: the ISID's own words.
+  - `subscriptionBucket`: bucketed from scheme-facts, backing the `sub` field.
+  - `options`: plan and option names, backing the `opt` field.
+  - `returnsMeta[p]`: `{}` whenever the return is absent.
+  - `faceValueBasis`: `"sourced" | "inferred"`, the `basis` of `faceValue()`,
+    so a page can say that a face value was inferred.
+- **A field's label and source can depend on the row (§7 `Base`).** `Base`
+  gains optional `labelFor(r)` and `sourceFor(r)`. The static `label` and
+  `source` must now be true of every row, so where the truth varies they carry
+  the weaker claim.
+  - Pages resolve labels and sources through `fieldLabel(field, rows)` and
+    `fieldSource(field, rows)` in `lib/screener/fields.ts`. Pass the table's
+    rows for a column header, the picked schemes for a Compare row, and `[row]`
+    on a scheme page. The exact value is returned when every row agrees,
+    otherwise the static one. W2 must not print `field.label` or
+    `field.source` for rows it could name.
+  - Scheme-facts is still empty, so today every inception is the first NAV
+    date, every SI return runs from the first NAV, and every face value is
+    inferred. The affected fields:
+
+    | Field | Static label / source | Per row |
+    |---|---|---|
+    | `rsi` | "Since inception / first NAV" | "Since inception" only when SI runs from face value at a sourced allotment; otherwise "Since first published NAV" (the plan's wording) |
+    | `inc` | "Inception / first NAV", SIF Insight calculation | "Inception", Scheme document (allotment); "First published NAV", AMFI (first NAV) |
+    | `fv` | "Face value", SIF Insight calculation | Scheme document only when `faceValueBasis` is `sourced` |
+  - `age` is measured from the same date as `inc`. Its source is already
+    "SIF Insight calculation", and the `#inception` methodology note covers the
+    basis.
+- **Optional `asOf` on the returns engine.** `volatility`, `maxDrawdown` and
+  `monthlyReturns` also take `{ asOf }`, like `trailingReturn`. `trailingReturn`
+  also takes `minAgeDays`, but only so tests can exercise `withheld` while
+  `PERFORMANCE_MIN_AGE_DAYS` is 0. Pages never pass it.
+- **`faceValue` infers from the first published NAV.** The rule is first NAV
+  > 200 ⇒ ₹1,000, otherwise ₹10. It does not use the latest NAV, because a ₹10
+  unit could compound past 200 but its first print cannot. `basis` says
+  whether the value is sourced or inferred.
+- **`nfoStatus` covers two cases §5 leaves unsaid:**
+  - A legacy entry with only `closesOn` counts as already open. This keeps the
+    old `isOpenNfo` behaviour.
+  - An entry with `opensOn` but no `closesOn` is `closed` once it has opened.
+    Without a stated end date it cannot be asserted open.
+  - `nfoStatus` and `isOpenNfo` live in `lib/format.ts` so the client ticker can
+    re-run them against the reader's clock. `lib/data` re-exports both.
+- **The client's "today" is the date in India (rule 9).** NFO windows and
+  `navLastUpdated` are Indian calendar dates.
+  - `useTodayIso` and `isOpenNfo` turn an instant into a date with
+    `indianIsoDate` (`lib/format.ts`), which uses a fixed +05:30 because India
+    has no daylight saving.
+  - Using the UTC date meant the ticker rolled over at 05:30 IST. It kept a
+    closed offer "Live" for up to 5½ hours and held back one that had opened.
+  - Any other client surface comparing the wall clock with a data date must
+    use `indianIsoDate` too.
+- **`heatGrade` boundaries follow §9 literally.** Grade 1 is `< a`, grade 2 is
+  `a–b`, grade 3 is `(b, c]` and grade 4 is `> c`. So exactly 1% is grade 2,
+  exactly 3% is grade 2, and exactly 7% is grade 3. `0` is reserved for an
+  exactly unchanged value, and a `+0.00%` cell grades +1 so its colour never
+  contradicts the printed sign.
+- **Exit-load figures are for filtering and sorting only.** The page prints
+  `exitLoad.text`.
+  - Months are counted as 365/12 days, rounded: 3M = 91, 6M = 183, 12M = 365.
+  - `pct` is the highest rate charged.
+  - `periodDays` is the last day on which any load still applies. So SIF-13
+    reads as 0.50% for 30 days, `tiered`.
+  - SIF-21's "first 10% of units free" is treated as an allowance, not a rate.
+- **Benchmarks resolve to 10 canonical ids today.** The 18 spellings on file
+  map to 7 indices plus 3 weighted blends. Each blend keeps its own words and
+  gets its own `blend-…` id.
+  - Hybrid composites carry no TRI suffix because they have no separate price
+    variant.
+  - An unrecognised benchmark gets an `other-…` id, and
+    `tests/taxonomy.test.ts` fails on it.
+- **AUM totals are summed over the best-covered month.** That is the month in
+  which the most schemes report, with the latest month winning a tie. It is
+  not simply the newest month.
+  - `SifRow.amcAumCr` is filled only when the house is `complete`. A partial
+    sum is not the house's AUM.
+  - `aumByStrategy()` uses the industry's month, so its slices add up to
+    `industryAum().cr`.
+- **Unapproved FAQs are not exported.** `faqs` leaves out entries marked
+  `approved: false`. Entries with no flag were already live and stay live.
+  This matches the articles gate in `lib/content`.
+- **An encoded comma separates, in Compare ids and in every Screener list.**
+  `parseCompareIds` and `decodeScreen` both treat `%2C` as a separator, for
+  sets and for `sort`, `cols` and `pick`.
+  - No set id can hold a comma: ids are slugs, AMFI codes and digits.
+  - `URLSearchParams` writes commas as `%2C`.
+  - The already-decoded inputs (Next's `searchParams`, a URLSearchParams)
+    cannot tell a `%2C` from a raw comma. Reading it literally in the string
+    form made the server page and the client read one URL two ways.
+  - `normaliseScreen` splits a set id containing a comma the same way, so
+    `decode(encode(s))` stays `normaliseScreen(s)`.
+  - Encoding is unchanged, as §7 specifies: values are encoded with
+    `encodeURIComponent` and joined with raw commas.
+- **The URL codec keeps two more invariants.**
+  - `q` is cut to 120 code points, not UTF-16 units, and trimmed after the
+    cut. Lone surrogates are dropped from `q` and from set ids. So
+    `encodeScreen` cannot throw `URIError`, and normalising is idempotent.
+  - Range bounds are rounded to 6 decimals, with `−0` folded to `0`. `String()`
+    therefore never prints an exponent, and a tiny bound survives the link as
+    `0`. The finest filter step on the site is 0.05.
+- **Screener date-range filters hold UTC epoch days.** The `inc` and `navdate`
+  filters store their bounds as epoch days inside `FilterValue`, so it stays
+  numeric. The URL carries them as ISO dates.
+- **The client-bundle guard is transitive.** It follows value imports from
+  every `"use client"` module under `app/`, `components/` and `lib/`. Only
+  `lib/data/types.ts` is reachable, and that file must stay import-free.
+  - Allowlisted for now: `app/sif-tracker/TrackerTable.tsx` and
+    `app/nav-tracker/NavExplorer.tsx` (retired in W3).
+  - The test fails on a stale allowlist entry, so W3 must delete the entry
+    along with the file.
+- **The W1 exit gate "no NAV history left in client chunks" is DEFERRED, not
+  passed.** The two allowlisted files still import values from `@/lib/data`.
+  - Their routes, `/sif-tracker` and `/nav-tracker`, still ship the full
+    series in a client chunk: the `"SIF-3":[[` string, about 140 KB.
+  - Every other route is clean. That includes the layout's NfoBar, so `/` and
+    `/privacy` no longer carry it.
+  - The gate closes when 2B's server-fed tracker replaces `TrackerTable.tsx`
+    and W3 retires `app/nav-tracker`. Both allowlist entries go with them.
+  - The integrator should record the gate as deferred until then. The plan's
+    Playwright bundle check (no `"SIF-3":[[` on `/` or `/privacy`) passes today.
+
+### 9.2 Site chrome, UI kit and constants
+
+These are the places where the PRD or the rebuild needed something `DESIGN_CONTRACT.md` does not allow yet, or says differently. The integrator folds each one into the contract. Every item points at the file that now owns the rule.
+
+#### Navigation
+
+- **Dropdown navigation (split disclosure).** The header now has two items with children, "SIF Tracker ▾" and "Learn ▾" (PRD p.8).
+  - Each one is a split control: a real `<Link>` to the hub page, plus a separate chevron `<button aria-expanded>`. This follows the WAI-ARIA disclosure-navigation pattern and is **not** `role="menu"`.
+  - Hubs stay reachable with JS off.
+  - The panel closes on Escape (focus goes back to the chevron), on an outside pointerdown, and when focus leaves it.
+  - `aria-controls` is set only while the panel exists.
+  - The panel is an overlay (`AnimatePresence` + `useIsClient`, shared `popover` variant). **It renders in place, not portalled.** This deliberately departs from the "overlays portal to `<body>`" rule, because the child links must follow the chevron in tab order. The header's `z-[200]` stacking context already puts the panel above the page.
+  - On mobile the same items are an inline accordion, with no outside-click or focus-out dismissal.
+  - The accordion is **not** an overlay, so it is server-rendered and toggled with `hidden`, like the mobile panel it sits in. This keeps a site-wide link in the HTML to the Learn children (`/what-is-sif`, `/strategies`, `/downloads`) and the hub anchors, which nothing else in the header or footer links to.
+  - `aria-current="page"` marks an exact match only; section-awareness (e.g. `/strategies/equity`) sets the ink colour, not the announcement.
+  - → source: `components/ui/DisclosureNav.tsx`, `lib/nav.ts`.
+- **Header breakpoint stays at 992px.** It was re-measured with the PRD labels (two chevrons, "Book a Consultation") in headless Chromium against `next start`:
+  - At 992 / 1024 / 1120 / 1280 / 1440 the logo, nav and CTA sit on one row with no wrap and no horizontal scroll.
+  - The smallest gaps are logo↔nav 32px and nav↔CTA 32px, both at 992 with the 10px scrollbar showing. Every label stays on one line.
+  - The nav gap is now `gap-4 xl:gap-7` (was `gap-5 xl:gap-8`). The label↔chevron gap is `gap-2`: at `gap-1` the chevron's focus ring (2px, offset 2px) touched the label.
+- **Escape order across overlays.** `ui/Dialog` marks its Escape `preventDefault()`, and the document-level Escape listeners (mobile menu, dropdowns) skip a prevented event. One Escape closes only the topmost layer. Escape on the mobile panel returns focus to the menu toggle; before this, focus fell to `<body>`.
+- **The mobile nav panel carries `data-lenis-prevent`.** A paused Lenis still preventDefaults wheel events, so without the attribute the panel could not be wheel-scrolled. This was an existing bug.
+- **The mobile nav panel closes itself in two more cases.** Both were existing bugs.
+  - When the viewport crosses 992px (a `matchMedia` change listener). Before, CSS hid the panel and the toggle, but the page stayed scroll-locked with nothing on screen to release it; a tablet rotating to landscape did this.
+  - When focus leaves the header, following DisclosureNav's rule: a null `relatedTarget` (window blur) and focus moving into an `aria-modal` dialog keep it open. Before, Tab past the CTA moved focus onto page links hidden behind the panel (WCAG 2.4.11).
+  - → source: `components/sections/SiteHeader.tsx`.
+
+- **Deep links from the retired NAV page.** `/nav-tracker?scheme=<id>` redirects (308) to `/sif/<id>` only when `<id>` is a scheme `id` in `schemes.json`; the alternation is built from that file at build time. Anything else falls through to `/sif-tracker#latest-navs`, so a typo is never a permanent redirect to a 404. This relies on `/sif/[id]` (W2-D) being keyed by the scheme `id` slug (`SifRow.id`), not the AMFI code.
+  - → source: `next.config.ts`.
+
+#### Floating and overlay chrome
+
+- **WhatsApp float (PRD p.8).** A fixed bottom-right link on every route, in `z-[150]`: above content, below the header (200) and dialogs (1000).
+  - Static, with no pulse, so the ban on perpetual animation holds.
+  - Uses `glass-inverse` rather than WhatsApp green. This keeps to tokens only, and the dark lens stays legible over any backdrop. It is the first shipped use of `glass-inverse`.
+  - It is lifted by the CSS variable `--float-offset` (default 1.25rem) plus the safe-area insets.
+  - Hidden in print. The footer's bottom padding grew to `pb-28` so the button never covers the bottom-bar links.
+  - Its accessible name and title say "(opens in a new tab)", like every other `target="_blank"` link.
+  - → source: `components/WhatsAppButton.tsx`.
+- **Shared page scroll lock.** Dialogs and the mobile menu now share one counted lock: html `overflow:hidden`, plus `scrollbar-gutter: stable` when a scrollbar exists, plus a Lenis pause. Because it is counted, nested overlays compose.
+  - → source: `components/ui/scroll-lock.ts`.
+- **Dialog.** Every modal uses one component: portal to `<body>`, `z-[1000]`, focus trap, Escape, backdrop click, `aria-modal`/`aria-labelledby`, focus returned to the opener, `DUR.ui` in and `EXIT` out.
+  - The backdrop is the token `bg-ink/55` instead of the inline oklch in the tracker's CompareDialog.
+  - Size `media` is capped by height as well as width: `min(1180px, (92dvh − chrome) × 16/9)`, with the header, the one caption row and the borders as the chrome, and the title clamped to two lines. The whole 16:9 player, including YouTube's control bar, then stays inside the panel. Measured against `next start`, nothing of the frame is cut off at 1280×720, 1366×657, 1440×789, 1920×960, 1024×768, 768×1024, 390×844, 844×390 or 568×320. Before, 79–138px of it was cut off on laptop screens.
+  - → source: `components/ui/Dialog.tsx`.
+
+#### Media
+
+- **YouTube embeds (click-to-load).** CSP `frame-src` changes from `'none'` to exactly `https://www.youtube-nocookie.com`; nothing else was loosened.
+  - The iframe exists only while the video dialog is open.
+  - Thumbnails stay on `img.youtube.com` through a plain `<img>`. This is the sanctioned second `no-img-element` exception, now living in `components/video/VideoCard.tsx`, which replaces the one in `app/media/page.tsx`.
+  - Known limit: while focus is inside the cross-origin player, Escape goes to the player, not the dialog.
+  - → source: `components/video/*`, `next.config.ts`.
+- **Share card is generated.** `app/opengraph-image.tsx` (next/og, Geist, token colours resolved to hex) replaces the PNG, which had the retired tagline baked into its pixels.
+  - `/opengraph-image.png` is **rewritten** (not redirected) to the generated card. This keeps working the page modules that name that path and every share already cached by WhatsApp, LinkedIn and X.
+  - → source: `next.config.ts` `rewrites()`.
+
+#### Tokens (`app/globals.css`)
+
+- **Heat tokens.** `--color-heat-pos-1..4` (hue 152), `--color-heat-neg-1..4` (hue 26) and `--color-heat-na`. Each grade is paired with a text colour:
+  - grades 1–2 use `text-ink`;
+  - grades 3–4 use `text-surface` (white);
+  - N/A uses `text-muted`.
+  - Every pair is ≥ 4.5:1: the lowest is pos-3 at 4.78, and N/A is 4.62. Ratios were computed from oklch and re-sampled in Chromium; they are recorded beside the tokens.
+  - Colour is never the only signal, because cells print the signed %.
+  - The heat and series blocks are declared `@theme static`, so all 13 variables always ship. Tailwind v4 otherwise emits a theme variable only when a scanned file names it in full, and series-2 and heat grades 2–4 were missing from the built CSS. **Composing the variable is safe** (`var(--color-heat-pos-${grade})`, getComputedStyle for a canvas swatch). **Utility classes still are not**: `bg-heat-pos-3` is generated only if written out in full, so classes stay in literal lookup maps.
+- **Series tokens.** `--color-series-1..4`: accent, ink, violet (h300), ochre (h70). They are kept off the gain and loss hues.
+  - Line contrast is ≥ 3:1 on ground, surface and surface-2.
+  - **Series 4 (ochre) is a line colour only** (3.55–4.04:1), so its direct label is set in ink.
+- **`.asof` synthesised italic.** 13px/20px, `--color-muted`, `font-style: italic` synthesised on Geist (Geist has no italic face), with tabular digits.
+  - This is a deliberate exception to "all figures use `.tabular`": a mono date inside an italic sentence reads as code.
+  - It is in `@layer components`, so utilities can override it.
+  - → used by `components/ui/AsOf.tsx`.
+
+#### Brand marks
+
+- **Colour marks at rest.** `<AmcMark>` gains `tone`:
+  - `"colour"` is the new default: native colours, always (PRD p.4/p.12: marks "adopt clearly to the color of the respective brands").
+  - `"hover-reveal"` is the old greyscale-until-hover behaviour.
+  - The legacy `hover` prop still maps to `"hover-reveal"`, so existing callers look unchanged until their owners switch.
+  - New size `xl` (`h-20 w-[184px]`).
+  - The unreached null-logo lockup now renders in ink. It used to be `text-ground/80` on a white tile, which made it invisible.
+  - → source: `components/AmcMark.tsx`.
+
+#### Footer and copy
+
+- **The footer disclaimer is split.** The footer carries the PRD's short disclaimer verbatim (`SITE.disclaimerShort`) and a "Read the full disclaimer" link to `/disclaimer`.
+  - The long, partly derived disclaimer (the `stats.disclosedCount` "we hold no document yet" clause and the data-provenance sentences) moves to `/disclaimer`, which W2-F owns.
+  - The footer no longer imports `@/lib/data`.
+  - The contract text in §5 ("The footer disclaimer is owned by SiteFooter, and parts of it are DERIVED") needs rewriting to match.
+  - `SITE.disclaimerShort` duplicates `FOOTER_DISCLAIMER_SHORT` in `lib/compliance.ts` (F1). It is byte-identical today, but `lib/compliance.ts` is not on this branch, so the footer cannot import it yet. **Integration step:** delete `SITE.disclaimerShort`, have `SiteFooter` import `FOOTER_DISCLAIMER_SHORT` from `@/lib/compliance` (client-safe under spec rule 7), and add a test in `tests/` that the rendered footer string equals the compliance constant. Otherwise a wording change that compliance makes in `lib/compliance.ts` never reaches the footer.
+- **Footer layout (PRD pp.18–20).**
+  - Four unequal columns: SIF Insight · Quick Links · Contact Us · Legal & Policies.
+  - Below them: a regulatory row (Platizio Services LLP, ARN line, the SEBI SIF circular and the AMFI SIF portal, both still required by §5), the short disclaimer, and the bottom bar "© {year} SIF Insight by Platizio Services LLP. All Rights Reserved." with Terms | Privacy | Disclaimer.
+  - The legal pages get real hrefs even though they are built in W2. This retires the "unpublished destinations render as titled text" rule.
+- **Distributor voice in `ConsultCta`.** The default body no longer promises to "map" goals "to the SIFs that fit", which is a suitability call. The default label and href now come from `PRIMARY_CTA`.
+
+#### Constants
+
+- **The `www` origin is centralised.** `SITE.origin = "https://www.sifinsight.com"` in `lib/site.ts` is now the one place it is written.
+  - Layout, sitemap and robots read it.
+  - `app/amc/[id]/page.tsx` (owned by W2-D) still declares its own `ORIGIN` and should switch to `SITE.origin`.
+- **Canonical contact details.** `sifinsights@gmail.com`, +91 92055 23100, `wa.me/919205523100` with the PRD prefill, the Noida office address, and socials (YouTube, Instagram, X; LinkedIn and Facebook are `null` until supplied and are then skipped everywhere). They come only from `lib/site.ts`.
+  - `info@sifinsight.com` no longer appears in any file F2 owns.
+
+#### Primitives
+
+- **`ActionButton`** in `components/primitives.tsx` is a `<button type="button">` with the same glass variants as `<Button>` and no arrow, since the arrow means navigation.
+  - Disabled drops the glass rather than dimming it.
+
+### 9.3 Home
+
+- **Home order (PRD p.16):** Hero → AmcMarquee → WhatIsSif → VideoLibrary → WhyUs → ClosingCta. CategoryComparison, NavBoard, StrategyGrid, NumbersBand, TrustLoop and Faq are no longer on `/`. Their files stay, because other routes use them. → `app/page.tsx`
+- **Hero carries no market figures.** The AMC and strategy counts and the NAV date are gone (PRD p.4). The hero closes on `SITE.trustLine` instead: three `<strong>` labels separated by hairlines. The eyebrow is the brand line `SITE.name`. The swap word is "Understand", and the H1 still runs at delay 0. The banner uses `preload` + `loading="eager"` (not `priority`). → `components/sections/HeroClient.tsx`
+- **ClosingCta no longer repeats the hero headline word for word.** The old rule ("the hero headline returns verbatim") is retired. The new headline is "Have questions about SIFs? *Speak* with our team." The site still has exactly two `em.swap`. The primary CTA is `PRIMARY_CTA` (/contact); WhatsApp (`whatsappHref()`) is the secondary; email and phone come from `SITE`. The section id is now `consultation`; `#consult` stays reserved for `ConsultCta` on interior pages. → `components/sections/ClosingCta.tsx`
+- **AMC marquee:** runs at 23 px/s (the ceiling stays 40). Marks are `size="xl"` in `tone="colour"` (brand colours at rest, no grayscale hover-reveal), per PRD p.4/p.12. Each item links to `/amc/{id}`. The heading is "SIFs We Offer". → `components/sections/AmcMarqueeClient.tsx`
+- **Carousel pattern (new):** the carousel is driven by buttons. The track translates, and the page never scrolls sideways or captures the wheel. A touch swipe moves it too, with `touch-action: pan-y`. Cards outside the window are `inert`. An `aria-live` line reports the position ("Videos 1–3 of 4"). It shows 1 card per view below md, 2 from md, and 3 from lg. With fewer than 2 featured videos it becomes a static grid. The island is `VideoLibraryClient.tsx`, split from its server wrapper. → `components/sections/VideoLibrary*.tsx`
+- **Home section ids:** `#amcs`, `#what-is-sif`, `#videos`, `#why-sif-insight`, `#consultation`. Nothing in the chrome links to them.
+
+### 9.4 SIF Tracker
+
+For the integrator to fold into `DESIGN_CONTRACT.md` and the spec. Each item names the file that owns it.
+
+#### Copy and missing values
+
+- **The eyebrow and the H1 are both "SIF Tracker".** The PRD (p.22) names the page heading, and the brief fixes the eyebrow. → `app/sif-tracker/page.tsx`.
+- **"Not announced" is a fourth missing-value text, for upcoming NFO dates only.** An announced SIF with no stated window is not "Not captured": the AMC has not published a date, so there is nothing for us to capture. A gap in an *open* offer's record still says "Not captured". → `components/tracker/NfoList.tsx`.
+- **Benchmark Return renders "Not captured" on every Top 5 row.** `SifRow` has no benchmark returns yet. The column stays because the PRD lists it (p.25). The tooltip names the benchmark. → `components/tracker/TopPerformers.tsx`.
+- **An AUM strategy with no SIF filed says "Not applicable"; one with SIFs but no figure for the month says "Not captured".** Neither gets a bar. An empty track next to a strategy that holds money would read as zero. → `components/tracker/AumIntelligence.tsx`.
+
+#### Layout and visuals
+
+- **The snapshot is two ledger bands, not cards.** They are hairline grids with `border-l/-t` on the list and `border-r/-b` on each tile.
+  - Band 1 is size: SIFs, AMCs, strategy types, disclosures.
+  - Band 2 is activity: Live NFOs, Upcoming SIFs, then AUM in a `2fr` cell.
+  - Figures use the mono `.tabular` face through `Odometer`, at `clamp(28px, 4.2vw, 52px)`. The 28px floor is what fits "30 / 33" in a 390px two-up tile.
+  - The two NFO tiles are whole-tile links to `#live-nfos` / `#upcoming`. → `components/tracker/MarketSnapshot.tsx`, `stat.tsx`.
+- **1 Week is set apart (PRD p.24).** The period filter is two `Segmented` fieldsets that share one radio `name`, so they behave as one native radio group: one Tab stop, and arrow keys run across both. The second fieldset holds only 1W, with smaller chips (`[&_label]:px-3 py-1.5 text-[12px]`). Periods that no SIF has yet (1Y, 2Y today) are inert. → `components/tracker/TopPerformers.tsx`.
+- **Heatmap cells are separated by a 2px `border-surface` gutter**, so the fills read as tiles. The sticky name column draws its right hairline with an `after:` pseudo-element, because `border-collapse` borders do not travel with a sticky cell. Text is ink on grades 1–2, `text-surface` on 3–4, and muted on N/A, following the pairings in the tokens' note. → `components/tracker/Heatmap.tsx`, `model.ts` (`HEAT_CLASS`).
+- **The heatmap legend is a scale.** Eight swatches run from strongest loss to strongest gain, with the band edges ticked between them. The 1W edges are stated in a caption.
+- **The distributor note sits after `ConsultCta`** in a `Shell` pulled up with `-mt-12`, because `ConsultCta` has no note slot. See the requests below. → `app/sif-tracker/page.tsx`.
+- **Interactive tables are not row-staggered.** Rows inside the filter/sort islands change on every interaction, so each island is revealed once by an outer `Rise`. Only the static Latest NAVs board uses `RowGroup`/`RowItem`.
+
+#### Data and derivation
+
+- **The NFO clock never runs behind the build.** `useNfoToday` takes the later of the reader's Indian date and `navLastUpdated`. On the hydrating render it prints the server-formatted date label, so ICU "Sep"/"Sept" differences cannot cause a mismatch. → `components/tracker/NfoClock.ts`.
+- **Only open and upcoming offers are shipped to the islands.** An offer closed on the build date cannot reopen on a later date. → `components/tracker/data.ts`.
+- **Heatmap legend edges are a copy of spec §9** (`HEAT_EDGES` in `components/tracker/model.ts`), because `lib/format.ts` keeps its bounds private.
+
+### 9.5 SIF Screener
+
+- **Quick-filter menus render in place, not portalled.** Same as `ui/DisclosureNav`: the controls must follow the trigger in tab order. They are still overlays: mounted only while open, behind `useIsClient`, inside `AnimatePresence`, using the shared `popover` variant. `aria-controls` is set only while the panel exists. Each panel is clamped to the viewport's 16px gutter when it opens.
+  → `components/screener/FilterPopover.tsx`
+- **More Filters is `ui/Dialog` restyled through `className`.** It is a right-hand side sheet at `sm` and up, and full screen below `sm`. `Dialog` itself is unchanged, so the focus trap, Escape, scroll lock and return focus are the shared ones. The group jump links are buttons, not `#anchors`, because smooth scroll owns hash links and the page is locked while the sheet is open.
+  → `components/screener/MoreFilters.tsx`
+- **Fields left out of the More Filters panel:**
+  - The SIF-name set filter, because the universal search is the name filter.
+  - The planned Portfolio fields. That group shows one line instead, linking `/methodology`.
+  - The monthly-return filters are not left out, but sit behind one disclosure button inside Performance.
+- **Flag filters are three-state:** Any / yes / no (`ui/Segmented`), not a single on/off toggle. "No exit load" and "Exit load applies" are both real screens.
+- **A range filter on a field no SIF holds is disabled** and says "Not captured for any SIF yet". Today that is AUM and TER. Applying it would hide the whole universe. It enables itself when research data lands. Every range filter states its coverage ("Available for 11 of 33 SIFs") when that is incomplete.
+- **Header-click sort cycle:**
+  - The first click sorts in the field's natural direction: figures high→low, words A→Z.
+  - The second click reverses it, and the third click removes it.
+  - A header click only ever sets the primary key. The secondary key belongs to the "Then by" select.
+  - `aria-sort` is set on the primary column only.
+- **Column order is canonical.** Columns sort by group rank, then registry order. That reproduces the PRD's default column order exactly, so a reset or re-toggled default collapses back to no `cols=` param.
+- **Compare bar layering is `z-[140]`.** That is below the WhatsApp button (150), the header (200) and dialogs (1000). The bar sets `--float-offset` on `<html>` to `calc(<height>px + 1.25rem)` and removes it on unmount.
+- **Inputs and selects are 16px below `sm`** (14px / 13px above), because iOS zooms the page on focus under 16px.
+- **Results rows use no reveal wrappers.** The rows re-mount on every filter change and must never pass through opacity 0.
+- **Deferred PRD items (no live data or registry field yet):**
+  - Benchmark out-/under-performance and excess-return filters (`bmr`, `xr` are planned).
+  - Return-ranking bands (Top 10/25/50%).
+  - Sharpe, alpha and beta.
+  - AUM growth.
+  - Portfolio and exposure filters.
+  - Fund-manager experience and AUM metrics.
+  - A "Live NFO" status (NFOs stay in the Tracker).
+  - "Save Screen" (the PRD marks it as a future feature, so it is omitted entirely).
+
+### 9.6 Compare
+
+For the integrator to fold into `DESIGN_CONTRACT.md` / the shared spec.
+
+#### Design contract
+
+- **Compare chart reveal is a left-to-right clip, not `<DrawnPath>`.** DrawnPath
+  animates `stroke-dasharray`, which erases the per-series dash patterns the
+  chart needs so no series depends on colour alone. The clip is a hand-rolled
+  reveal (`data-reveal` + `useRevealed(ref, ENTER.chart)`, animating
+  `clip-path`), so both safety nets open it. The dashed paths carry no
+  `data-reveal`, so the nets' `stroke-dasharray: none` never flattens them.
+- **One `<Section>` for the whole comparison.** The twelve PRD blocks are
+  `<section>`s inside one `<Section id="comparison">`, separated by a drawn
+  `<Rule>` and `pt-20`, not twelve `py-[100px]` Sections (≈2,400px of air
+  between tables).
+- **Series styling:** `components/compare/series.tsx` — series 1–4 =
+  `--color-series-1..4` + solid / dashed / dotted / dash-dot. The same swatch
+  heads the SIF's column in every table.
+- **Section headings use the PRD's words verbatim** ("Strategy & Investment
+  Approach", "Fund Size & Management", "Key Terms", …).
+
+#### Data / compliance
+
+- **Markers.** "Highest … / Lowest … among selected" follow the registry's
+  `compare.note` (returns, volatility, AUM, TER). Two refinements:
+  - *Since first NAV:* no marker unless every selected SIF's SI starts on the
+    same date. A one-day-old SIF and a year-old one are not like for like.
+  - *Maximum drawdown:* marked "Lowest drawdown among selected" by the SIZE of
+    the fall (`Math.abs`). The registry `mdd` has no `note`. See the requested
+    change below.
+- **Rebased chart window** (`components/compare/rebase.ts`) restates the
+  trailing-return rules because a client file may not import `lib/data`:
+  - start = calendar offset from the latest NAV among the selected SIFs;
+  - a SIF enters only with a NAV on or before the start, at most 7 days
+    earlier (`maxStartGapDays`); otherwise it is listed as left out;
+  - SI starts at the latest first NAV;
+  - a window needs 2 SIFs;
+  - the default is SI, unless SI spans fewer than 28 days. Then the default
+    is the longest shared window.
+- **Permitted derivative exposure:** no per-scheme field exists, so the row
+  prints "Not captured". Its hint states SEBI's framework cap
+  (`stats.maxUnhedgedShortPct`) as a regulatory limit, not as the scheme's own.
+- **Planned registry fields rendered as "Not captured" rows in Compare only:**
+  `glong` (gross long/short/net, one row), `bmr`, `xr`. The brief asks for
+  these rows. They never become filters, columns or sort keys.
+- **Unknown / malformed / over-cap `ids`** are reported under the slots, never
+  silently dropped. With JS off, a `<noscript>` GET form (`<select multiple
+  name="ids">`) builds the same URL.
+
+#### Requested shared-file changes
+
+- `lib/screener/fields.ts` (F1): give `mdd` a compare note with magnitude
+  semantics, e.g. `compare: { section: "risk", note: "lowest", by: "magnitude" }`.
+  Compare can then drop its local override.
+- Portfolio exposure: `portfolio.json` has no loader. Once F1 adds one and
+  live `portfolio` fields, Compare renders them automatically: it reads
+  `FIELDS` with `compare.section === "portfolio"`.
+
+### 9.7 Individual SIF page and AMC pages
+
+- **Monthly-returns grid wraps instead of a 12-column year table.** Cells are
+  `grid-cols-3 → 12` so a 390px screen never scrolls sideways; each cell prints
+  the month and the signed % (heat grade is decoration on top, `heatGrade(pct,"1M")`).
+- **NAV chart period chips are windowed from the scheme's latest published NAV**,
+  not the reader's clock (static build). A window the series does not reach is
+  shown but disabled rather than drawing a shorter line under a longer label.
+- **House SIF AUM is stated only when `amcAum().complete`.** A partial month is
+  shown as "Not captured" with "AUM held for x of y schemes" — a partial sum is
+  not the house's AUM (applies to /amc, /amc/[id], /sif/[id]).
+- **Disclosure provenance reads `verifiedAgainst` directly** from
+  `lib/data/raw/disclosures.json` in the server-only `components/sif/detail.ts`
+  because `Strategy` does not carry it. Suggest F1 add `verifiedAgainst` to
+  `Strategy`/`SifRow` and this import is dropped.
+- **/sif/[id] links to `/methodology#…` anchors** (returns, monthly-returns,
+  volatility, max-drawdown, risk-band, ter, exit-load, liquidity, sources) —
+  the anchors already named in `lib/screener/fields.ts`; the methodology page
+  must render them.
+
+### 9.8 Learn, About, legal pages and methodology
+
+- **Legal layout (`components/legal/LegalDocument.tsx`)**: /terms, /disclaimer, /regulatory-disclosures and /methodology share one layout — numbered clauses at 68ch, a sticky anchor TOC on `lg+` (static above the clauses on mobile), "Last updated" under the TOC (`LEGAL_UPDATED`, 2026-09-23). Clause `aliases` give extra anchor ids (e.g. `#drawdown` → `#max-drawdown`, `#planned` → `#not-yet-calculated`).
+- **/methodology anchors**: every `methodology` anchor in `lib/screener/fields.ts` resolves (`#sources #face-value #returns #monthly-returns #inception #volatility #max-drawdown #risk-band #benchmarks #aum #ter #exit-load #liquidity #heatmap #missing-values #not-yet-calculated`) plus aliases `#drawdown #planned #one-day-change`.
+- **Heatmap bounds are restated on /methodology** (0.25/1/2.5 and 1/3/7). Request: F1 exports the bounds from `lib/format.ts` so the page reads them.
+- **/about Vision & Mission**: the section label (eyebrow style) is the `h2`; the statement is set at 22–28px. Icon cards use a square hairline chip (not `rounded-full`, since it is not interactive).
+- **/about #connect** is a ConsultCta-shaped panel with three actions (Book a Consultation / WhatsApp Us / Email Us); the two off-site actions are `<a>` pills with the same glass classes as `<Button>`.
+- **/learn**: the Learn sub-nav is read from `PRIMARY_NAV` so it cannot drift from the header dropdown. Every hub section (`#videos #experts #articles #faqs`) always renders; empty states are one line plus a real link.
+- **Faq** takes props (`items, id, eyebrow, lines, intro, cta`); defaults keep the home page unchanged; CTA default is `/contact` (was `#consult`).
+
+### 9.9 Leads, consultation and privacy
+
+- Lead delivery is Resend (REST, no SDK) configured by env: `RESEND_API_KEY`, `LEAD_FROM_EMAIL` (required), `LEAD_TO_EMAIL` (optional, defaults to `SITE.email`). Missing ⇒ forms render an honest "not sent" state with direct channels. `.env.example` (F2) should list these three.
+- `server-only` is not installed and new deps are out of scope, so `lib/leads/deliver.ts` guards with a runtime `typeof window` throw; it is imported only from `lib/leads/actions.ts`.
+- The rate limit (`lib/leads/rate-limit.ts`) is per-instance and not durable; a shared counter or edge WAF rule is the durable control.
+- Two sessionStorage keys are sanctioned site-wide: `sif:lead-popup:v1`, `sif:lead:sent` (disclosed on /privacy, names imported from `lib/leads/schema`).
+- /privacy states a 24-month retention period and DPDP Act 2023 consent basis — operator to confirm.
+- TrustLoop now lives on /contact ("How we work"); remove it from `app/page.tsx` and mount `<LeadPopup />` there (integrator).

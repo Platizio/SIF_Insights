@@ -11,6 +11,7 @@ import { LineReveal } from "@/components/motion/LineReveal";
 import { Rise, Rule } from "@/components/motion/Reveal";
 import { Eyebrow, Section, Shell } from "@/components/primitives";
 import { cn } from "@/lib/cn";
+import { SITE } from "@/lib/site";
 
 /**
  * Rescued from a flat PNG.
@@ -26,26 +27,29 @@ import { cn } from "@/lib/cn";
 
 type Step = { n: string; title: string; body: string };
 
+/* Distributor process steps only. No outcome, return or suitability
+   language: we are a distributor, not an investment adviser, and the page
+   this renders on says so. */
 const STEPS: Step[] = [
   {
     n: "01",
-    title: "Assess customer requirements",
-    body: "We understand your profile, goals and risk comfort.",
+    title: "Tell us what you are looking for",
+    body: "Share your questions and what you would like to understand about SIFs.",
   },
   {
     n: "02",
-    title: "Curated SIFs",
-    body: "Personalised access to the right SIFs.",
+    title: "Walk through the options",
+    body: "We take you through the SIF strategies available and the scheme documents behind each one.",
   },
   {
     n: "03",
-    title: "Capitalise on market opportunities",
-    body: "We actively look for opportunities to increase returns across multiple SIFs.",
+    title: "You decide",
+    body: "The decision is yours. If you choose to invest, we help with the application and KYC process.",
   },
   {
     n: "04",
-    title: "Achieve financial goals",
-    body: "Our focus remains on achieving risk-managed, consistent outcomes even in changing markets.",
+    title: "Service after you invest",
+    body: "We stay available for help with statements, transactions and service requests.",
   },
 ];
 
@@ -91,7 +95,7 @@ export function TrustLoop() {
           </div>
           <Rise delay={0.12} className="lg:self-end">
             <p className="text-[17px] leading-[30px] text-body">
-              A certified distributor for your financial goals.
+              {SITE.arnLine}.
             </p>
           </Rise>
         </div>

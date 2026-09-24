@@ -1,21 +1,22 @@
 import type { MetadataRoute } from "next";
-import { amcs, navLastUpdated, strategiesByCategory } from "@/lib/data";
+import { amcs, navLastUpdated, strategies, strategiesByCategory } from "@/lib/data";
+import { SITE } from "@/lib/site";
 
 /* ============================================================
    /sitemap.xml
 
    This site is new, sits in a SEBI fund category that did not exist
    before 2025, and has essentially no backlink graph. A submitted
-   sitemap is the only realistic way for a crawler to find the 30 pages
+   sitemap is the only realistic way for a crawler to find the pages
    it would otherwise have to stumble into.
 
    Two rules govern what is in here:
 
-   1. Nothing is hard-coded that the data already knows. The 17 AMC
-      routes come from `amcs`, which is the same expression
-      app/amc/[id]/page.tsx feeds to generateStaticParams — so the
-      sitemap and the prerender list cannot drift when an eighteenth
-      house files. The three strategy routes come from the keys of
+   1. Nothing is hard-coded that the data already knows. The AMC routes
+      come from `amcs` and the SIF product pages from `strategies` — the
+      same expressions their routes feed to generateStaticParams — so the
+      sitemap and the prerender list cannot drift when a house or a scheme
+      is added. The strategy-category routes come from the keys of
       `strategiesByCategory`, typed `Record<Category, Strategy[]>`, so
       they are locked to the `Category` union rather than retyped here.
 
@@ -28,27 +29,38 @@ import { amcs, navLastUpdated, strategiesByCategory } from "@/lib/data";
    `changeFrequency` and `priority` are deliberately omitted. Google
    ignores both, and a `priority: 0.8` would be exactly the kind of
    figure this codebase refuses to invent.
+
+   RETIRED, and absent on purpose: /nav-tracker and /media. Both now 308
+   (next.config.ts), and a sitemap entry that redirects is an entry for a
+   page that is not there. Query-string states (/sif-screener?…,
+   /compare?ids=…) are not listed either: each page canonicalises to its
+   bare path, which is what is listed.
    ============================================================ */
 
-/** Absolute, because sitemap entries must be. Matches `metadataBase` in
-    app/layout.tsx; app/robots.ts holds the same origin for the same
-    reason. If the domain moves, both change. */
-const ORIGIN = "https://sifinsight.com";
+/** Absolute, because sitemap entries must be. From lib/site.ts, the one
+    place the origin is written — see the `www` note there. */
+const ORIGIN = SITE.origin;
 
 /**
- * Routes that render nothing out of the NAV dataset — neither page
- * imports `@/lib/data` at all, directly or through a section component.
- * They get no `lastModified` rather than a date we cannot source.
+ * Routes that render nothing out of the NAV dataset. They get no
+ * `lastModified` rather than a date we cannot source.
  */
-const EDITORIAL_PATHS = ["/media", "/downloads", "/privacy"];
+const EDITORIAL_PATHS = [
+  "/learn",
+  "/downloads",
+  "/methodology",
+  "/privacy",
+  "/terms",
+  "/disclaimer",
+  "/regulatory-disclosures",
+];
 
 /**
  * Routes whose visible figures are counted from the NAV dataset, so a
  * NAV refresh genuinely changes what they say.
  *
- * `/` reaches the data through its section components (NavBoard,
- * NumbersBand, AmcMarquee, StrategyGrid…); `/about` and `/contact`
- * through `stats`, which is derived from the same source.
+ * `/` reaches the data through its section components; `/about` and
+ * `/contact` through `stats`, which is derived from the same source.
  */
 const DATA_BACKED_PATHS = [
   "",
@@ -56,11 +68,13 @@ const DATA_BACKED_PATHS = [
   "/what-is-sif",
   "/strategies",
   "/sif-tracker",
-  "/nav-tracker",
+  "/sif-screener",
+  "/compare",
   "/amc",
   "/contact",
   ...Object.keys(strategiesByCategory).map((c) => `/strategies/${c}`),
   ...amcs.map((amc) => `/amc/${amc.id}`),
+  ...strategies.map((s) => `/sif/${s.id}`),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

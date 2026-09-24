@@ -8,6 +8,8 @@ import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { ConsultCta } from "@/components/ConsultCta";
 import { AmcMark } from "@/components/AmcMark";
 import { PageHeader } from "@/components/PageHeader";
+import { ExpenseValue } from "@/components/ui/ExpenseValue";
+import { NotCaptured } from "@/components/ui/NotCaptured";
 import {
   Card,
   Delta,
@@ -17,10 +19,14 @@ import {
   Shell,
 } from "@/components/primitives";
 import { cn } from "@/lib/cn";
+import { SITE } from "@/lib/site";
 import {
+  amcAum,
   amcById,
   amcs,
-  formatExpense,
+  currentTer,
+  formatCr,
+  formatMonth,
   formatInr,
   formatUpdated,
   getNav,
@@ -146,7 +152,7 @@ export async function generateMetadata({
       /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
          file convention contributes, which silently downgrades the card to
          twitter:card=summary. Restated, not inherited. */
-      images: "/opengraph-image.png",
+      images: "/opengraph-image",
       siteName: "SIF Insight",
       locale: "en_IN",
       type: "website",
@@ -154,8 +160,8 @@ export async function generateMetadata({
   };
 }
 
-/** Matches `metadataBase` in app/layout.tsx. JSON-LD needs absolute URLs. */
-const ORIGIN = "https://sifinsight.com";
+/** JSON-LD needs absolute URLs. One origin site-wide, from lib/site.ts. */
+const ORIGIN = SITE.origin;
 
 /**
  * BreadcrumbList — Home → Asset managers → this house.
@@ -226,6 +232,17 @@ export default async function AmcDetailPage({
 
   const withBand = own.filter((s) => s.riskBand !== null).length;
 
+  /* The charged total TER, where held — a different number from the caps
+     above, so it is never folded into their range. */
+  const charged = own.flatMap((s) => {
+    const t = currentTer(s.amfiSchemeCode);
+    return t ? [t.pct] : [];
+  });
+
+  /* A partial sum is not the house's AUM: a total is stated only when every
+     scheme is counted for the same month; otherwise the coverage is. */
+  const aum = amcAum(amc.id);
+
   const index = amcs.findIndex((a) => a.id === amc.id);
   const prev = index > 0 ? amcs[index - 1] : null;
   const next = index < amcs.length - 1 ? amcs[index + 1] : null;
@@ -266,7 +283,7 @@ export default async function AmcDetailPage({
           </Fragment>,
           <Fragment key="disclosed">
             <span className="tabular">{disclosed}</span> of{" "}
-            <span className="tabular">{own.length}</span> with disclosures
+            <span className="tabular">{own.length}</span> with a scheme document read
           </Fragment>,
           <Fragment key="updated">
             NAV updated {formatUpdated(navLastUpdated)}
@@ -290,7 +307,29 @@ export default async function AmcDetailPage({
           <Rise>
             {/* gap-px over a hairline ground: the dividers stay exact at every
                 wrap point, which a per-cell border cannot do. */}
-            <div className="grid gap-px border border-hairline bg-hairline sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-px border border-hairline bg-hairline sm:grid-cols-2 xl:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
+              <SummaryCell label="SIF AUM" className="sm:col-span-2 xl:col-span-1">
+                {aum && aum.complete ? (
+                  <>
+                    <span className={cn(FIGURE, "tabular")}>{formatCr(aum.cr)}</span>
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      Month-end {formatMonth(aum.asOf.slice(0, 7))}, all{" "}
+                      <span className="tabular">{aum.total}</span>{" "}
+                      {aum.total === 1 ? "scheme" : "schemes"}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <NotCaptured className="text-[22px] font-medium leading-[30px]" />
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      AUM held for <span className="tabular">{aum ? aum.counted : 0}</span> of{" "}
+                      <span className="tabular">{own.length}</span>{" "}
+                      {own.length === 1 ? "scheme" : "schemes"}
+                    </span>
+                  </>
+                )}
+              </SummaryCell>
+
               <SummaryCell label="Schemes tracked">
                 <Odometer value={own.length} className={FIGURE} />
               </SummaryCell>
@@ -317,7 +356,17 @@ export default async function AmcDetailPage({
               </SummaryCell>
 
               <SummaryCell label="Expense ratio">
-                {expenses.length === 0 ? (
+                {charged.length > 0 ? (
+                  <>
+                    <span className={cn(FIGURE, "tabular")}>{span(charged).text}</span>
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      Total TER charged, Regular plan
+                      {expenses.length > 0
+                        ? ` · base-ratio ${formatExpenseRange(expenses).toLowerCase()}`
+                        : null}
+                    </span>
+                  </>
+                ) : expenses.length === 0 ? (
                   <span className={FIGURE_ABSENT}>Not captured</span>
                 ) : (
                   <span className={cn(FIGURE, "tabular")}>
@@ -338,13 +387,15 @@ export default async function AmcDetailPage({
                   the rest of this page exists to avoid. */}
               {disclosed === 0
                 ? "We hold no scheme information document for this house yet, so risk band and expense are shown as not captured rather than estimated."
-                : `Risk band is captured for ${withBand} of ${own.length}; expense ratio for ${expenses.length} of ${own.length}. The cells above count only those.`}
+                : `Risk band is captured for ${withBand} of ${own.length}; expense ratio ceiling for ${expenses.length} of ${own.length}; charged TER for ${charged.length} of ${own.length}. The cells above count only those.`}
               {expenses.some((e) => e.isCap) ? (
                 <>
                   {" "}
-                  An expense figure is the maximum ratio the information
-                  document permits, not the ratio being charged — that is
-                  published on the asset manager&apos;s own site and moves.
+                  A ceiling is the maximum base expense ratio the information
+                  document permits. The total TER charged adds brokerage,
+                  transaction costs and statutory levies on top; each
+                  scheme&apos;s is shown, dated, on its card below and on its
+                  scheme page.
                 </>
               ) : null}
             </p>
@@ -487,12 +538,14 @@ function formatExpenseRange(figures: ExpenseFigure[]): string {
 function SummaryCell({
   label,
   children,
+  className,
 }: {
   label: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="bg-surface px-7 py-6">
+    <div className={cn("bg-surface px-7 py-6", className)}>
       <p className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted">
         {label}
       </p>
@@ -503,6 +556,7 @@ function SummaryCell({
 
 function SchemeCard({ strategy }: { strategy: Strategy }) {
   const nav = getNav(strategy.id);
+  const ter = currentTer(strategy.amfiSchemeCode);
 
   return (
     <Card className="p-7 sm:p-10">
@@ -517,7 +571,12 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
           </div>
 
           <h3 className="mt-6 text-[22px] font-medium leading-[30px] text-ink">
-            {strategy.name}
+            <Link
+              href={`/sif/${strategy.id}`}
+              className="underline decoration-transparent underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent hover:decoration-current"
+            >
+              {strategy.name}
+            </Link>
           </h3>
           <p className="mt-2 text-[12px] leading-[18px] text-muted">
             AMFI scheme code{" "}
@@ -560,11 +619,11 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
                 */}
                 <p className="mt-4 max-w-[42ch] text-[12px] leading-[18px] text-muted">
                   Change is measured against this scheme’s previous published
-                  NAV. See the{" "}
-                  <Link href="/nav-tracker" className="underline">
-                    NAV tracker
+                  NAV. The{" "}
+                  <Link href={`/sif/${strategy.id}`} className="underline">
+                    scheme page
                   </Link>{" "}
-                  for the full series.
+                  carries the full series, returns and documents.
                 </p>
               </>
             ) : (
@@ -592,11 +651,13 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
               )}
             </Disclosure>
             <Disclosure label="Expense ratio">
-              {strategy.expenseRatio === null ? null : (
-                <span className="tabular">
-                  {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
-                </span>
-              )}
+              {ter || strategy.expenseRatio !== null ? (
+                <ExpenseValue
+                  ter={ter}
+                  ratio={strategy.expenseRatio}
+                  isCap={strategy.expenseRatioIsCap}
+                />
+              ) : null}
             </Disclosure>
             <Disclosure label="Exit load">{strategy.exitLoad}</Disclosure>
             <Disclosure label="Risk band">

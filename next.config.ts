@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
+import schemesFile from "./lib/data/raw/schemes.json";
 
 /* ============================================================
    Content-Security-Policy.
@@ -20,7 +21,8 @@ import type { NextConfig } from "next";
        page then renders permanently at opacity 0.
 
    What `'unsafe-inline'` on scripts actually costs here is small: this app
-   has no route handlers, no third-party scripts, and no user-generated
+   has no route handlers that read a request (app/opengraph-image.tsx is
+   rendered once at build), no third-party scripts, and no user-generated
    HTML. The single `dangerouslySetInnerHTML` (the <noscript> reveal
    stylesheet in app/layout.tsx) is a string literal with nothing
    interpolated into it, and the one server action accepts form fields
@@ -28,9 +30,18 @@ import type { NextConfig } from "next";
    sink to protect, a strict script-src buys little against the cost of
    losing hydration and prerendering.
 
-   Two directives that are load-bearing and must not be "cleaned up":
-     - `img-src` keeps https://img.youtube.com or the five /media
-       thumbnails render blank.
+   Three directives that are load-bearing and must not be "cleaned up":
+     - `img-src` keeps https://img.youtube.com or every video card
+       thumbnail (components/video/VideoCard.tsx) renders blank.
+     - `frame-src` admits exactly one origin, youtube-nocookie.com, for
+       the click-to-load player in components/video/VideoDialog.tsx. The
+       iframe only exists after a reader presses "Watch here", and the
+       privacy-enhanced host sets no cookies until playback. Do NOT widen
+       it to youtube.com: that host drops tracking cookies on load, which
+       the privacy notice does not cover. Everything the player itself
+       loads is governed by the frame's own policy, not this one, so
+       nothing else here needed loosening — script-src, connect-src and
+       media-src are unchanged.
      - `font-src 'self'` is sufficient and correct: next/font/google
        self-hosts the woff2 files, so nothing is fetched from
        fonts.googleapis.com. Do not add it.
@@ -44,7 +55,7 @@ const CSP = [
   "connect-src 'self'",
   "media-src 'self'",
   "object-src 'none'",
-  "frame-src 'none'",
+  "frame-src https://www.youtube-nocookie.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   "frame-ancestors 'none'",
@@ -88,6 +99,13 @@ const SECURITY_HEADERS = [
      max-age (300 → 86400 → 63072000) before adding `preload`. */
 ];
 
+/** Every scheme id, regex-escaped and |-joined, for the deep-link redirect.
+    Ids are slugs today; the escape is there so one that is not can never
+    widen the pattern. */
+const SCHEME_ID_PATTERN = schemesFile.schemes
+  .map((scheme) => scheme.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+  .join("|");
+
 const nextConfig: NextConfig = {
   // A stray lockfile in the user's home directory makes Turbopack infer the
   // wrong workspace root. Pin it to this project.
@@ -101,6 +119,68 @@ const nextConfig: NextConfig = {
 
   async headers() {
     return [{ source: "/:path*", headers: SECURITY_HEADERS }];
+  },
+
+  /* ============================================================
+     Retired URLs — all permanent (308), so the ranking and every link
+     already shared in a WhatsApp forward follow the page to its new home.
+
+     ORDER IS LOAD-BEARING. Next evaluates these top to bottom and stops at
+     the first match, so the `has` rule for a deep link to one scheme
+     (`/nav-tracker?scheme=<id>`) must sit above the bare /nav-tracker rule,
+     which would otherwise swallow it and drop the reader on the tracker
+     instead of the fund they were sent.
+
+     The `has` value is an alternation of the scheme ids that exist, read
+     from schemes.json at build time, and Next anchors it (`^…$`). A shape
+     match (`[a-z0-9-]+`) was not enough: /sif/[id] prerenders known ids
+     only, so a typo or a retired id got a PERMANENT redirect to a 404 —
+     cached by the browser for good — where the old page showed its
+     default chart. Now anything that is not a live id (a typo, an id a
+     roster change renamed, an AMFI code) falls through to the bare rule
+     and lands on the NAV table. The nightly NAV commit redeploys, so a
+     scheme the roster adds is in the list by its next build.
+
+     Measured against `next start` (curl -sI), Location headers exactly:
+       /nav-tracker?scheme=icici-equity → /sif/icici-equity?scheme=icici-equity
+       /nav-tracker?scheme=icici-equty  → /sif-tracker?scheme=icici-equty#latest-navs
+       /nav-tracker                     → /sif-tracker#latest-navs
+       /nav-tracker?scheme=SIF-3        → /sif-tracker?scheme=SIF-3#latest-navs
+       /media                           → /learn#videos
+     Fragments survive unencoded (no %23). Next always passes the source
+     query through on a redirect and a destination cannot remove a key, so
+     the deep link carries a redundant `?scheme=`; /sif/[id] ignores it and
+     its canonical names the clean URL.
+
+     The last three are the old Wix site's paths, which are still what
+     search results and old shares point at.
+     ============================================================ */
+  async redirects() {
+    return [
+      {
+        source: "/nav-tracker",
+        has: [{ type: "query", key: "scheme", value: `(?<scheme>${SCHEME_ID_PATTERN})` }],
+        destination: "/sif/:scheme",
+        permanent: true,
+      },
+      { source: "/nav-tracker", destination: "/sif-tracker#latest-navs", permanent: true },
+      { source: "/media", destination: "/learn#videos", permanent: true },
+      { source: "/about-us-1", destination: "/about", permanent: true },
+      { source: "/sif-knowledge-hub", destination: "/learn", permanent: true },
+      { source: "/home-1", destination: "/", permanent: true },
+    ];
+  },
+
+  /* The share card used to be a static file at /opengraph-image.png. It is
+     now generated by app/opengraph-image.tsx, which Next serves at
+     /opengraph-image — so the old URL would 404. Two things still name it:
+     every share already scraped by WhatsApp, LinkedIn and X (they cache the
+     og:image URL and re-fetch it), and the page modules that restate
+     `images: "/opengraph-image.png"` in their own `openGraph`. A REWRITE,
+     not a redirect: the card is served in place at the old address, since
+     not every scraper follows a redirect for an image. */
+  async rewrites() {
+    return [{ source: "/opengraph-image.png", destination: "/opengraph-image" }];
   },
 
   images: {

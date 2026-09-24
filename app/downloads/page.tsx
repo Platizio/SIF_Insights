@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
        file convention contributes, which silently downgrades the card to
        twitter:card=summary. Restated, not inherited. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",

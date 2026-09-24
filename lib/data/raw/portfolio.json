@@ -1,0 +1,6 @@
+{
+  "_comment": "Schema placeholder for portfolio exposure (equity/debt/cash, gross long/short, net, top-10 concentration). Deliberately EMPTY and not read by any loader: the PRD adds these filters only when comparable data is consistently available across schemes, and a partial set would rank the schemes we happened to research. Same Fact shape and `sources` dict as scheme-facts.json when it is filled.",
+  "schemaVersion": 1,
+  "sources": {},
+  "schemes": {}
+}

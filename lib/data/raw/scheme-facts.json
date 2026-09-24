@@ -1,0 +1,4409 @@
+{
+  "_comment": "Hand-researched scheme facts, keyed by AMFI scheme code. EVERY value is a Fact: { \"value\": <T>, \"src\": \"<sourceId>\", \"locator\": \"p.3 'Date of allotment'\", \"verified\": true }, and `src` must name an entry in this file's `sources` dict ({ url, publisher, publisherKind: AMC|AMFI|SEBI, docType: ISID|SID|KIM|SAI|factsheet|portfolio|addendum|ter-disclosure|press-release|amfi-data|sebi-filing, title, asOf, retrievedOn }). lib/data/facts.ts merges ONLY facts with verified:true whose src resolves; anything else renders 'Not captured', never a default. Per-scheme fields, all optional: allotmentDate (ISO), faceValue (rupees per unit), fundManagers ([{name, since?, role?}]), objective, subscription ({bucket: daily|twice-weekly|weekly|fortnightly|monthly|other, text}), redemptionTerms ({days?: string[], noticeDays?, settlement?}), minAdditional (rupees), options (string[]), assetAllocation ([{asset, minPct, maxPct}]). A scheme with no entry simply has nothing captured — the build never throws on a missing one. Kept apart from schemes.json and nav-history.json so the nightly NAV pipeline and research never write the same file.",
+  "schemaVersion": 1,
+  "sources": {
+    "g1:quant-issd-els": {
+      "url": "https://www.qsif.com/Admin/disclouser/ISSD-qsif-Equity-Long-short-Fund.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (ISSD, statutory summary of the ISID; no docType for ISSD in enum) - qsif Equity Long-Short Fund; no as-of date printed, asOf = server Last-Modified",
+      "asOf": "2026-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-isid-els": {
+      "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Equity_Long_Short_Fund.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - qsif Equity Long-Short Fund",
+      "asOf": "2025-08-06",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-add-10-2026": {
+      "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice cum Addendum No. 10/2026 - change in SIP/SWP/STP and Minimum Additional Purchase Amount (effective June 25, 2026)",
+      "asOf": "2026-06-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-issd-extop": {
+      "url": "https://www.qsif.com/Admin/disclouser/ISSD-qsif-Equity-Ex-Top-100-Long-short-Fund.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (ISSD, statutory summary of the ISID; no docType for ISSD in enum) - qsif Equity Ex-Top 100 Long-Short Fund; no as-of date printed, asOf = server Last-Modified",
+      "asOf": "2026-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-isid-extop": {
+      "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Equity_Ex-Top_100_Long-Short_Fund.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - qsif Equity Ex-Top 100 Long-Short Fund",
+      "asOf": "2025-08-14",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-issd-hls": {
+      "url": "https://www.qsif.com/Admin/disclouser/ISSD-qsif-Hybrid-Long-Short-Fund.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (ISSD, statutory summary of the ISID; no docType for ISSD in enum) - qsif Hybrid Long-Short Fund; no as-of date printed, asOf = server Last-Modified",
+      "asOf": "2026-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-isid-hls": {
+      "url": "https://www.qsif.com/Admin/SIDPdf/ISID-qsif_Hybrid_Long-Short_Fund.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - qsif Hybrid Long-Short Fund",
+      "asOf": "2025-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-issd-aaa": {
+      "url": "https://www.qsif.com/Admin/disclouser/ISSD-qsif-Active-Asset-Allocator-Long-Short-Fund.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (ISSD, statutory summary of the ISID; no docType for ISSD in enum) - qsif Active Asset Allocator Long-Short Fund; no as-of date printed, asOf = server Last-Modified",
+      "asOf": "2026-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-isid-aaa": {
+      "url": "https://www.qsif.com/Admin/SIDPdf/ISID-qsif_Active_Asset_Allocator_Long-Short_Fund.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - qsif Active Asset Allocator Long-Short Fund",
+      "asOf": "2026-03-27",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-issd-sr": {
+      "url": "https://www.qsif.com/Admin/disclouser/ISSD-qsif-Sector-Rotation-Long-Short-Fund.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (ISSD, statutory summary of the ISID; no docType for ISSD in enum) - qsif Sector Rotation Long-Short Fund; no as-of date printed, asOf = server Last-Modified",
+      "asOf": "2026-09-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:quant-isid-sr": {
+      "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Sector_Rotation_Long-Short_Fund.pdf",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - qsif Sector Rotation Long-Short Fund",
+      "asOf": "2026-04-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-fs-2026-08": {
+      "url": "https://sif.itiamc.com/Files/ITI%20DIVINITI%20SIF-Factsheet.pdf",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Diviniti SIF Fund Factsheet August 2026 (data as of August 31, 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-isid": {
+      "url": "https://sif.itiamc.com/Files/InvestmentStrategyFiles/ISID-%20Diviniti%20Equity%20Long%20and%20Short%20Fund-SIF.PDF",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Diviniti Equity Long Short Fund",
+      "asOf": "2025-10-23",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-add-35-2026": {
+      "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/Change%20of%20Fund%20Manager%20%26%20Key%20Personnel%20for%20Diviniti%20SIFITI%20Asset%20Management%20Limited.pdf",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice cum Addendum No. 35/2026 - resignation of Mr. Vasav Sahgal, appointment of Mr. Alok Ranjan as Fund Manager (effective July 11, 2026)",
+      "asOf": "2026-07-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-add-09-2025": {
+      "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/Notice%20cum%20addendum%20dated%2026th%20December%202025%20-%20Change%20in%20asset%20allocation%20of%20Diviniti%20Equity%20Long%20Short%20Fund.pdf",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice cum Addendum No. 09/2025 - change in asset allocation (effective January 01, 2026)",
+      "asOf": "2025-12-26",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-port-els-2026-07": {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Long_Short_Fund_cab8cd6b74.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "WSIF Equity Long Short Fund - Portfolio as on 31-JUL-2026",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-isid-els": {
+      "url": "https://www.wealthcompanyamc.in/uploads/ISID_wsif_Equity_Long_Short_Fund_20d41ea013.pdf",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - WSIF Equity Long-Short Fund",
+      "asOf": "2026-03-25",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-ssd-els": {
+      "url": "https://www.wealthcompanyamc.in/uploads/SSD_Equity_Long_Short_Fund_33ffffaa69.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Scheme Summary Document (statutory summary of the ISID) - WSIF Equity Long Short Fund; no as-of date printed, asOf = server Last-Modified (before allotment)",
+      "asOf": "2026-05-05",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-port-extop-2026-07": {
+      "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Ex_Top_100_Long_Short_Fund_4917ad3372.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "portfolio",
+      "title": "WSIF Equity Ex Top 100 Long Short Fund - Portfolio as on 31-JUL-2026",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-isid-extop": {
+      "url": "https://www.wealthcompanyamc.in/uploads/ISID_WSIF_Equity_Ex_Top_100_Long_Short_Fund_d47a426212.pdf",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - WSIF Equity Ex-Top 100 Long-Short Fund",
+      "asOf": "2026-03-25",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-ssd-extop": {
+      "url": "https://www.wealthcompanyamc.in/uploads/SSD_Equity_Ex_Top_100_long_short_51762b67eb.xlsx",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Scheme Summary Document (statutory summary of the ISID) - WSIF Equity Ex-Top 100 Long-Short Fund; no as-of date printed, asOf = server Last-Modified (before allotment)",
+      "asOf": "2026-05-05",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-ssd-ex100": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme-Summary-Documents/sif/Equity%20Ex-Top%20100%20Long-Short%20Fund.xls",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (statutory summary of the ISID; no enum docType for SSD) - iSIF Equity Ex-Top 100 Long-Short Fund",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-isid-ex100": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Launch%20ISID%20-%20iSIF%20Equity%20Ex-Top%20100%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - iSIF Equity Ex-Top 100 Long-Short Fund",
+      "asOf": "2026-02-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-ssd-els": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme-Summary-Documents/sif/Equity%20Long-Short%20Fund.xls",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (statutory summary of the ISID) - iSIF Equity Long-Short Fund",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-kim-els": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form_iSIF%20Equity%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "KIM",
+      "title": "KIM & Application Form - iSIF Equity Long-Short Fund",
+      "asOf": "2026-06-04",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-isid-els": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Equity%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - iSIF Equity Long-Short Fund",
+      "asOf": "2026-05-07",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-ssd-aaa": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme-Summary-Documents/sif/Active%20Asset%20Allocator%20Long-Short%20Fund.xls",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (statutory summary of the ISID) - iSIF Active Asset Allocator Long-Short Fund",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-kim-aaa": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form_iSIF%20Active%20Allocator%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "KIM",
+      "title": "KIM & Application Form - iSIF Active Asset Allocator Long-Short Fund",
+      "asOf": "2026-06-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-isid-aaa": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Active%20Asset%20Allocator%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - iSIF Active Asset Allocator Long-Short Fund",
+      "asOf": "2026-04-24",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-ssd-hls": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme-Summary-Documents/sif/Hybrid%20Long-Short%20Fund.xls",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Investment Strategy Summary Document (statutory summary of the ISID) - iSIF Hybrid Long-Short Fund",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-isid-hls": {
+      "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Hybrid%20Long-Short%20Fund.pdf",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - iSIF Hybrid Long-Short Fund",
+      "asOf": "2026-02-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-ssd-els": {
+      "url": "https://arudhasif.com/downloads/assest/file/Arudha%20Equity%20Long%20Short%20Fund.xls",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Scheme Summary Document (statutory summary of the ISID) - Arudha Equity Long-Short Fund (undated; asOf = server Last-Modified)",
+      "asOf": "2026-09-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-isid-els": {
+      "url": "https://arudhasif.com/downloads/assest/file/ISID%20-Arudha%20equity%20long-short%20fund.pdf",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Arudha Equity Long-Short Fund",
+      "asOf": "2026-02-06",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-fs-2026-08": {
+      "url": "https://arudhasif.com/downloads/assest/file/downloads/Arudha_Factsheet_August_2026.pdf",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Arudha SIF Factsheet August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-ssd-hls": {
+      "url": "https://arudhasif.com/downloads/assest/file/Arudha%20Hybrid%20Long%20Short%20Fund.xls",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Scheme Summary Document (statutory summary of the ISID; no enum docType for SSD) - Arudha Hybrid Long-Short Fund (undated; asOf = server Last-Modified)",
+      "asOf": "2026-09-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-isid-hls": {
+      "url": "https://arudhasif.com/downloads/assest/file/ISID.pdf",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Arudha Hybrid Long-Short Fund",
+      "asOf": "2026-01-02",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-add-09-2026": {
+      "url": "https://arudhasif.com/downloads/assest/file/notice/No9-Modification-in-redemption-frequency-Arudha-Hybrid-Long-Short-Fund.pdf",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice-cum-Addendum No. 9 of 2026 - modification in redemption frequency, Arudha Hybrid Long-Short Fund (w.e.f. March 19, 2026)",
+      "asOf": "2026-03-18",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:hsbc-ssd": {
+      "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/263efcd9-b56a-4f45-9d0f-6189316ff70e/redhex-hybrid-long-short-fund.xls",
+      "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "Scheme Summary Document (statutory summary of the ISID; no enum docType for SSD) - RedHex Hybrid Long-Short Fund (undated)",
+      "asOf": null,
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:hsbc-isid": {
+      "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/f4623f22-f253-44dc-af59-93ee01a86084/redhex-hybrid-long-short-fund-isid.pdf",
+      "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - RedHex Hybrid Long-Short Fund",
+      "asOf": "2026-05-07",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-issd-els-2026-09-15": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISSD_Dyna_SIF_Equity_Long_Short_Fund_September_15_2026_pdf_b34ca72a03.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - DynaSIF Equity Long-Short Fund - September 15, 2026",
+      "asOf": "2026-09-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-isid-els-2026-02-27": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Equity_Long_Short_Fund_Invetsment_Strategy_Information_Document_42a1c56596.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - DynaSIF Equity Long - Short Fund (This ISID is dated February 27, 2026)",
+      "asOf": "2026-02-27",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-issd-aaa-2026-09-15": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISSD_Dyna_SIF_Active_Asset_Allocator_Long_Short_Fund_September_15_2026_pdf_2e4b8386d6.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - DynaSIF Active Asset Allocator Long-Short Fund - September 15, 2026",
+      "asOf": "2026-09-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-isid-aaa-2026-03-27": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISID_Dyna_SIF_Active_Asset_Allocator_Long_Short_Fund_33d50a7a20.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - DynaSIF Active Asset Allocator Long-Short Fund (This ISID is dated March 27, 2026)",
+      "asOf": "2026-03-27",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-issd-extop-2026-09-15": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISSD_Dyna_SIF_Equity_Ex_Top_100_Long_Short_Fund_September_15_2026_pdf_bdcfe59096.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - DynaSIF Equity Ex-Top 100 Long-Short Fund - September 15, 2026",
+      "asOf": "2026-09-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-isid-extop-2026-06-29": {
+      "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISID_Dyna_SIF_Equity_Ex_Top_100_Long_Short_Fund_543e2ae233.pdf",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - DynaSIF Equity Ex-Top 100 Long-Short Fund (This ISID is dated June 29, 2026)",
+      "asOf": "2026-06-29",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-issd-extop-2026-09-15": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Investment_Strategy_Summary_Document/Investment_Strategy_Summary_Document/Altiva_Equity_Ex-top_100_Long-Short_Fund_15092026152233.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document - Altiva Equity Ex-Top 100 Long-Short Fund (file stamp 15-09-2026; listed under month 'Aug' on the ISSD page)",
+      "asOf": "2026-09-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-isid-extop-2026-04-20": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Scheme_Information_Document/Equity_Funds/Annexure_III_ISID__Altiva_Equity_ExTop_100_LongShort_Fund_F_27082026101624.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Altiva Equity Ex-Top 100 Long-Short Fund (This Investment Strategy Information Document is dated April 20, 2026; posted 27-08-2026)",
+      "asOf": "2026-04-20",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-issd-hybrid-2026-09-15": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Investment_Strategy_Summary_Document/Investment_Strategy_Summary_Document/Altiva_Hybrid_Long-Short_Fund_15092026152233.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document - Altiva Hybrid Long-Short Fund (file stamp 15-09-2026; listed under month 'Aug' on the ISSD page)",
+      "asOf": "2026-09-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-fs-hybrid-2026-08-31": {
+      "url": "https://www.edelweissmf.com/Files/SIF/Downloads/Factsheet/Factsheets/Altiva_Hybrid_LongShort_Fund_Portfolio_Update_August_2026_03092026093750.pdf",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Altiva Hybrid Long-short Fund - Portfolio Update August 2026 (Data as on 31st August 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-isid-hybrid-amfi-2025-09-18": {
+      "url": "https://portal.amfiindia.com/spages/S-3.pdf",
+      "publisher": "AMFI SIF portal (ISID filed by Edelweiss Asset Management Limited)",
+      "publisherKind": "AMFI",
+      "docType": "ISID",
+      "title": "ISID - Altiva Hybrid Long-Short Fund (This Investment Strategy Information Document is dated September 18, 2025) - AMFI-hosted copy",
+      "asOf": "2025-09-18",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:mir-fs-2026-08-31": {
+      "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/09/Platinum-SIF-Factsheet-September-2026.pdf",
+      "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Platinum SIF Factsheet September 2026 (Monthly Factsheet as on 31st Aug 2026)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:mir-isid-2026-04-28": {
+      "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/05/ISID-Platinum-Hybrid-Long-Short-Fund-1.pdf",
+      "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Platinum Hybrid Long-Short Fund (This Investment Strategy Information Document is dated April 28, 2026)",
+      "asOf": "2026-04-28",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:mir-issd-2026-07": {
+      "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/07/PlatinumHybridLongShortFund.pdf",
+      "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document - Platinum Hybrid Long-Short Fund (undated; uploaded under /2026/07/)",
+      "asOf": null,
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-issd-hls-2026-04-10": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/ISSD_Apex_Hybrid_Long_Short_Fund_100426_4cfcb60763.zip",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - Apex Hybrid Long Short Fund (zip: pdf/xls/xml; file dated 10-04-2026)",
+      "asOf": "2026-04-10",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-isid-hls-2026-02-27": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Hybrid_Long_Short_Fund_aaedb51814.pdf",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Apex Hybrid Long-Short Fund (dated February 27, 2026)",
+      "asOf": "2026-02-27",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-fs-2026-08-31": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/SIF_Factsheet_August_2026_72ec3dd3e9.pdf",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Apex SIF Factsheet - August 2026 (Apex Hybrid Long-Short Fund only)",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-issd-els-2026-09-16": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_Equity_Long_Short_Fund_160926_93e0ead456.zip",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - Apex Equity Long-Short Fund (zip: pdf/xls/xml; listed 2026-09-16)",
+      "asOf": "2026-09-16",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-isid-els-2026-07-22": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Equity_Long_Short_Fund_e6e9fe2abd.pdf",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Apex Equity Long-Short Fund (dated July 22, 2026)",
+      "asOf": "2026-07-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-issd-extop-2026-09-16": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_Equity_Ex_Top_100_Long_Short_Fund_160926_223bed88a9.zip",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "SID",
+      "title": "Investment Strategy Summary Document (ISSD) - Apex Equity Ex-Top 100 Long-Short Fund (zip: pdf/xls/xml; listed 2026-09-16)",
+      "asOf": "2026-09-16",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-isid-extop-2026-07-22": {
+      "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Equity_Ex_Top_100_Long_Short_Fund_49a4c84f37.pdf",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Apex Equity Ex-Top 100 Long-Short Fund (dated July 22, 2026)",
+      "asOf": "2026-07-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-fs-2026-08-31": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-scheme-facsheets/magnum-sif-as-on-august-2026-final.pdf?sfvrsn=38eb72b9_6",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Magnum SIF Investment update - Report as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-isid-hls-2025-09-23": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-documents/sid---magnum-hybrid-long-short-fund.pdf?sfvrsn=c6e09ae7_2",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Magnum Hybrid Long Short Fund (dated September 23, 2025)",
+      "asOf": "2025-09-23",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:amfi-ssd-S-4": {
+      "url": "https://portal.amfiindia.com/spages/SSD_S-4.pdf",
+      "publisher": "AMFI (Scheme Summary Document filed by SBI Funds Management Limited)",
+      "publisherKind": "AMFI",
+      "docType": "SID",
+      "title": "Scheme Summary Document - Magnum Hybrid Long Short Fund (AMFI SIF portal)",
+      "asOf": "2026-09-23",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-add-hls-features-2026-02-06": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-forms/notice-cum-addendum-forchanges-in-the-features-of-magnum-hybrid-long-short-fund.pdf?sfvrsn=5281d739_0",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice cum addendum for changes in the features of Magnum Hybrid Long Short Fund (SBIMF/2026/FEB/01), effective February 09, 2026",
+      "asOf": "2026-02-06",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-web-extop-details": {
+      "url": "https://www.sbimf.com/magnumsif-scheme-details/magnum-equity-ex-top-100-long-short-fund-10002",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Magnum Equity Ex-Top 100 Long Short Fund - scheme details page on the Magnum SIF site (rendered 2026-09-23; re-read 2026-09-24 showing NAV as on 23 Sep 2026, allotment and AUM text unchanged)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-isid-extop-2026-07-31": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-equity-ex-top-long-short-fund-documents/isid---magnum-equity-ex-top-100-long-short-fund.pdf",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Magnum Equity Ex-Top 100 Long Short Fund (dated July 31, 2026)",
+      "asOf": "2026-07-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:amfi-ssd-S-29": {
+      "url": "https://portal.amfiindia.com/spages/SSD_S-29.pdf",
+      "publisher": "AMFI (Scheme Summary Document filed by Kotak Mahindra Asset Management Company Limited)",
+      "publisherKind": "AMFI",
+      "docType": "SID",
+      "title": "Scheme Summary Document - Infinity Hybrid Long-Short Fund (AMFI SIF portal)",
+      "asOf": "2026-09-23",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:amfi-isid-S-29": {
+      "url": "https://portal.amfiindia.com/spages/S-29.pdf",
+      "publisher": "AMFI (ISID filed by Kotak Mahindra Asset Management Company Limited)",
+      "publisherKind": "AMFI",
+      "docType": "ISID",
+      "title": "ISID - Infinity Hybrid Long-Short Fund (This Investment Strategy Information Document is dated May 26, 2026)",
+      "asOf": "2026-05-26",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:arth-fs-2026-08": {
+      "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/factsheets-portfolios/factsheets/arthaya-sif-factsheet-august-2026.pdf?sfvrsn=eb9fe6b1_5",
+      "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Arthaya SIF Factsheet - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:arth-isid": {
+      "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/sid-sai-and-addendums/sid-addendums-and-notices/investment-strategy-information-document-(isid)/arthaya-equity-long-short-fund--final.pdf?sfvrsn=1cacd26e_3",
+      "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Arthaya Equity Long Short Fund",
+      "asOf": "2026-04-17",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:ft-fs-2026-08": {
+      "url": "https://franklintempletonprod.widen.net/content/eci8iba796/original/Sapphire-SIF-Factsheet-as-on-August-31-2026.pdf?u=pl55mb&download=true",
+      "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Sapphire SIF Factsheet as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:ft-isid": {
+      "url": "https://www.franklintempletonindia.com/download/en-in/sif-open-end-dvsfd-equity-schemes/b9eedd77-12d7-44f1-84e4-13e56dfb58f9/Sapphire%20Equity%20Long-Short%20SIF_ISID.pdf",
+      "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Sapphire Equity Long-Short SIF",
+      "asOf": "2026-03-26",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:sm-fs-2026-08": {
+      "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/factsheet/summit-sif---factsheet-aug-2026.pdf?sfvrsn=33e540cd_1",
+      "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Summit SIF Factsheet - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:sm-isid": {
+      "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/scheme-information-document-(sid)/summit-sif---isid---summit-equity-long-short-fund-(1).pdf?sfvrsn=511541cd_1",
+      "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Summit Equity Long-Short Fund",
+      "asOf": "2026-06-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-fs-2026-08": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-09/TitaniumSIF%20Factsheet%20as%20on%2031%20August%202026.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Titanium SIF Factsheet as on 31 August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-els-isid": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-04/Titanium%20Equity%20Long-Short%20Fund-ISID.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Titanium Equity Long-Short Fund",
+      "asOf": "2026-04-09",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-add-2026-05-29-fm": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-05/Addendum_Reallocation_of_Fund_Management_Responsibilities_June2026-SIF.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Addendum - Reallocation of Fund Management Responsibilities (effective 01 June 2026)",
+      "asOf": "2026-05-29",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-hls-isid": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2025-11/Titanium%20Hybrid%20Long-Short%20Fund%20-%20ISID.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Titanium Hybrid Long-Short Fund",
+      "asOf": "2025-11-07",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-add-2026-08-24-redfreq": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-08/Addendum%20for%20Redemption%20Frequency%20in%20Titanium%20Hybrid%20Long-Short%20Fund%20%281%29.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Addendum - Redemption Frequency, Titanium Hybrid Long-Short Fund (effective September 02, 2026)",
+      "asOf": "2026-08-24",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-add-2025-12-31-reits": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-01/Addendum_Reclassification_of_REITs_TitaniumSIF.pdf",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Addendum - Reclassification of REITs (effective 01 January 2026)",
+      "asOf": "2025-12-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:jbr-fs-2026-08": {
+      "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/siffactshe-mu5f5ved-ebdfd2.pdf",
+      "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Prism SIF Factsheet - August 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:jbr-isid": {
+      "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/prismhybri-mpux9p1k-0b71aa.pdf",
+      "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ISID",
+      "title": "ISID - Prism Hybrid Long-Short Fund",
+      "asOf": "2026-05-15",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:jbr-add-03-2026-07-28": {
+      "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/03noticecu-ms4ijk23-86349d.pdf",
+      "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "addendum",
+      "title": "Notice cum Addendum No. 03/2026-27 - Appointment of Mr. Manish Kalani as Fund Manager (effective July 28, 2026)",
+      "asOf": "2026-07-28",
+      "retrievedOn": "2026-09-23"
+    }
+  },
+  "schemes": {
+    "SIF-3": {
+      "allotmentDate": {
+        "value": "2025-10-07",
+        "src": "g1:quant-issd-els",
+        "locator": "ISSD row 13 'Allotment Date' 2025-10-07 (row 14 'Reopen Date' 2025-10-08); qsif factsheet Sep 2026 'INCEPTION DATE' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:quant-isid-els",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Face Value 10'.",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sandeep Tandon",
+            "since": "2025-10-07",
+            "role": "Primary"
+          },
+          {
+            "name": "Ankit Pande",
+            "since": "2025-10-07",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sameer Kate",
+            "since": "2025-10-07",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sanjeev Sharma",
+            "since": "2025-10-07",
+            "role": "Co manage"
+          },
+          {
+            "name": "Jignesh Shah",
+            "since": "2026-02-20",
+            "role": "Co manage"
+          }
+        ],
+        "src": "g1:quant-issd-els",
+        "locator": "ISSD rows 18-32 'Fund Manager 1 - Name Sandeep Tandon ... Type Primary ... From Date 2025-10-07'; others 'Co manage'; 'Fund Manager 5 - Name Jignesh Shah ... From Date 2026-02-20' (per Addendum 04/2026, Lokesh Garg removed)",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments while employing limited short exposure through derivatives to enhance returns and manage risk efficiently. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:quant-isid-els",
+        "locator": "ISID p.4 Part I 'V. Investment objective': 'To generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments while employing limited short exposure'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business Days)"
+        },
+        "src": "g1:quant-isid-els",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency': 'Daily (only Business Days)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:quant-isid-els",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily (only Business Days)'; p.5 'XI': 'Dispatch of redemption proceeds: 3 working days from the date of redemption or repurchase (under normal circumstances).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g1:quant-add-10-2026",
+        "locator": "Addendum 10/2026 p.6 '4. Change in Minimum Additional Purchase Amount': revised 'Rs. 1,000/- and in multiples of Re. 1/- thereafter' (from Rs. 10,000/-), w.e.f. June 25, 2026; ISSD row 51 'Rs. 1,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:quant-isid-els",
+        "locator": "ISID Part I 'XII. Plans and Options': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments (including unhedged short exposure)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "REITs and InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:quant-isid-els",
+        "locator": "ISID p.11 Part II.A table: 'Investment in equity and equity related instruments (including unhedged short exposure mentioned below) 80 100' ... 'Debt & Money Market Instruments 0 20' ... 'ReITS and InVITS 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-25": {
+      "allotmentDate": {
+        "value": "2025-11-12",
+        "src": "g1:quant-issd-extop",
+        "locator": "ISSD row 13 'Allotment Date' 2025-11-12 (row 14 'Reopen Date' 2025-11-13); qsif factsheet Sep 2026 'INCEPTION DATE' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Face Value 10'.",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sandeep Tandon",
+            "since": "2025-11-12",
+            "role": "Primary"
+          },
+          {
+            "name": "Ankit Pande",
+            "since": "2025-11-12",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sameer Kate",
+            "since": "2025-11-12",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sanjeev Sharma",
+            "since": "2025-11-12",
+            "role": "Co manage"
+          },
+          {
+            "name": "Jignesh Shah",
+            "since": "2026-02-20",
+            "role": "Co manage"
+          }
+        ],
+        "src": "g1:quant-issd-extop",
+        "locator": "ISSD rows 18-32 'Fund Manager 1 - Name Sandeep Tandon ... Type Primary ... From Date 2025-11-12'; others 'Co manage'; 'Fund Manager 5 - Name Jignesh Shah ... From Date 2026-02-20' (per Addendum 04/2026, Lokesh Garg removed)",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100 by market capitalization, while utilizing limited short exposure through derivatives to enhance returns and manage risk. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID p.4 'V. Investment objective': 'To generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100 by market capitalization'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business days)"
+        },
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency': 'Daily (only Business days)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily (only Business days)'; p.5 'XI': 'Dispatch of redemption proceeds: 3 working days from the date of redemption or repurchase (under normal circumstances).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g1:quant-add-10-2026",
+        "locator": "Addendum 10/2026 p.6 '4. Change in Minimum Additional Purchase Amount': revised 'Rs. 1,000/- and in multiples of Re. 1/- thereafter' (from Rs. 10,000/-), w.e.f. June 25, 2026; ISSD row 51 'Rs. 1,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID Part I 'XII. Plans and Options': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments of companies excluding the top 100 by market capitalization",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Equity and equity related instruments of top 100 companies by market capitalization",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "REITs and InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:quant-isid-extop",
+        "locator": "ISID p.11 Part II.A table: 'excluding the top 100 companies by market capitalization 65 100' ... 'top 100 companies by market capitalization 0 35' ... 'Debt & Money Market Instruments 0 35' ... 'ReITS and InVITS 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-7": {
+      "allotmentDate": {
+        "value": "2025-10-15",
+        "src": "g1:quant-issd-hls",
+        "locator": "ISSD row 13 'Allotment Date' 2025-10-15 (row 14 'Reopen Date' 2025-10-20); qsif factsheet Sep 2026 'INCEPTION DATE' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID p.1: 'Offer of units of Rs.10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Face Value 10'.",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sandeep Tandon",
+            "since": "2025-10-15",
+            "role": "Primary"
+          },
+          {
+            "name": "Ankit Pande",
+            "since": "2025-10-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sameer Kate",
+            "since": "2025-10-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sanjeev Sharma",
+            "since": "2025-10-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Jignesh Shah",
+            "since": "2026-02-20",
+            "role": "Co manage"
+          }
+        ],
+        "src": "g1:quant-issd-hls",
+        "locator": "ISSD rows 18-32 'Fund Manager 1 - Name Sandeep Tandon ... Type Primary ... From Date 2025-10-15'; others 'Co manage'; 'Fund Manager 5 - Name Jignesh Shah ... From Date 2026-02-20' (per Addendum 04/2026, Lokesh Garg removed)",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "This investment strategy aims to achieve a blend of capital appreciation and income generation by maintaining a balanced exposure to equity and debt instruments, with a minimum of 25% in each, while utilizing up to 25% in short derivative positions to enhance returns and manage risk.",
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID p.4 'V. Investment objective': 'This investment strategy aims to achieve a blend of capital appreciation and income generation by maintaining a balanced exposure to equity and debt instruments' (closing no-assurance sentence omitted for 60-word limit)",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business days)."
+        },
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency': 'Daily (only Business days).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Tue",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID p.4 'IX. Redemption frequency': 'Every Tuesday and Wednesday* of the week. *Next business day in case Tuesday and Wednesday is a non-business day.'; p.5: 'within 3 Business Days'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g1:quant-add-10-2026",
+        "locator": "Addendum 10/2026 p.6 '4. Change in Minimum Additional Purchase Amount': revised 'Rs. 1,000/- and in multiples of Re. 1/- thereafter' (from Rs. 10,000/-), w.e.f. June 25, 2026; ISSD row 51 'Rs. 1,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID Part I 'XII. Plans and Options': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity-related instruments",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "REITs/InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:quant-isid-hls",
+        "locator": "ISID p.10 Part II.A table: 'Investment in equity and equity-related instruments 25 75 Investment in debt and money market instruments 25 75 Investment in REITs/InVITs 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-93": {
+      "allotmentDate": {
+        "value": "2026-04-21",
+        "src": "g1:quant-issd-aaa",
+        "locator": "ISSD row 13 'Allotment Date' 2026-04-21 (row 14 'Reopen Date' 2026-04-24); qsif factsheet Sep 2026 'INCEPTION DATE' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Face Value 10'.",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sandeep Tandon",
+            "since": "2026-04-21",
+            "role": "Primary"
+          },
+          {
+            "name": "Jignesh Shah",
+            "since": "2026-04-21",
+            "role": "Co manage"
+          },
+          {
+            "name": "Ankit Pande",
+            "since": "2026-04-21",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sameer Kate",
+            "since": "2026-04-21",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sanjeev Sharma",
+            "since": "2026-04-21",
+            "role": "Co manage"
+          }
+        ],
+        "src": "g1:quant-issd-aaa",
+        "locator": "ISSD rows 18-32 'Fund Manager 1 - Name Sandeep Tandon ... Type Primary ... From Date 2026-04-21'; others 'Co manage'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To achieve long-term capital appreciation and income generation by dynamically allocating investments across multiple asset classes—equity, debt, equity and debt derivatives, InVITs, and commodity derivatives— while utilizing up to 25% short exposure on permitted instruments through derivatives to optimize returns and manage risk efficiently. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID p.4 'V. Investment objective': 'To achieve long-term capital appreciation and income generation by dynamically allocating investments across multiple asset classes'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business days)."
+        },
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency': 'Daily (only Business days).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Tue",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID p.4 'IX. Redemption frequency': 'Every Tuesday and Wednesday* of the week. *Next business day in case Tuesday and Wednesday is a non-business day.'; p.5: 'within 3 Working Days'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g1:quant-add-10-2026",
+        "locator": "Addendum 10/2026 p.6 '4. Change in Minimum Additional Purchase Amount': revised 'Rs. 1,000/- and in multiples of Re. 1/- thereafter' (from Rs. 10,000/-), w.e.f. June 25, 2026; ISSD row 51 'Rs. 1,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID Part I 'XII. Plans and Options': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity-related instruments",
+            "minPct": 0,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 0,
+            "maxPct": 100
+          },
+          {
+            "asset": "Exchange Traded Commodity Derivatives (ETCDs)",
+            "minPct": 0,
+            "maxPct": 30
+          },
+          {
+            "asset": "InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:quant-isid-aaa",
+        "locator": "ISID p.12 Part II.A table: 'equity and equity-related instruments 0 100' ... 'debt and money market instruments 0 100' ... 'Exchange Traded Commodity Derivatives (ETCDs) 0 30 Investment in InVITs 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-117": {
+      "allotmentDate": {
+        "value": "2026-05-15",
+        "src": "g1:quant-issd-sr",
+        "locator": "ISSD row 13 'Allotment Date' 2026-05-15 (row 14 'Reopen Date' 2026-05-18); qsif factsheet Sep 2026 'INCEPTION DATE' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Face Value 10'.",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sandeep Tandon",
+            "since": "2026-05-15",
+            "role": "Primary"
+          },
+          {
+            "name": "Jignesh Shah",
+            "since": "2026-05-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Ankit Pande",
+            "since": "2026-05-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sameer Kate",
+            "since": "2026-05-15",
+            "role": "Co manage"
+          },
+          {
+            "name": "Sanjeev Sharma",
+            "since": "2026-05-15",
+            "role": "Co manage"
+          }
+        ],
+        "src": "g1:quant-issd-sr",
+        "locator": "ISSD rows 18-32 'Fund Manager 1 - Name Sandeep Tandon ... Type Primary ... From Date 2026-05-15'; others 'Co manage'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To achieve long-term capital appreciation by concentrating investments in equity and equity-related instruments of up to four high-potential sectors, while employing limited short exposure through derivatives to capitalize on sector-specific downturns and enhance risk-adjusted returns. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID p.4 'V. Investment objective': 'To achieve long-term capital appreciation by concentrating investments in equity and equity-related instruments of up to four high-potential sectors'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (Only Business Days)"
+        },
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency': 'Daily (Only Business Days)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily (Only Business Days)'; p.5 'XI': 'Dispatch of redemption proceeds: 3 working days from the date of redemption or repurchase (under normal circumstances).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g1:quant-add-10-2026",
+        "locator": "Addendum 10/2026 p.6 '4. Change in Minimum Additional Purchase Amount': revised 'Rs. 1,000/- and in multiples of Re. 1/- thereafter' (from Rs. 10,000/-), w.e.f. June 25, 2026; ISSD row 51 'Rs. 1,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID Part I 'XII. Plans and Options': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity-related instruments of maximum 4 sectors",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:quant-isid-sr",
+        "locator": "ISID p.12 Part II.A table: 'Investment in equity and equity-related instruments of maximum 4 sectors 80 100' ... 'Investments in Debt & Money Market Instruments 0 20 Investments in InVITS 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-21": {
+      "allotmentDate": {
+        "value": "2025-12-01",
+        "src": "g1:iti-fs-2026-08",
+        "locator": "Factsheet Aug 2026 p.3 'Inception Date (Date of Allotment): 01-Dec-25'; ISSD row 13 'Allotment Date 2025-12-01', row 14 'Reopen Date 2025-12-03'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 1000,
+        "src": "g1:iti-isid",
+        "locator": "ISID p.1: 'Offer for Units of Rs. 1000 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' ISSD row 10 'Rs 1000/- each'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Alok Ranjan",
+            "since": "2026-07-11"
+          }
+        ],
+        "src": "g1:iti-add-35-2026",
+        "locator": "Addendum 35/2026: 'Mr. Alok Ranjan has been appointed as Key Personnel and Fund Manager of Diviniti Equity Long Short Fund with effect from July 11, 2026.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation from a diversified portfolio that dynamically invests in equity and equity-related securities, including limited short exposure in equity through derivative instruments of companies across various market capitalisation. However, there can be no assurance that the investment objective of the Investment strategy would be achieved.",
+        "src": "g1:iti-isid",
+        "locator": "ISID p.4 Part I 'V. Investment objective': 'To generate long-term capital appreciation from a diversified portfolio that dynamically invests in equity and equity-related securities'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (Business Day)"
+        },
+        "src": "g1:iti-isid",
+        "locator": "ISID p.5 Part I 'VIII. Subscription frequency Daily (Business Day)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:iti-isid",
+        "locator": "ISID p.5 'IX. Redemption frequency Daily (Business Day)' ... 'Currently, daily basis.'; p.6 'XI': 'dispatched to the unitholders within 3 business days from the date of redemption or repurchase'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 25000,
+        "src": "g1:iti-isid",
+        "locator": "ISID p.10 'XV. Minimum Additional Purchase Amount Rs. 25,000/- and in multiples of ₹1/- thereafter'; ISSD row 33 'Rs. 25,000/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:iti-isid",
+        "locator": "ISID p.6 'XII': 'Options under each Plan: i) Growth ii) Income Distribution cum Withdrawal (IDCW), 3) Sub-options under IDCW: - IDCW Payout - IDCW Reinvestment'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity, units issued by REITs and equity related instruments (including unhedged short exposure)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt and Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:iti-add-09-2025",
+        "locator": "Addendum 09/2025 (effective January 01, 2026) revised table: 'Investment in equity, Units issued by REITs and equity related instruments (including unhedged short exposure mentioned below indicative table) 80 100' ... 'Units issued by InvITs 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-111": {
+      "allotmentDate": {
+        "value": "2026-05-06",
+        "src": "g1:wsif-port-els-2026-07",
+        "locator": "Portfolio as on 31-JUL-2026, notes: '* Allotment date - 06-05-2026'; SSD row 13 'Allotment Date May 6, 2026', row 14 'Reopen Date May 11, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' SSD row 10 'Rs. 10.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Chinmay Sathe",
+            "role": "Primary (Equity portion)"
+          }
+        ],
+        "src": "g1:wsif-ssd-els",
+        "locator": "SSD rows 18-20: 'Fund Manager Name ... Chinmay Sathe'; 'Primary (Equity portion)'; 'Fund Manager From Date: Managing Since Inception'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments while utilizing limited short exposure through derivatives. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.4 'V. Investment objective': 'To generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments while utilizing limited short exposure through derivatives.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business Days)"
+        },
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency Daily (only Business Days)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily (only Business Days)'; p.5 'XI': 'Dispatch of redemption proceeds: 3 working days from the date of redemption or repurchase (under normal circumstances).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.6 'XV. Minimum Additional Purchase Amount Rs. 10,000/- and in multiples of Re. 100/- thereafter'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.5 'XII': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments (including unhedged short exposure)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:wsif-isid-els",
+        "locator": "ISID p.11 Part II.A table: 'Investment in equity and equity related instruments (including unhedged short exposure mentioned below)* 80 100' ... 'Investments in Debt & Money Market Instruments 0 20 Investments in InVITS 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-105": {
+      "allotmentDate": {
+        "value": "2026-05-06",
+        "src": "g1:wsif-port-extop-2026-07",
+        "locator": "Portfolio as on 31-JUL-2026, notes: '* Allotment date - 06-05-2026'; SSD row 13 'Allotment Date May 6, 2026', row 14 'Reopen Date May 11, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices.' SSD row 10 'Rs. 10.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Chinmay Sathe",
+            "role": "Primary (Equity portion)"
+          }
+        ],
+        "src": "g1:wsif-ssd-extop",
+        "locator": "SSD rows 18-20: 'Fund Manager Name ... Chinmay Sathe'; 'Primary (Equity portion)'; 'Fund Manager From Date: Managing Since Inception'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100 by market capitalization, while utilizing limited short exposure through derivative. There is no assurance that the investment objective of the Investment strategy will be achieved.",
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.4 'V. Investment objective': 'To generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100 by market capitalization'",
+        "verified": true,
+        "check": "independent"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business days)"
+        },
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.4 Part I 'VIII. Subscription frequency Daily (only Business days)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily (only Business days)'; p.5 'XI': 'Dispatch of redemption proceeds: 3 working days from the date of redemption or repurchase'",
+        "verified": true,
+        "check": "independent"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.6 'XV. Minimum Additional Purchase Amount Rs. 10,000/- and in multiples of Re. 100/- thereafter'",
+        "verified": true,
+        "check": "independent"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.5 'XII': 'Options under each Plan(s) – i. Growth ii. Income Distribution cum Capital Withdrawal (IDCW) (Payout and Re- investment Facility)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments of companies excluding the top 100 by market capitalization (including unhedged short exposure)",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Equity and equity related instruments of top 100 companies by market capitalization",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g1:wsif-isid-extop",
+        "locator": "ISID p.11 Part II.A table: 'excluding the top 100 companies by market capitalization (including unhedged short exposure)* 65 100' ... 'top 100 companies by market capitalization 0 35' ... 'Debt & Money Market Instruments 0 35' ... 'Investments in InVITS 0 20'",
+        "verified": true,
+        "check": "independent"
+      }
+    },
+    "SIF-34": {
+      "allotmentDate": {
+        "value": "2026-02-04",
+        "src": "g2:icici-ssd-ex100",
+        "locator": "SSD row 13 'Allotment Date' 2026-02-04; factsheet Aug 2026 p.10 'Inception Date : Feb 4, 2026' agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.1: 'Offer of units of Rs. 10 each during the New Fund Offer and Continuous offer for Units at NAV based prices.'; SSD row 10 'Face Value 10'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sankaran Naren",
+            "since": "2026-02-04",
+            "role": "Primary"
+          },
+          {
+            "name": "Manan Tijoriwala",
+            "since": "2026-02-04",
+            "role": "Primary"
+          },
+          {
+            "name": "Divya Jain",
+            "since": "2026-02-04",
+            "role": "Primary"
+          }
+        ],
+        "src": "g2:icici-ssd-ex100",
+        "locator": "SSD rows 18-20: 'Fund Manager 1 - Name Mr. Sankaran Naren' ... 'Type ... Primary' ... 'From Date 2026-02-04' (same for Manan Tijoriwala, Divya Jain); factsheet Aug 2026 p.10 'since Feb, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate capital appreciation in long term by predominantly investing in equity and equity related securities of Ex – top 100 companies. The Investment Strategy may also invest in various derivative instruments, including short exposure through unhedged derivative positions in equity and equity related instruments of Ex – top 100 stocks upto 25%.",
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.3 Part I 'V. Investment objective': 'To generate capital appreciation in long term by predominantly investing in equity and equity related securities of Ex – top 100 companies.' (standard 'no assurance' disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.4 'VIII. Subscription frequency Daily'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily'; p.5 'redemption proceeds shall be dispatched within three (3) business days from the date of redemption request'; p.7 'XVII. Notice Period ... Not applicable.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.7 'XV. Minimum Additional application Amount (including switch in) Rs. 10,000/-(plus in multiples of Re. 1).'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.6: 'The investment strategy currently offers only Growth option.' (p.5 'IDCW option has been disabled for this Investment strategy')",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity related securities of Ex-Top 100 companies (including up to 25% in unhedged short exposure through derivative instruments)",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Other Equity and Equity related securities",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt & Money Market instruments and Units of Debt Oriented Mutual Funds",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by Infrastructure Investment Trusts (InvITs)",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:icici-isid-ex100",
+        "locator": "ISID p.12 Part II.A table: 'Equity and Equity related securities of Ex- Top 100* companies (including up to 25% in Unhedged short exposure ...)# 65 100' ... 'Units issued Infrastructure Investments Trusts 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-126": {
+      "allotmentDate": {
+        "value": "2026-06-05",
+        "src": "g2:icici-ssd-els",
+        "locator": "SSD row 13 'Allotment Date' 2026-06-05 (row 14 'Re-open Date' 2026-06-10); factsheet Aug 2026 p.7 'Inception Date : June 5, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:icici-kim-els",
+        "locator": "KIM p.1: 'Continuous offer of the Units of the face value of Rs. 10 each at NAV based prices'; SSD row 10 'Face Value 10'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Mittul Kalawadia",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Nitya Mishra",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Sri Sharma",
+            "since": "2026-06-05",
+            "role": "Primary"
+          }
+        ],
+        "src": "g2:icici-ssd-els",
+        "locator": "SSD rows 18-20: 'Mr. Mittul Kalawadia', 'Ms. Nitya Mishra', 'Ms. Sri Sharma'; 'Primary'; 'From Date 2026-06-05'; ISID p.19 'managed by Mr. Mittul Kalawadia, Ms. Nitya Mishra and Ms. Sri Sharma'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate capital appreciation in long term by predominantly investing in listed equity and equity related instruments. The Investment Strategy may also invest in various derivative instruments, including limited short exposure through unhedged derivative positions in equity up to 25%.",
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.3 'V. Investment objective To generate capital appreciation in long term by predominantly investing in listed equity and equity related instruments.' (disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.4 'Subscription frequency Daily The Trustees reserves the right to change the Subscription frequency'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.4 'IX. Redemption frequency Daily'; p.5 'redemption proceeds shall be dispatched within three (3) business days from the date of redemption request'; p.9 Notice Period 'Not applicable.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.8 'Minimum Additional application Amount (including switch in) Rs. 10,000/-(plus in multiples of Re. 1).'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.6 'Options under each Plan(s): • Growth'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity related instruments (including up to 25% in unhedged short exposure through derivative instruments; includes up to 35% overseas)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt & Money Market instruments and Units of Debt Oriented Mutual Funds",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units of Infrastructure Investment Trusts (InvITs)",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:icici-isid-els",
+        "locator": "ISID p.12 table: 'Equity and Equity related instruments* (including up to 25% in Unhedged short exposure ...) # 80 100 Debt & Money Market instruments ... 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-124": {
+      "allotmentDate": {
+        "value": "2026-06-05",
+        "src": "g2:icici-ssd-aaa",
+        "locator": "SSD row 13 'Allotment Date' 2026-06-05 (row 14 'Re-open Date' 2026-06-10); factsheet Aug 2026 p.18 'Inception Date : June 5, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:icici-kim-aaa",
+        "locator": "KIM p.1: 'Continuous offer of the Units of the face value of Rs. 10 each at NAV based prices'; SSD row 10 'Face Value 10'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Sharmila D'silva",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Masoomi Jhurmarvala",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Manish Banthia",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Akhil Kakkar",
+            "since": "2026-06-05",
+            "role": "Primary"
+          },
+          {
+            "name": "Gaurav Chikane",
+            "since": "2026-06-05",
+            "role": "Primary"
+          }
+        ],
+        "src": "g2:icici-ssd-aaa",
+        "locator": "SSD rows 18-20: 'Ms. Sharmila D’silva', 'Ms. Masoomi Jhurmrvala', 'Mr. Manish Banthia', 'Mr. Akhil Kakkar', 'Mr. Gaurav Chikane'; 'Primary'; 'From Date 2026-06-05'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment Strategy intends to dynamically invest in equity and equity related securities with an aim to achieve long term capital appreciation and also invest in Debt instruments to generate regular income. The Investment Strategy can also invest in units of InVITs. The Investment Strategy can also adopt equity, debt and commodity derivative strategies.",
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.5 'V. Investment objective The Investment Strategy intends to dynamically invest in equity and equity related securities with an aim to achieve long term capital appreciation' (disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.6 'VIII. Subscription frequency Daily'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.6 'IX. Redemption frequency Twice a week i.e. Monday and Wednesday in every week.'; p.7 proceeds 'dispatched within three (3) business days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.10 'Minimum additional application amount - Rs. 10,000/- (plus in multiple of Re. 1/-)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.7 'Options under each Plan(s): • Growth'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity related securities (including up to 25% in unhedged short exposure through derivative instruments)",
+            "minPct": 35,
+            "maxPct": 80
+          },
+          {
+            "asset": "Debt & Money Market instruments (including up to 25% unhedged short exposure) and Units of Debt Oriented Mutual Funds; Exchange traded Commodity derivatives (single merged range)",
+            "minPct": 10,
+            "maxPct": 55
+          },
+          {
+            "asset": "Units issued by Infrastructure Investment Trusts (InvITs)",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:icici-isid-aaa",
+        "locator": "ISID p.14 table: 'Equity and Equity related securities (including up to 25% in Unhedged short exposure ...)# 35 80' ... 'Units issued by Infrastructure Investment Trusts (InvITs) 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-35": {
+      "allotmentDate": {
+        "value": "2026-02-04",
+        "src": "g2:icici-ssd-hls",
+        "locator": "SSD row 13 'Allotment Date' 2026-02-04 (row 14 'Re-open Date' 2026-02-10); factsheet Aug 2026 p.14 'Inception Date : Feb 4, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.1: 'Continuous offer for Units of Rs. 10 each at NAV based prices.'; SSD row 10 'Face Value 10'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Rajat Chandak",
+            "since": "2026-02-04",
+            "role": "Primary"
+          },
+          {
+            "name": "Ayush Shah",
+            "since": "2026-02-04",
+            "role": "Primary"
+          },
+          {
+            "name": "Manish Banthia",
+            "since": "2026-02-04",
+            "role": "Primary"
+          },
+          {
+            "name": "Akhil Kakkar",
+            "since": "2026-02-04",
+            "role": "Primary"
+          }
+        ],
+        "src": "g2:icici-ssd-hls",
+        "locator": "SSD rows 18-20: 'Mr. Rajat Chandak', 'Mr.Ayush Shah', 'Mr. Manish Banthia', 'Mr. Akhil Kakkar'; 'Primary'; 'From Date 2026-02-04'; factsheet Aug p.14 'since Feb, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment Strategy intends to predominantly invest in equity and equity related securities with an aim to achieve capital appreciation over long term, and also invest in Debt instruments to generate regular income. The Investment Strategy can also adopt equity and debt derivative strategies. The Investment Strategy can also invest in units of InVITs.",
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.4 'V. Investment objective The Investment Strategy intends to predominantly invest in equity and equity related securities with an aim to achieve capital appreciation' (disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.5 'VIII. Subscription frequency Daily'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.5 'IX. Redemption frequency Twice a week i.e. Monday and Wednesday in every week.'; p.6 proceeds 'dispatched within three (3) business days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.8 'XV. Minimum Additional Purchase Amount Rs. 10,000/- (plus in multiples of Re. 1)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.7: 'The investment strategy currently offers only Growth option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity related securities (including up to 25% in unhedged short exposure through derivative instruments)",
+            "minPct": 65,
+            "maxPct": 75
+          },
+          {
+            "asset": "Debt & Money Market instruments (including up to 25% unhedged short exposure) and Units of Debt Oriented Mutual Funds",
+            "minPct": 25,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by Infrastructure Investment Trusts (InvITs)",
+            "minPct": 0,
+            "maxPct": 10
+          }
+        ],
+        "src": "g2:icici-isid-hls",
+        "locator": "ISID p.13 table (verified on rendered page): equity row '65 75'; debt row '25 35'; 'Units issued by Infrastructure Investment Trust (InvITs) 0 10'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-62": {
+      "allotmentDate": {
+        "value": "2026-03-24",
+        "src": "g2:bandhan-ssd-els",
+        "locator": "SSD row 13 'Allotment Date' 2026-03-24 (row 14 'Reopen Date' 2026-03-30); factsheet Aug 2026 p.3 'Inception Date: 24 March 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.1: 'Offer of units of Rs 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices'; SSD row 10 'Rs.10/- per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Nilesh Saha",
+            "role": "Equity Portion"
+          },
+          {
+            "name": "Rishi Sharma",
+            "since": "2026-03-27",
+            "role": "Equity Portion"
+          },
+          {
+            "name": "Brijesh Shah",
+            "role": "Debt Portion"
+          }
+        ],
+        "src": "g2:bandhan-fs-2026-08",
+        "locator": "Factsheet Aug 2026 p.3: 'Fund Manager: Equity Portion: Mr. Nilesh Saha, Mr. Rishi Sharma (w.e.f. March 27, 2026) Debt Portion: Mr. Brijesh Shah'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment strategy seeks to generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments, including limited short exposure through derivatives",
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.5 'Investment objective The Investment strategy seeks to generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments' (no terminal period in source; disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Investors can subscribe to the Investment Strategy on a daily basis (only on business days) at applicable NAV."
+        },
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.5 'Subscription frequency Investors can subscribe to the Investment Strategy on a daily basis (only on business days) at applicable NAV.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.5 'IX. Redemption frequency Daily (only on business days)'; p.6 'dispatch the redemption proceeds within 3 (three) working days'; p.10 Notice Period 'Not Applicable.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.10 'Minimum Additional Purchase Amount ... Additional Purchases (including switches) Rs. 10,000/- and any amount thereafter'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment",
+          "IDCW Transfer"
+        ],
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.7: 'Both the Plans under the Investment strategy offer Income Distribution cum capital withdrawal Option (IDCW)^ & Growth Option.' ... 'each with Payout of IDCW, Reinvestment of IDCW & Transfer of IDCW option facility'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity-related instruments (including unhedged short exposure; max 25% unhedged short)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt and Money Market instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:bandhan-isid-els",
+        "locator": "ISID p.14 Part II.A: 'Investments in equity and equity-related instruments (including unhedged short exposure) * 80% 100% Investments in Debt and Money Market instruments 0% 20%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-40": {
+      "allotmentDate": {
+        "value": "2026-01-28",
+        "src": "g2:bandhan-ssd-hls",
+        "locator": "SSD row 13 'Allotment Date' 2026-01-28 (row 14 'Reopen Date' 2026-02-04); factsheet Aug 2026 p.2 'Inception Date: 28 January 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.1: 'Offer of units of Rs 10 each for cash during the New Fund Offer and Continuous offer for Units at NAV based prices'; SSD row 10 'Rs.10/- per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Kapil Kankonkar",
+            "since": "2026-01-28",
+            "role": "Equity Portion"
+          },
+          {
+            "name": "Nilesh Saha",
+            "since": "2026-01-28",
+            "role": "Equity Portion"
+          },
+          {
+            "name": "Brijesh Shah",
+            "since": "2026-01-28",
+            "role": "Debt Portion"
+          },
+          {
+            "name": "Debraj Lahiri",
+            "since": "2026-01-28",
+            "role": "Debt Portion"
+          }
+        ],
+        "src": "g2:bandhan-ssd-hls",
+        "locator": "SSD row 18: 'Debt Portion: FM 1 - Mr. Brijesh Shah, FM 2 - Mr. Debraj Lahiri' ... 'Equity Portion: FM 1 - Mr. Kapil Kankonkar, FM 2 - Mr. Nilesh Saha'; row 20 all '28-Jan-2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the strategy is to generate optimal returns by investing predominantly in equity and debt securities, including limited short exposure in equity and debt through derivatives.",
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.6 'Investment objective The investment objective of the strategy is to generate optimal returns by investing predominantly in equity and debt securities' (disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "The strategy will be listed in an interval structure, with daily (only on business days) subscription facility."
+        },
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.6 'Subscription frequency The strategy will be listed in an interval structure, with daily (only on business days) subscription facility.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g2:bandhan-add-09-2026",
+        "locator": "Addendum 9/2026 p.1: redemption frequency 'stands revised from “Mondays and Thursdays” to “Mondays and Wednesday” with effect from March 19, 2026'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.11 'Minimum Additional Purchase Amount ... Additional Purchases (including switches) Rs. 10,000/- and any amount thereafter'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment",
+          "IDCW Transfer"
+        ],
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.8: 'Both the Plans under the Investment strategy offer Income Distribution cum capital withdrawal Option (IDCW)^ & Growth Option.' ... 'each with Payout of IDCW, reinvestment of IDCW & Transfer of IDCW option facility'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Debt & Money Market instruments",
+            "minPct": 35,
+            "maxPct": 65
+          },
+          {
+            "asset": "Equities & Equity related instruments",
+            "minPct": 35,
+            "maxPct": 65
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:bandhan-isid-hls",
+        "locator": "ISID p.17 Part II.A table (verified on rendered page): 'Debt & Money Market instruments 35% 65% Equities & Equity related instruments 35% 65% Units issued by InvITs 0% 20%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-128": {
+      "allotmentDate": {
+        "value": "2026-06-19",
+        "src": "g2:hsbc-ssd",
+        "locator": "SSD row 13 'Allotment Date' 2026-06-19 (row 14 'Reopen Date' 2026-06-25); dashboard Aug 2026 'Allotment date' 2026-06-19 agrees",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g2:hsbc-ssd",
+        "locator": "SSD row 10 'Face Value 10'; ISID p.7 'XIX. New Fund Offer Price ... the Units will be offered at a price of Rs. 10 per Unit (NFO Price).'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Shriram Ramanathan",
+            "since": "2026-06-19",
+            "role": "Fixed Income, REITs & InvITs"
+          },
+          {
+            "name": "Praveen Ayathan",
+            "since": "2026-06-19",
+            "role": "Arbitrage"
+          },
+          {
+            "name": "Venugopal Manghat",
+            "since": "2026-06-19",
+            "role": "Equity"
+          },
+          {
+            "name": "Mayank Chaturvedi",
+            "since": "2026-06-19",
+            "role": "Foreign Securities"
+          }
+        ],
+        "src": "g2:hsbc-ssd",
+        "locator": "SSD rows 18-20: 'FM1 - Shriram Ramanathan, FM2 - Praveen Ayathan, FM3 - Venugopal Manghat, FM4 - Mayank Chaturvedi'; types 'Fixed Income, REITs & InvITs', 'Arbitrage', 'Equity', 'Foreign Securities'; 'June 19, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the Investment Strategy is to generate regular returns and capital appreciation by investing in fixed income securities and equity and equity related securities including limited short exposure in equity and debt through derivatives.",
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.4 'V. Investment objective The investment objective of the Investment Strategy is to generate regular returns and capital appreciation by investing in fixed income securities' (disclaimer omitted)",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (all business days)"
+        },
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.4 'VIII. Subscription frequency Daily (all business days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon"
+          ],
+          "noticeDays": 10,
+          "settlement": "T+3"
+        },
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.4 'IX. Redemption frequency ... processed once a week (Every Monday*)'; p.6 'XVII. Notice Period 10 working days.'; p.4 proceeds 'within 3 working days, from the applicable NAV date'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.6 'XV. Minimum Additional Purchase Amount Rs 1,000/- per application and in multiples of Re. 1/- thereafter'; SSD row 33 '1000'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.5 'Options under each Plan(s): (i) Growth (ii) Income Distribution cum Capital Withdrawal (IDCW) Sub-options under IDCW: (i) Payout of IDCW (ii) Reinvestment of IDCW'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equities and Equity related securities (total), out of which:",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "- Hedged (index/stock futures and options as part of hedged/arbitrage exposure; covered calls, protective puts etc.)",
+            "minPct": 0,
+            "maxPct": 75
+          },
+          {
+            "asset": "- Unhedged (Short derivatives)",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "- Units of REITs",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Debt and Money Market Instruments (including cash and cash equivalents)",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g2:hsbc-isid",
+        "locator": "ISID p.11 Part II.A: 'Equities and Equity related securities, out of which:- 25 75' ... 'Unhedged (Short derivatives) 0 25' ... 'Units of REITs 0 20' ... 'Units issued by InvITs 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-55": {
+      "allotmentDate": {
+        "value": "2026-02-25",
+        "src": "g3:dyna-issd-els-2026-09-15",
+        "locator": "ISSD field 13: 'Allotment Date 25-Feb-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:dyna-issd-els-2026-09-15",
+        "locator": "ISSD field 10: 'Face Value Rs. 10 Per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Pranav Mise",
+            "since": "2026-08-07",
+            "role": "Fund Manager (Primary); earlier Co-Fund Manager w.e.f. 2026-04-24 per addendum 06/2026"
+          },
+          {
+            "name": "Viral Mehta",
+            "since": "2026-08-07",
+            "role": "Co-Fund Manager"
+          }
+        ],
+        "src": "g3:dyna-issd-els-2026-09-15",
+        "locator": "ISSD fields 18-20: 'Mr. Pranav Mise- Primary, Mr. Viral Mehta - Comanage'; 'Mr. Pranav Mise- 07th August 2026, Mr. Viral Mehta - 07th August 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long term capital appreciation using structural, cyclical, and tactical investing opportunities in equities with optionality of hedging and shorting.",
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.4 item 5 Investment Objective: 'To generate long term capital appreciation using structural, cyclical, and tactical investing opportunities in equities with optionality of hedging and shorting.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only business days) subject to the regulation as specified by SEBI from time to time."
+        },
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.4 item 8 Subscription Frequency: 'Daily (only business days) subject to the regulation as specified by SEBI from time to time.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "noticeDays": 0,
+          "settlement": "T+3"
+        },
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.4 item 6 'units may be redeemed on every business day ... redemption proceeds within 3 business days (working days)'; p.8 item 17 'Notice Period Not Applicable'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 20000,
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.8 item 15 Minimum Additional Purchase Amount: 'Rs 20,000 and in multiples of Rs 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.6 item 12: 'OPTIONS UNDER EACH PLAN(S): (i) Growth (ii) Income Distribution cum Capital Withdrawal (IDCW)'; sub-options IDCW Payout, IDCW re-investment",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity or equity related instruments",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InVITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g3:dyna-isid-els-2026-02-27",
+        "locator": "p.14 Part II A asset allocation table: 'Equity or Equity Related Instruments* 80% 100% ... Unit issued by InVITs 0% 20%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-87": {
+      "allotmentDate": {
+        "value": "2026-03-25",
+        "src": "g3:dyna-issd-aaa-2026-09-15",
+        "locator": "ISSD field 13: 'Allotment Date 25-Mar-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:dyna-issd-aaa-2026-09-15",
+        "locator": "ISSD field 10: 'Face Value Rs. 10 Per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Pranav Mise",
+            "since": "2026-08-07",
+            "role": "Fund Manager (Primary); earlier Co-Fund Manager w.e.f. 2026-04-24 per addendum 06/2026"
+          },
+          {
+            "name": "Milan Mody",
+            "since": "2026-03-25",
+            "role": "Fund Manager (for Debt Portion)"
+          },
+          {
+            "name": "Rahul Khetawat",
+            "since": "2026-03-25",
+            "role": "Fund Manager (for Commodities Portion)"
+          },
+          {
+            "name": "Viral Mehta",
+            "since": "2026-08-07",
+            "role": "Co-Fund Manager"
+          }
+        ],
+        "src": "g3:dyna-issd-aaa-2026-09-15",
+        "locator": "ISSD field 20: 'Mr.Pranav Mise - 07th August 2026, Mr. Milan Mody - 25 Mar 2026, Mr. Rahul Khetawat - 25 Mar 2026' and 'Mr.Viral Mehta - 07th August 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate capital appreciation and income generation with dynamic allocation to different asset classes like equities, InVITs, commodities and fixed income layered with derivatives long-short trading strategies.",
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.4 item 5 Investment Objective: 'To generate capital appreciation and income generation with dynamic allocation to different asset classes like equities, InVITs, commodities and fixed income ...'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only business days)"
+        },
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.4 item 8 Subscription Frequency: 'Daily (only business days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon"
+          ],
+          "noticeDays": 7,
+          "settlement": "T+3 from end of notice period"
+        },
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.5 item 9 'Every Monday of the week *Next business day in case Monday is a non-business day'; p.8 item 17 'Notice Period 7 working days'; p.5 'within three working days from the end of Notice Period'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 20000,
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.7 item 15 Minimum Additional Purchase Amount: 'Rs 20,000 and in multiples of Rs 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.6 item 12: 'OPTIONS UNDER EACH PLAN(S): (i) Growth (ii) Income Distribution cum Capital Withdrawal (IDCW)'; sub-options IDCW Payout, IDCW re-investment",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related securities",
+            "minPct": 20,
+            "maxPct": 50
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 20,
+            "maxPct": 65
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and debt instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Units issued by InVITs",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Commodity derivatives (ETCDs)",
+            "minPct": 0,
+            "maxPct": 25
+          }
+        ],
+        "src": "g3:dyna-isid-aaa-2026-03-27",
+        "locator": "p.13 Part II A table: 'Equity and equity related securities* 20% 50% Debt and money market instruments** 20% 65% ... Commodity derivatives@ 0% 25%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-143": {
+      "allotmentDate": {
+        "value": "2026-06-24",
+        "src": "g3:dyna-issd-extop-2026-09-15",
+        "locator": "ISSD field 13: 'Allotment Date 24-Jun-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:dyna-issd-extop-2026-09-15",
+        "locator": "ISSD field 10: 'Face Value Rs. 10 Per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Mayur Patel",
+            "since": "2026-06-24",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Milan Mody",
+            "since": "2026-06-24",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Pranav Mise",
+            "since": "2026-06-24",
+            "role": "Co-Fund Manager"
+          }
+        ],
+        "src": "g3:dyna-issd-extop-2026-09-15",
+        "locator": "ISSD field 20: 'Mr. Mayur Patel - 24 June 2026, Mr. Milan Mody - 24 June 2026, Mr.Pranav Mise - 24 June 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long term capital appreciation using structural, cyclical, and tactical investing opportunities primarily in mid and small cap equities with optionality of hedging and shorting.",
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.4 Investment Objective: 'To generate long term capital appreciation using structural, cyclical, and tactical investing opportunities primarily in mid and small cap equities ...'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only business days) subject to the regulation as specified by SEBI from time to time."
+        },
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.4 item 8 Subscription Frequency: 'Daily (only business days) subject to the regulation as specified by SEBI from time to time.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.4 item 6: 'units may be redeemed on every business day at NAV based prices ... redemption proceeds within 3 business days (working days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 20000,
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.7 item 15 Minimum Additional Purchase Amount: 'Rs 20,000 and in multiples of Rs 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.5: 'OPTIONS UNDER EACH PLAN(S): (i) Growth (ii) ...IDCW'; 'Sub-options under IDCW (i) IDCW Payout (ii) IDCW re-investment.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & equity related instruments of companies excluding top 100 (Ex-Top 100)",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Unhedged short derivatives exposure in equity & equity related instruments of Ex-Top 100 companies",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Equity and equity related instruments of top 100 companies",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Units issued by InVITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g3:dyna-isid-extop-2026-06-29",
+        "locator": "p.13 Part II A table: 'Equity & Equity Related Instruments* of companies Excluding Top 100 (Ex-Top 100^) 65% 100% ...'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-122": {
+      "allotmentDate": {
+        "value": "2026-06-08",
+        "src": "g3:edel-issd-extop-2026-09-15",
+        "locator": "ISSD field 13: 'Allotment Date 08-06-2026' (field 11 NFO Open '18-05-2026', field 14 Reopen '10-06-2026')",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.1 cover: 'Offer for Units of Rs. 10/- (Rupees Ten Only) each for cash during the New Fund Offer and Continuous offer'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Nikhil Gada",
+            "since": "2026-06-08",
+            "role": "Fund Manager (Equity) - ISSD type 'Comanage'"
+          },
+          {
+            "name": "Trideep Bhattacharya",
+            "since": "2026-06-08",
+            "role": "Fund Manager (Equity) - ISSD type 'Comanage'"
+          },
+          {
+            "name": "Ashish Sood",
+            "since": "2026-08-03",
+            "role": "Assistant Fund Manager"
+          },
+          {
+            "name": "Amit Vora",
+            "since": "2026-06-08",
+            "role": "Fund Manager (Overseas portion)"
+          }
+        ],
+        "src": "g3:edel-issd-extop-2026-09-15",
+        "locator": "ISSD field 20: 'Mr. Nikhil Gada (08-06-2026), Mr. Trideep Bhattacharya(08-06-2026), Mr. Ashish Sood (03-08-2026),Mr. Amit Vora (Overseas portion)(08-06-2026)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate capital appreciation in the long term by predominantly investing in equity and equity related securities of Ex – top 100 companies. The Investment Strategy may also invest in various derivative instruments, including short exposure through unhedged derivative positions in equity and equity related instruments of Ex – top 100 stocks upto 25%.",
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.3 V. Investment objective: 'To generate capital appreciation in the long term by predominantly investing in equity and equity related securities of Ex – top 100 companies.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.4 VIII. Subscription frequency: 'Daily The Trustees reserves the right to change the Subscription frequency in future'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.4 IX 'Redemption frequency Daily'; XI 'redemption or repurchase proceeds shall be dispatched to the unitholders within three working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.6 XV. Minimum Additional Purchase Amount: 'Minimum of Rs. 1,000/- and in multiples of Re. 1/- thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.5 XII: 'Each Plan will offer: (i) Growth Option and (ii) IDCW Option. IDCW Option shall have Reinvestment, Payout & Transfer Facility.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & equity related securities (incl. REITs) of Ex-Top 100 companies (incl. up to 25% unhedged short exposure through derivatives)",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Other equity and equity related securities",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt & money market instruments and units of debt oriented mutual funds",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g3:edel-isid-extop-2026-04-20",
+        "locator": "p.10 Part II A: 'Equity and Equity related securities (including REITs) of Ex- Top 100* companies ... 65% 100% Other Equity ... 0% 35%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-11": {
+      "allotmentDate": {
+        "value": "2025-10-20",
+        "src": "g3:edel-issd-hybrid-2026-09-15",
+        "locator": "ISSD field 13: 'Allotment Date 20-10-2025' (NFO '01-10-2025' to '15-10-2025'; Reopen '31-10-2025')",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:edel-issd-hybrid-2026-09-15",
+        "locator": "ISSD field 10: 'Face Value Rs. 10/-'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Bhavesh Jain",
+            "since": "2025-10-20",
+            "role": "Fund Manager (Equity)"
+          },
+          {
+            "name": "Bharat Lahoti",
+            "since": "2025-10-20",
+            "role": "Fund Manager (Equity)"
+          },
+          {
+            "name": "Dhawal Dalal",
+            "since": "2025-10-20",
+            "role": "Fund Manager (Debt)"
+          },
+          {
+            "name": "Kedar Karnik",
+            "since": "2026-01-15",
+            "role": "Fund Manager (Debt)"
+          },
+          {
+            "name": "Amit Vora",
+            "since": "2025-10-20",
+            "role": "Fund Manager (Overseas)"
+          }
+        ],
+        "src": "g3:edel-fs-hybrid-2026-08-31",
+        "locator": "p.6 Fund Manager table (Equity: Bhavesh Jain, Bharat Lahoti 20th October 2025; Debt: Dhawal Dalal 20th October 2025, Kedar Karnik 15th January 2026; Overseas: Amit Vora)",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The primary objective of the investment strategy is to generate capital appreciation through equity and equity related instruments and income through arbitrage, derivatives strategies, special situations and fixed income investments.",
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.4 V. Investment objective: 'The primary objective of the investment strategy is to generate capital appreciation through equity and equity related instruments and income through arbitrage...'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily"
+        },
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.4 VIII. Subscription frequency: 'Daily'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.4 IX. 'Every Monday and Every Wednesday*of the week. *Next business day in case Monday and Wednesday is a non-business day.'; p.5 XI 'within three working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.6 XV. Minimum Additional Purchase Amount: 'Minimum of Rs.1,000/- and in multiples of Re. 1/- thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.5 XII: 'Each Plan will offer: (i) Growth Option and (ii) IDCW Option. IDCW Option shall have Reinvestment, Payout & Transfer Facility.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & equity related instruments",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 25,
+            "maxPct": 75
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and debt instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Units issued by REITs and InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g3:edel-isid-hybrid-amfi-2025-09-18",
+        "locator": "p.10 Part II A: 'Equity & Equity related instruments 25% 75% Debt and money market instruments# 25% 75% ... Units issued by REITs and InvITs 0 20%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-136": {
+      "allotmentDate": {
+        "value": "2026-06-10",
+        "src": "g3:mir-fs-2026-08-31",
+        "locator": "p.3 Fund Information: 'Allotment Date: ... 10th Jun 2026' (label/value columns)",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.1 cover: 'Offer of Units of Rs. 10/- per unit for cash during the New Fund Offer Period and continuous offer for units at NAV based prices.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Gaurik Shah",
+            "since": "2026-06-10",
+            "role": "Fund Manager (Primary)"
+          }
+        ],
+        "src": "g3:mir-issd-2026-07",
+        "locator": "ISSD fields 18-20: 'Mr. Gaurik Shah (Primary)'; 'Fund Manager From Date Mr. Gaurik Shah (10-06-2026)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment Strategy shall seek to generate regular income through investment in derivative strategies, arbitrage opportunities and debt and money market instruments and to generate long-term capital appreciation by investing in unhedged equity and equity related instruments.",
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.5 V. Investment objective: 'The Investment Strategy shall seek to generate regular income through investment in derivative strategies, arbitrage opportunities and debt and money market instruments...'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "All business days"
+        },
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.6 VIII. Subscription frequency: 'All business days The Trustees reserves the right to change the Subscription frequency in future'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Thu"
+          ],
+          "noticeDays": 0,
+          "settlement": "T+3"
+        },
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.6 IX '2 times in a week (Monday & Thursday)'; p.6 'within 3 working days from the date of redemption'; p.9 XVII 'Currently, there is no notice period.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.9: 'For subsequent additional purchases, the investor (including accredited investor) can invest with the minimum amount of Rs. 10,000/- and in multiples of Rs. 1,000/-'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.6 XII: '(1) Growth Option and (2) Income Distribution cum Capital Withdrawal (IDCW) Option' with Payout of IDCW and Reinvestment of IDCW sub-options",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments",
+            "minPct": 65,
+            "maxPct": 75
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and debt instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt and money market instruments",
+            "minPct": 25,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g3:mir-isid-2026-04-28",
+        "locator": "p.14 Part II A: 'Equity and Equity related instruments* 65 75 Short exposure through unhedged derivative positions ... 0 25 Debt and Money Market Instruments 25 35'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-80": {
+      "allotmentDate": {
+        "value": "2026-03-25",
+        "src": "g4:apex-issd-hls-2026-04-10",
+        "locator": "ISSD field 13 'Allotment Date 25-Mar-26'; field 14 'Reopen Date 30-Mar-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I XIX New Fund Offer Price: 'the Units are being offered at the Face Value of Rs. 10 each.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Lovelish Solanki",
+            "since": "2026-03-25",
+            "role": "Fund Manager - Equity Portion (Primary)"
+          },
+          {
+            "name": "Mohit Sharma",
+            "since": "2026-03-25",
+            "role": "Fund Manager - Debt Portion (Co-manage)"
+          },
+          {
+            "name": "Rohit Karan",
+            "since": "2026-04-02",
+            "role": "Fund Manager (Co-manage)"
+          }
+        ],
+        "src": "g4:apex-fs-2026-08-31",
+        "locator": "p.6 Scheme Details 'Mr. Lovelish Solanki (Since March 25, 2026) Mr. Mohit Sharma (Since March 25, 2026) Mr. Rohit Karan (Since April 02, 2026)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "An interval investment strategy investing in arbitrage, long equity, debt, equity and debt derivatives, long short and REITs/InVITs including limited short exposure on permitted instruments through derivatives.",
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I item V 'Investment objective': 'An interval investment strategy investing in arbitrage, long equity, debt, equity and debt derivatives, long short and REITs/InVITs'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "The Investment Strategy will be open for daily subscription for all business days."
+        },
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I item VIII Subscription frequency: 'The Investment Strategy will be open for daily subscription for all business days.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I item IX: 'The Investment Strategy will offer redemption two times a week i.e. every Monday and Wednesday of the week.'; XI 'Redemption proceeds within three working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I item XV Minimum Additional Purchase Amount: 'Rs. 10,000 and in multiples of Re. 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part I XII 'Options under each Plan(s): 1. Growth Option and 2. Income Distribution cum capital withdrawal (“IDCW”) Option (Payout of'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity related instruments (including equity ETFs and units of equity oriented mutual fund schemes)",
+            "minPct": 35,
+            "maxPct": 65
+          },
+          {
+            "asset": "Debt and Money Market Instruments (including units of debt oriented mutual fund schemes and Debt ETFs)",
+            "minPct": 35,
+            "maxPct": 65
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g4:apex-isid-hls-2026-02-27",
+        "locator": "Part II A table: 'Equity & Equity related instruments # 35 65 Debt and Money Market Instruments## 35 65 Units issued by InvITs 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-154": {
+      "allotmentDate": {
+        "value": "2026-08-31",
+        "src": "g4:apex-issd-els-2026-09-16",
+        "locator": "ISSD field 13 'Allotment Date 31-Aug-26'; field 14 'Reopen Date 01-Sep-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I XIX New Fund Offer Price: 'the Units are being offered at the Face Value of Rs. 10 each.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Manish Gupta",
+            "since": "2026-08-31",
+            "role": "Fund Manager - Equity Portion (Primary)"
+          },
+          {
+            "name": "Harshil Suvarnkar",
+            "since": "2026-08-31",
+            "role": "Fund Manager - Debt Portion (Co-manage)"
+          }
+        ],
+        "src": "g4:apex-issd-els-2026-09-16",
+        "locator": "ISSD fields 18-20 'Mr. Manish Gupta ... Mr. Harshil Suvarnkar'; 'Primary' / 'Comanage'; 'From Date 31-Aug-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment strategy seeks to generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments, including limited short exposure through derivatives",
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I item V 'Investment objective': 'The Investment strategy seeks to generate long-term capital appreciation by investing in a diversified portfolio of equity and equity-related instruments'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "The Investment Strategy will be open for daily subscription for all business days."
+        },
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I item VIII Subscription frequency: 'The Investment Strategy will be open for daily subscription for all business days.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I item IX: 'The Investment Strategy will offer daily redemption for all business days.'; VI 'transfer the Redemption proceeds within three working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I item XV Minimum Additional Purchase Amount: 'Rs. 10,000 and in multiples of Re. 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part I XII: 'Options under each Plan(s): Growth Option'; XI: 'Currently, the investment strategy is not offering IDCW option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity related instruments (including up to 25% in unhedged short exposure through derivative instruments; incl. overseas securities, equity ETFs and equity MF units)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt and Money Market Instruments (including units of debt oriented mutual fund schemes and Debt ETFs)",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g4:apex-isid-els-2026-07-22",
+        "locator": "Part II A table: 'Equity & Equity related instruments # (including up to 25% in Unhedged short exposure through derivative instruments)## 80 100' ... 'Units issued by InvITs 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-156": {
+      "allotmentDate": {
+        "value": "2026-08-31",
+        "src": "g4:apex-issd-extop-2026-09-16",
+        "locator": "ISSD field 13 'Allotment Date 31-Aug-26'; field 14 'Reopen Date 01-Sep-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I XIX New Fund Offer Price: 'the Units are being offered at the Face Value of Rs. 10 each.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Manish Gupta",
+            "since": "2026-08-31",
+            "role": "Fund Manager - Equity Portion (Primary)"
+          },
+          {
+            "name": "Harshil Suvarnkar",
+            "since": "2026-08-31",
+            "role": "Fund Manager - Debt Portion (Co-manage)"
+          }
+        ],
+        "src": "g4:apex-issd-extop-2026-09-16",
+        "locator": "ISSD fields 18-20 'Mr. Manish Gupta ... Mr. Harshil Suvarnkar'; 'Primary' / 'Comanage'; 'From Date 31-Aug-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate capital appreciation in long term by investing in equity and equity related securities of Ex – top 100 companies. The Investment Strategy may also invest in various derivative instruments, including short exposure through unhedged derivative positions in equity and equity related instruments.",
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I item V 'Investment objective': 'To generate capital appreciation in long term by investing in equity and equity related securities of Ex – top 100 companies.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "The Investment Strategy will be open for daily subscription for all business days."
+        },
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I item VIII Subscription frequency: 'The Investment Strategy will be open for daily subscription for all business days.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I item IX: 'The Investment Strategy will offer daily redemption for all business days.'; VI 'transfer the Redemption proceeds within three working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I item XV Minimum Additional Purchase Amount: 'Rs. 10,000 and in multiples of Re. 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part I XII: 'Options under each Plan(s): Growth Option'; XI: 'Currently, the investment strategy is not offering IDCW option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity related securities of Ex Top 100 Companies (including up to 25% in unhedged short exposure through derivative instruments)",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Other Equity & Equity Related Instruments",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt, Cash & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units of InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g4:apex-isid-extop-2026-07-22",
+        "locator": "Part II A table: 'Equity and Equity related securities of Ex Top 100 Companies*' ... '65 100 Other Equity & Equity Related Instruments# 0 35'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-13": {
+      "allotmentDate": {
+        "value": "2025-10-20",
+        "src": "g4:sbi-fs-2026-08-31",
+        "locator": "p.2 Fund Details: 'Date of Allotment: 20/10/2025'; p.3 'Inception Date 20/10/2025'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.1 'Offer for Units of Rs. 10/- each for cash during the New Fund Offer'; p.8 XVI 'Rs. 10/- per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Gaurav Mehta",
+            "since": "2025-10-29",
+            "role": "Fund Manager"
+          }
+        ],
+        "src": "g4:amfi-ssd-S-4",
+        "locator": "'Fund Manager Mr. Gaurav Mehta' 'Fund Manager From Date Mr. Gaurav Mehta:29-Oct-2025'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the Investment Strategy is to generate regular income by predominantly investing in Derivatives strategies like covered calls, arbitrage opportunities in the cash and derivatives segments of the equity markets and debt and money market instruments and to generate long-term capital appreciation through unhedged exposure to equity and equity related instruments.",
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.5 Part I item V 'Investment objective': 'to generate regular income by predominantly investing in Derivatives strategies like covered calls, arbitrage opportunities'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV."
+        },
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.5 item VIII Subscription frequency: 'Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g4:sbi-add-hls-features-2026-02-06",
+        "locator": "Addendum item 1 Revised Provisions: 'Two Times a week (Monday & Wednesday) or any lesser redemption frequency as may be decided by the AMC.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.8 item XV Minimum Additional Purchase Amount: 'Rs. 10,000/- and in multiples of Re. 1 thereafter'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.6 XII: 'Both plans provide two options for investment - Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity related instruments",
+            "minPct": 65,
+            "maxPct": 75
+          },
+          {
+            "asset": "  of which Hedged (index/stock futures and options as part of hedged/arbitrage exposure, covered calls, protective puts etc.)",
+            "minPct": 0,
+            "maxPct": 75
+          },
+          {
+            "asset": "  of which Unhedged (Short derivatives)",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt and Money Market Instruments, including Units of Debt oriented mutual fund schemes",
+            "minPct": 25,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by REITs and InvITs",
+            "minPct": 0,
+            "maxPct": 10
+          }
+        ],
+        "src": "g4:sbi-isid-hls-2025-09-23",
+        "locator": "p.13 Part II A table: 'Equity & Equity related instruments 65 75' ... 'Unhedged (Short derivatives) 0 25' ... 'Units issued by REITs and InvITs* 0 10'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-157": {
+      "allotmentDate": {
+        "value": "2026-08-27",
+        "src": "g4:sbi-web-extop-details",
+        "locator": "rendered scheme details block: 'Date Of Allotment 27 Aug, 2026' 'AUM (As On 31 Aug 2026) ₹ 1116.32 Cr'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.1 'Offer for Units of Rs. 10/- each for cash during the New Fund Offer'; p.7 'Rs. 10/- per unit'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Gaurav Mehta",
+            "since": "2026-08",
+            "role": "Fund Manager"
+          }
+        ],
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.18 E 'Who manages the Investment Strategy?': 'Mr. Gaurav Mehta ... Head - SIF Equity of SBI Funds Management Limited'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the strategy is to generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100 by market capitalization, while utilizing limited short exposure through derivatives to enhance returns and/or manage risk.",
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.4 Part I item V 'Investment objective': 'to generate long-term capital appreciation by investing primarily in equity and equity-related instruments of stocks outside the top 100'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV."
+        },
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.4 item VIII Subscription frequency: 'Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.4 item IX 'Investors can redeem their units under the Investment Strategy on a daily basis.'; p.5 XI 'Dispatch of redemption proceeds: within 3 working days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.7 item XV Minimum Additional Purchase Amount: 'Rs. 10,000/- and in multiples of Re. 1 thereafter'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.5 XII: 'Both plans provide two options for investment - Growth Option and Income Distribution cum Capital Withdrawal (IDCW) Option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity related instruments of companies excluding the top 100 companies by market capitalization including REITs",
+            "minPct": 65,
+            "maxPct": 100
+          },
+          {
+            "asset": "Equity & Equity related instruments of companies - top 100 companies by market capitalization including REITs",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Debt and Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units of mutual funds (including Gold & Silver ETFs)",
+            "minPct": 0,
+            "maxPct": 35
+          }
+        ],
+        "src": "g4:sbi-isid-extop-2026-07-31",
+        "locator": "p.11 Part II A table: 'excluding the top 100 companies by market capitalization including REITs 65 100 ... Units of mutual funds (including Gold & Silver ETFs)# 0 35'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-146": {
+      "allotmentDate": {
+        "value": "2026-07-06",
+        "src": "g4:amfi-ssd-S-29",
+        "locator": "field 13 'Allotment Date July 06, 2026'; field 14 'Reopen Date July 09, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g4:amfi-ssd-S-29",
+        "locator": "field 10 'Face Value 10'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Hiten Shah",
+            "since": "2026-07-06",
+            "role": "Fund Manager - Equity and Overseas investment"
+          },
+          {
+            "name": "Kalpesh Jain",
+            "since": "2026-07-06",
+            "role": "Fund Manager - Equity and Overseas investment"
+          },
+          {
+            "name": "Abhishek Bisen",
+            "since": "2026-07-06",
+            "role": "Fund Manager - Debt and money market investment"
+          }
+        ],
+        "src": "g4:amfi-ssd-S-29",
+        "locator": "fields 18-20 'FM 1 : Mr.Hiten Shah' 'Mr. Hiten Shah & Mr. Kalpesh Jain will be the fund managers for Equity and Overseas investment' 'Fund Manager From Date July 06, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the strategy is to achieve a blend of capital appreciation and income generation by investing in equity and equity related instruments as well as debt and money market instruments, including limited short exposure in equity and debt through derivatives.",
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.4 Part I item V Investment objective: 'The investment objective of the strategy is to achieve a blend of capital appreciation and income generation'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business Days)"
+        },
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.4 Part I item VIII 'Subscription frequency Daily (only Business Days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.5 item IX 'Twice a week i.e Monday and Wednesday in every week.'; XI 'within three working days from the redemption or repurchase NAV date'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.8 item XV Minimum Additional Purchase Amount 'INR 10,000/- and in multiples of Re. 1 thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW"
+        ],
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.6 XII 'Options under each Plan(s) Growth Income Distribution cum Capital Withdrawal (IDCW) Payout of Income Distribution cum capital withdrawal (IDCW)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments (including unhedged short exposure; may include units of equity oriented mutual funds and Equity ETF, including overseas)",
+            "minPct": 35,
+            "maxPct": 75
+          },
+          {
+            "asset": "Debt & Money Market Instruments (including unhedged short exposure)",
+            "minPct": 25,
+            "maxPct": 65
+          },
+          {
+            "asset": "InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g4:amfi-isid-S-29",
+        "locator": "p.13 Part II A table: 'Investment in equity and equity related instruments * (including unhedged short exposure mentioned below) # 35 75'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-114": {
+      "allotmentDate": {
+        "value": "2026-05-25",
+        "src": "g5:arth-fs-2026-08",
+        "locator": "p.3 Investment Strategy Details: '25 May 2026 Date of allotment'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g5:arth-isid",
+        "locator": "p.1 cover: 'continuous offer for Units at NAV based prices (Face Value Rs.10)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Rajesh Aynor",
+            "since": "2026-05-25",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Hiten Bhadra",
+            "since": "2026-05-25",
+            "role": "Co-Fund Manager (Arbitrage portion)"
+          }
+        ],
+        "src": "g5:arth-isid",
+        "locator": "p.23 Part II.E: 'Mr. Rajesh Aynor - Fund Manager ... Mr. Hiten Bhadra – Co-Fund Manager (for Arbitrage portion)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment objective of the Investment Strategy is to generate long-term capital appreciation over the investment cycle by deploying capital in equity and equity related instruments including limited short exposure through derivatives across the market capitalisation.",
+        "src": "g5:arth-isid",
+        "locator": "p.4 Part I 'V. Investment objective': 'by deploying capital in equity and equity related instruments including limited short exposure through derivatives across the market capitalisation'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (only Business Days)"
+        },
+        "src": "g5:arth-isid",
+        "locator": "p.6 Part I 'VIII': 'Subscription frequency Daily (only Business Days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g5:arth-isid",
+        "locator": "p.6 Part I 'IX'/'XI': 'transfer the redemption/repurchase proceeds to the unitholders within three working days from the date of redemption or repurchase'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g5:arth-isid",
+        "locator": "p.7 Part I 'XV': 'Minimum Additional Purchase Amount) Rs. 10,000 and in multiples of Rs. 1 thereafter'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g5:arth-isid",
+        "locator": "p.6 Part I 'XII. Plans and Options': 'Options under each Plan(s) • Growth • Income Distribution cum Capital Withdrawal (IDCW) Option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity-related instruments (including unhedged short exposure)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Debt and Money Market Instruments including units of debt oriented mutual fund schemes",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g5:arth-isid",
+        "locator": "p.15 Part II.A table (% of total assets): 'Equity and equity-related instruments (including unhedged short exposure) 80% 100%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-96": {
+      "allotmentDate": {
+        "value": "2026-04-29",
+        "src": "g5:ft-fs-2026-08",
+        "locator": "p.4 fund details: 'DATE OF ALLOTMENT April 29, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 1000,
+        "src": "g5:ft-isid",
+        "locator": "p.8 Part I 'XII. Plans and Options': 'All the plans have a common portfolio. The face value of the Units is Rs.1000 each.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Arihant Jain",
+            "since": "2026-04",
+            "role": "Portfolio Manager/Senior Investment Analyst"
+          }
+        ],
+        "src": "g5:ft-fs-2026-08",
+        "locator": "p.4 FUND MANAGER(S): 'Arihant Jain (Managing Since Apr 2026)'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The investment strategy seeks to generate alpha over the long term by investing across a spectrum of large, mid and small cap companies using long/short equity strategies.",
+        "src": "g5:ft-isid",
+        "locator": "p.6 Part I 'V. Investment objective': 'seeks to generate alpha over the long term by investing across a spectrum of large, mid and small cap companies using long/short equity strategies'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily on all business days"
+        },
+        "src": "g5:ft-isid",
+        "locator": "p.6 Part I 'VIII': 'Subscription frequency Daily on all business days'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g5:ft-isid",
+        "locator": "p.6 Part I 'VI'/'XI': 'despatched to the unitholders within the regulatory time limit of 3 working days of the receipt of the valid redemption request'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g5:ft-isid",
+        "locator": "p.9 Part I 'XV': 'Minimum Additional Purchase Amount Minimum of INR 10,000'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g5:ft-isid",
+        "locator": "p.8 Part I 'XII. Plans and Options': 'Growth Plan • Income Distribution cum capital withdrawal (IDCW) Plan (with Reinvestment and Payout Options).'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments (long and short positions)",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and equity related instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt, money market instruments (excluding securities kept for margin), InvITs, ETFs and units of debt mutual fund schemes",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g5:ft-isid",
+        "locator": "p.14 Part II.A table (% of total assets): 'Short exposure through unhedged derivative positions in equity and equity related instruments* 0% 25%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-150": {
+      "allotmentDate": {
+        "value": "2026-07-22",
+        "src": "g5:sm-fs-2026-08",
+        "locator": "p.2 fund details: 'Date of Allotment: 22 July 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g5:sm-isid",
+        "locator": "p.1 cover: 'Offer of Units of Rs. 10/- each for cash during the New Fund Offer'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Hiten Jain",
+            "since": "2026-07-22",
+            "role": "Fund Manager"
+          }
+        ],
+        "src": "g5:sm-fs-2026-08",
+        "locator": "p.2 Fund Manager & Experience: 'Hiten Jain Total Experience Experience in managing this fund: Since July 22, 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate long-term capital appreciation by investing primarily in equity and equity-related instruments, combining directional equity investments with tactical short positions to provide risk-adjusted returns over traditional long-only strategies.",
+        "src": "g5:sm-isid",
+        "locator": "p.3 Part I 'V. Investment Objective': 'To generate long-term capital appreciation by investing primarily in equity and equity-related instruments, combining directional equity investments with tactical short positions'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV."
+        },
+        "src": "g5:sm-isid",
+        "locator": "p.4 Part I 'VIII. Subscription Frequency': 'Investors can subscribe to the Investment Strategy on a daily basis at applicable NAV.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g5:sm-isid",
+        "locator": "p.3 Part I 'VI': 'the AMC will transfer redemption or repurchase proceeds within 3 Business Days from the date of acceptance of redemption or repurchase requests'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g5:sm-isid",
+        "locator": "p.5 Part I 'XV': 'Rs. 1,000/- per application and in multiples of Re.1/- thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g5:sm-isid",
+        "locator": "p.4 Part I 'XII. Plans and Options': 'Default option / facility: Name of the option Default^ Growth / IDCW Growth IDCW Reinvestment/ IDCW Payout IDCW Reinvestment'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity Related Instruments",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and equity related instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Debt & Money Market Instruments",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g5:sm-isid",
+        "locator": "p.9 Part II.A Asset Allocation (% of net assets): 'Equity & Equity Related Instruments 80 100 Short exposure through unhedged derivative positions in equity and equity related instruments 0 25'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-102": {
+      "allotmentDate": {
+        "value": "2026-05-20",
+        "src": "g5:tata-fs-2026-08",
+        "locator": "p.5 FUND SNAPSHOT 'Titanium Equity Long-Short Fund': 'Titanium Equity Long-Short Fund Inception Date 20-May-26'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g5:tata-els-isid",
+        "locator": "p.6 Part I 'XIX. New Fund Offer Price': 'The units being offered will have a face value of Rs. 10 /- per unit.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Suraj Nanda",
+            "since": "2026-05-20"
+          },
+          {
+            "name": "Akhil Mittal",
+            "since": "2026-06-01"
+          },
+          {
+            "name": "Hasmukh Devji Vishariya",
+            "since": "2026-05-20",
+            "role": "Overseas Investment"
+          }
+        ],
+        "src": "g5:tata-add-2026-05-29-fm",
+        "locator": "p.1 table row 1: 'Titanium Equity Long-Short Fund 1. Suraj Nanda 2. Amit Somani 3. Hasmukh Devji Vishariya 1. Suraj Nanda 2. Akhil Mittal 3. Hasmukh Devji Vishariya'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate medium to long term capital appreciation by investing in listed equity and equity related instruments including limited short exposure in equity through derivative instruments.",
+        "src": "g5:tata-els-isid",
+        "locator": "p.3 Part I 'V. Investment objective': 'To generate medium to long term capital appreciation by investing in listed equity and equity related instruments including limited short exposure in equity'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (All business days)"
+        },
+        "src": "g5:tata-els-isid",
+        "locator": "p.3 Part I 'VIII': 'Subscription frequency Daily (All business days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "settlement": "T+3"
+        },
+        "src": "g5:tata-els-isid",
+        "locator": "p.3 Part I 'XI': 'The redemption proceeds will be dispatched to the unit holders within 3 working days from the date of redemption or repurchase'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g5:tata-els-isid",
+        "locator": "p.6 Part I 'XV': 'Minimum Additional Purchase Amount Rs. 1,000/- and in multiples of Re. 1/-.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g5:tata-els-isid",
+        "locator": "p.4 Part I 'XII. Plans and Options': 'Regular Plan (For applications routed through Distributors): 1. Growth 2. Income Distribution cum Withdrawal Option (IDCW)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and equity related instruments",
+            "minPct": 80,
+            "maxPct": 100
+          },
+          {
+            "asset": "Short exposure through unhedged derivative position in equity and equity related instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt and money market instruments including fixed income derivatives",
+            "minPct": 0,
+            "maxPct": 20
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g5:tata-els-isid",
+        "locator": "p.10 Part II.A table (% of Investible Funds): 'Short exposure through unhedged derivative position in equity and equity related instruments 0 25 Debt and money market instruments including fixed income derivatives 0 20'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-29": {
+      "allotmentDate": {
+        "value": "2025-12-17",
+        "src": "g5:tata-fs-2026-08",
+        "locator": "p.2 FUND SNAPSHOT 'Titanium Hybrid Long-Short Fund': 'Titanium Hybrid Long-Short Fund Inception Date 17-Dec-25'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g5:tata-hls-isid",
+        "locator": "p.7 Part I 'XIX. New Fund Offer Price': 'The units being offered will have a face value of Rs. 10 /- per unit.'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Suraj Nanda",
+            "since": "2025-12-17"
+          },
+          {
+            "name": "Akhil Mittal",
+            "since": "2026-06-01"
+          },
+          {
+            "name": "Hasmukh Devji Vishariya",
+            "since": "2025-12-17",
+            "role": "Overseas Investment"
+          }
+        ],
+        "src": "g5:tata-fs-2026-08",
+        "locator": "p.3 Titanium Hybrid Long-Short Fund - Fund Manager table: 'Mr. Suraj Nanda 10 Years 17-Dec-25 Mr. Akhil Mittal 23 Years 01-June-26 Mr. Hasmukh Devji Vishariya 7 Years 17-Dec-25'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "To generate medium to long term capital appreciation by investing in equity and equity related instruments as well as debt and money market instruments, including limited short exposure in equity and debt through derivatives.",
+        "src": "g5:tata-hls-isid",
+        "locator": "p.4 Part I 'V. Investment objective': 'as well as debt and money market instruments, including limited short exposure in equity and debt through derivatives.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Daily (All business days)"
+        },
+        "src": "g5:tata-hls-isid",
+        "locator": "p.4 Part I 'VIII': 'Subscription frequency Daily (All business days)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g5:tata-add-2026-08-24-redfreq",
+        "locator": "p.1 New Provision (effective September 02, 2026): 'Redemption frequency – once a week i.e. every Wednesday. In case Wednesday is a non-business day, the AMC shall process the redemption'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 1000,
+        "src": "g5:tata-hls-isid",
+        "locator": "p.6 Part I 'XV': 'Minimum Additional Purchase Amount Rs. 1,000/- and in multiples of Re. 1/-.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth",
+          "IDCW Payout",
+          "IDCW Reinvestment"
+        ],
+        "src": "g5:tata-hls-isid",
+        "locator": "p.5 Part I 'XII. Plans and Options': 'Regular Plan (For applications routed through Distributors): 1. Growth 2. Income Distribution cum Withdrawal Option (IDCW)'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity & Equity related instruments (including REITs)",
+            "minPct": 65,
+            "maxPct": 75
+          },
+          {
+            "asset": "of which Hedged (index/stock futures and options as part of hedged/arbitrage exposure, covered calls, protective puts etc.)",
+            "minPct": 0,
+            "maxPct": 75
+          },
+          {
+            "asset": "of which Unhedged (Short derivatives)",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Debt and money market instruments including fixed income derivatives",
+            "minPct": 25,
+            "maxPct": 35
+          },
+          {
+            "asset": "Units issued by InvITs",
+            "minPct": 0,
+            "maxPct": 10
+          }
+        ],
+        "src": "g5:tata-add-2025-12-31-reits",
+        "locator": "p.1 Revised Asset Allocation Pattern (effective 01 January 2026): 'Units issued by REITs and InvITs 0% 10% Units issued by InvITs 0% 10%'",
+        "verified": true,
+        "check": "researcher"
+      }
+    },
+    "SIF-138": {
+      "allotmentDate": {
+        "value": "2026-07-17",
+        "src": "g5:jbr-fs-2026-08",
+        "locator": "p.4 INVESTMENT STRATEGY: 'Allotment Date 17th July 2026'",
+        "verified": true,
+        "check": "independent"
+      },
+      "faceValue": {
+        "value": 10,
+        "src": "g5:jbr-isid",
+        "locator": "p.1 cover: 'Offer for Units of INR 10/- each during the New Fund Offer and Continuous Offer'",
+        "verified": true,
+        "check": "independent"
+      },
+      "fundManagers": {
+        "value": [
+          {
+            "name": "Arun Ramachandran",
+            "since": "2026-07-17",
+            "role": "CIO and Fund Manager"
+          },
+          {
+            "name": "Tanvi Kacheria",
+            "since": "2026-07-17",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Siddharth Deb",
+            "since": "2026-07-17",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Virendra Kumar",
+            "since": "2026-07-17",
+            "role": "Fund Manager"
+          },
+          {
+            "name": "Manish Kalani",
+            "since": "2026-07-28",
+            "role": "Fund Manager"
+          }
+        ],
+        "src": "g5:jbr-add-03-2026-07-28",
+        "locator": "p.2 Change in Fund Management Responsibilities (with effect from July 28, 2026): 'Mr. Arun Ramachandran Ms. Tanvi Kacheria Mr. Siddharth Deb Mr. Virendra Kumar Mr. Manish Kalani'",
+        "verified": true,
+        "check": "independent"
+      },
+      "objective": {
+        "value": "The Investment Strategy aims to achieve long term capital appreciation along with income generation by investing across a diversified mix of equity and equity related instruments, debt and money market instruments, derivative based strategies.",
+        "src": "g5:jbr-isid",
+        "locator": "p.6 Part I 'V. Investment objective': 'aims to achieve long term capital appreciation along with income generation by investing across a diversified mix of equity and equity related instruments'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "subscription": {
+        "value": {
+          "bucket": "daily",
+          "text": "Investors can subscribe to the Investment Strategy on a daily basis at the applicable NAV."
+        },
+        "src": "g5:jbr-isid",
+        "locator": "p.7 Part I 'VIII. Subscription frequency': 'Investors can subscribe to the Investment Strategy on a daily basis at the applicable NAV.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "redemptionTerms": {
+        "value": {
+          "days": [
+            "Mon",
+            "Wed"
+          ],
+          "settlement": "T+3"
+        },
+        "src": "g5:jbr-isid",
+        "locator": "p.7 Part I 'IX. Redemption frequency': 'Two Times in a week (Monday & Wednesday) or any lesser redemption frequency as may be decided by the AMC.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "minAdditional": {
+        "value": 10000,
+        "src": "g5:jbr-isid",
+        "locator": "p.10 Part I 'XV': 'Minimum Additional Purchase Amount Rs.10,000 and any amount thereafter.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "options": {
+        "value": [
+          "Growth"
+        ],
+        "src": "g5:jbr-isid",
+        "locator": "p.8 Part I 'XII. Plans and Options': 'Each Plan will offer only Growth Option and that will be default Option.'",
+        "verified": true,
+        "check": "researcher"
+      },
+      "assetAllocation": {
+        "value": [
+          {
+            "asset": "Equity and Equity-related instruments",
+            "minPct": 35,
+            "maxPct": 75
+          },
+          {
+            "asset": "Debt and Money Market Instruments",
+            "minPct": 25,
+            "maxPct": 65
+          },
+          {
+            "asset": "Short exposure through unhedged derivative positions in equity and debt instruments",
+            "minPct": 0,
+            "maxPct": 25
+          },
+          {
+            "asset": "Units of InvITs",
+            "minPct": 0,
+            "maxPct": 20
+          }
+        ],
+        "src": "g5:jbr-isid",
+        "locator": "p.16 Part II.A table (% of total assets): 'Equity and Equity-related instruments 35 75 Debt and Money Market Instruments 25 65'",
+        "verified": true,
+        "check": "researcher"
+      }
+    }
+  }
+}

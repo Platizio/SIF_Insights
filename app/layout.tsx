@@ -5,12 +5,19 @@ import { RevealGuard } from "@/components/motion/RevealGuard";
 import { NfoBar } from "@/components/sections/NfoBar";
 import { SiteHeader } from "@/components/sections/SiteHeader";
 import { SiteFooter } from "@/components/sections/SiteFooter";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { stats } from "@/lib/data";
+import { SITE, activeSocials } from "@/lib/site";
 import "./globals.css";
 
-/** Matches `ORIGIN` in app/robots.ts and app/sitemap.ts. If the domain
-    moves, all three change together. */
-const ORIGIN = "https://sifinsight.com";
+/* The canonical host is `www`, and the `www` is load-bearing rather than a
+   stylistic preference: the apex answers 307 to it, so an apex origin would
+   name a redirect in every canonical, og:url and sitemap entry. The value
+   and the full reasoning live in lib/site.ts (`SITE.origin`), which is now
+   the ONE place it is written — this file, app/sitemap.ts, app/robots.ts and
+   app/amc/[id]/page.tsx used to declare four separate `ORIGIN` constants
+   that had to be moved together by hand. */
+const ORIGIN = SITE.origin;
 
 const geist = Geist({
   subsets: ["latin"],
@@ -64,17 +71,26 @@ const instrument = Instrument_Serif({
    than none. Every route declares its own instead, app/page.tsx included:
    that file, not this one, is where "/" gets its canonical and og:url.
    ============================================================ */
+/* The brand line, once, for the default <title> and the share card. It
+   replaced "India's SIF market, in full view", the old tagline the client's
+   review retired along with the data-first framing it stood for. */
+const SITE_TITLE = "SIF Insight — Understand, track and compare India's SIFs";
+
 export const metadata: Metadata = {
   metadataBase: new URL(ORIGIN),
   title: {
-    default: "SIF Insight — India's SIF market, in full view",
+    default: SITE_TITLE,
     template: "%s | SIF Insight",
   },
-  description: `Independent coverage of India's ${stats.strategyCount} Specialised Investment Fund schemes — every NAV and disclosure from all ${stats.amcCount} asset managers, SEBI's 2025 category.`,
+  description: `Understand, track and compare India's Specialised Investment Funds: ${stats.strategyCount} schemes from ${stats.amcCount} AMCs, with latest NAVs, returns, scheme disclosures and expert guidance.`,
+  /* Restated in full, not partially: see the shallow-merge note above.
+     No `url` and no `images` — a `url` here would be inherited as og:url
+     by every route that does not set its own, and the image comes from the
+     app/opengraph-image.tsx file convention. */
   openGraph: {
-    title: "SIF Insight — India's SIF market, in full view",
-    description: `Every Specialised Investment Fund in India, independently tracked: ${stats.strategyCount} schemes, ${stats.amcCount} asset managers, NAVs and disclosures as filed.`,
-    siteName: "SIF Insight",
+    title: SITE_TITLE,
+    description: `Research, track and compare every Specialised Investment Fund in India: ${stats.strategyCount} schemes from ${stats.amcCount} AMCs, with latest NAVs and disclosures as filed.`,
+    siteName: SITE.name,
     locale: "en_IN",
     type: "website",
   },
@@ -85,21 +101,39 @@ export const metadata: Metadata = {
  * Organization, once, for the whole site.
  *
  * Every field below is already rendered to a human in the footer or on
- * /about — legal name, email, phone, logo, founder. Nothing here is a
- * claim the site does not otherwise make, which is the only test that
- * matters for structured data: it is a machine-readable restatement of
- * the page, not a second set of facts.
+ * /about — legal name, email, phone, address, socials, logo, founder.
+ * Nothing here is a claim the site does not otherwise make, which is the
+ * only test that matters for structured data: it is a machine-readable
+ * restatement of the page, not a second set of facts. All of it comes from
+ * lib/site.ts, the same object the footer renders, so the two cannot
+ * disagree — they did, once, about the email address.
+ *
+ * `sameAs` lists only the profiles that have been supplied; a null social
+ * is omitted, never guessed.
  */
 const ORGANIZATION_LD = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "SIF Insight",
-  legalName: "Platizio Services LLP",
+  name: SITE.name,
+  legalName: SITE.legalEntity,
   url: ORIGIN,
   logo: `${ORIGIN}/sif-insight-logo.png`,
-  email: "info@sifinsight.com",
-  telephone: "+91 92055 23100",
-  founder: { "@type": "Person", name: "Vividh Chaturvedi" },
+  email: SITE.email,
+  telephone: SITE.phoneE164,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: SITE.address.streetAddress,
+    addressLocality: SITE.address.city,
+    addressRegion: SITE.address.region,
+    postalCode: SITE.address.postalCode,
+    addressCountry: SITE.address.country,
+  },
+  sameAs: activeSocials().map((social) => social.href),
+  founder: {
+    "@type": "Person",
+    name: SITE.founder.name,
+    jobTitle: SITE.founder.title,
+  },
 };
 
 /* Both values track --color-ground (warm off-white paper). They were left
@@ -144,6 +178,11 @@ export default function RootLayout({
         <SiteHeader />
         <main id="main">{children}</main>
         <SiteFooter />
+        {/* After the footer in the source, so it is the last stop in tab
+            order rather than the first thing a keyboard user meets on
+            every page. It is fixed-position, so where it sits in the DOM
+            does not change where it paints. */}
+        <WhatsAppButton />
         {/* dangerouslySetInnerHTML, not a `{JSON.stringify(...)}` child:
             React HTML-escapes text children, and an escaped quote inside
             a ld+json block is a parse error, not a rendering nit. `<` is

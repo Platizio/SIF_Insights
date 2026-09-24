@@ -6,11 +6,15 @@ import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { TiltCard } from "@/components/motion/TiltCard";
 import { ConsultCta } from "@/components/ConsultCta";
 import { AmcMark } from "@/components/AmcMark";
+import { NotCaptured } from "@/components/ui/NotCaptured";
 import { PageHeader } from "@/components/PageHeader";
 import { Eyebrow, Section, Shell } from "@/components/primitives";
 import { cn } from "@/lib/cn";
 import {
+  amcAum,
   amcs,
+  formatCr,
+  formatMonth,
   formatUpdated,
   getNav,
   navLastUpdated,
@@ -35,7 +39,7 @@ export const metadata: Metadata = {
     /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
        file convention contributes, which silently downgrades the card to
        twitter:card=summary. Restated, not inherited. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
@@ -60,6 +64,8 @@ type House = {
   hybrid: number;
   live: number;
   disclosed: number;
+  /** The house's SIF AUM over its best-covered month, or null when none is held. */
+  aum: ReturnType<typeof amcAum>;
 };
 
 const houses: House[] = amcs.map((amc) => {
@@ -71,8 +77,13 @@ const houses: House[] = amcs.map((amc) => {
     hybrid: own.filter((s) => s.category === "hybrid").length,
     live: own.filter((s) => getNav(s.id).status === "live").length,
     disclosed: own.filter((s) => s.disclosuresCaptured).length,
+    aum: amcAum(amc.id),
   };
 });
+
+/* Headline counts, derived — the page used to carry "Seventeen houses. Thirty
+   schemes." as literals, which went stale the day a house filed. */
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}.`;
 
 /** Houses holding at least one scheme we have no disclosures for, widest gap first. */
 const undisclosedHouses = houses
@@ -111,10 +122,11 @@ export default function AmcIndexPage() {
     <>
       <PageHeader
         eyebrow="Asset managers"
-        /* Hand-split so the break is ours. Must track stats.amcCount (17)
-           and stats.strategyCount (30) — the layout wants words here, so
-           these are the two literals on the page. Everything else derives. */
-        lines={["Seventeen houses.", "Thirty schemes."]}
+        /* Hand-split so the break is ours; both counts come from stats. */
+        lines={[
+          plural(stats.amcCount, "house", "houses"),
+          plural(stats.strategyCount, "scheme", "schemes"),
+        ]}
         standfirst="Every asset manager that has filed a Specialised Investment Fund, and the SIF sub-brand it files under. AMFI's feed gives us each scheme's name, code and NAV; the disclosures behind them come from the houses themselves, and we publish only the ones we hold. We are a distributor, not an agent of these houses."
         meta={[
           <Fragment key="houses">
@@ -123,10 +135,15 @@ export default function AmcIndexPage() {
           <Fragment key="schemes">
             <span className="tabular">{stats.strategyCount}</span> schemes
           </Fragment>,
+          /* "With a scheme document read", not "with disclosures": this
+             counts schemes whose ISID we hold at all. The Tracker's
+             Disclosure Coverage counts schemes with EVERY headline field
+             (stats.fullyDisclosedCount), a stricter figure — two counts
+             under one name read as a contradiction. */
           <Fragment key="disclosed">
             <span className="tabular">{stats.disclosedCount}</span> of{" "}
-            <span className="tabular">{stats.strategyCount}</span> with
-            disclosures
+            <span className="tabular">{stats.strategyCount}</span> with a
+            scheme document read
           </Fragment>,
           <Fragment key="updated">
             NAV updated {formatUpdated(navLastUpdated)}
@@ -168,14 +185,14 @@ export default function AmcIndexPage() {
                   ) : (
                     <>
                       All <span className="tabular">{stats.strategyCount}</span>{" "}
-                      schemes have their disclosures captured.
+                      schemes have their information document read.
                     </>
                   )}
                 </h2>
                 <p className="mt-4 text-[15px] leading-[26px] text-body">
                   {undisclosedSchemes > 0 ? (
                     <>
-                      Every scheme below has a live NAV. What most of them do
+                      Every scheme below has a published NAV on file. What most of them do
                       not have is a minimum, an expense ratio, an exit load or a
                       risk band — those live in each house&apos;s scheme
                       information document, not in AMFI&apos;s feed. We mark the
@@ -184,7 +201,7 @@ export default function AmcIndexPage() {
                     </>
                   ) : (
                     <>
-                      Every scheme below has a live NAV, and the minimum,
+                      Every scheme below has a published NAV on file, and the minimum,
                       expense ratio, exit load and risk band behind it were read
                       from that scheme&apos;s own information document — AMFI&apos;s
                       feed carries none of those fields. Where a document does
@@ -282,7 +299,7 @@ export default function AmcIndexPage() {
    ============================================================ */
 
 function HouseCard({ house }: { house: House }) {
-  const { amc, total, equity, hybrid, live, disclosed } = house;
+  const { amc, total, equity, hybrid, live, disclosed, aum } = house;
 
   const split: string[] = [];
   if (equity > 0) split.push(`${equity} equity`);
@@ -295,7 +312,7 @@ function HouseCard({ house }: { house: House }) {
         className="group flex h-full min-h-[400px] flex-col justify-between p-7"
       >
         <div>
-          <AmcMark amc={amc} size="lg" hover />
+          <AmcMark amc={amc} size="lg" tone="colour" />
 
           <h2 className="mt-7 text-[22px] font-medium leading-[30px] text-ink">
             {amc.sifName}
@@ -327,6 +344,25 @@ function HouseCard({ house }: { house: House }) {
               ) : null}
             </CardRow>
 
+            <CardRow label="SIF AUM">
+              {aum && aum.complete ? (
+                <span className="text-[15px]">
+                  <span className="tabular text-ink">{formatCr(aum.cr)}</span>
+                  <span className="ml-2 text-[13px] text-muted">
+                    {formatMonth(aum.asOf.slice(0, 7))}
+                  </span>
+                </span>
+              ) : (
+                <NotCaptured
+                  detail={
+                    aum
+                      ? `AUM is held for ${aum.counted} of ${aum.total} schemes, so no house total is stated.`
+                      : undefined
+                  }
+                />
+              )}
+            </CardRow>
+
             <CardRow label="NAV on file">
               <span
                 className={cn(
@@ -338,7 +374,7 @@ function HouseCard({ house }: { house: House }) {
               </span>
             </CardRow>
 
-            <CardRow label="Disclosures">
+            <CardRow label="Documents read">
               <span
                 className={cn(
                   "tabular text-[15px]",

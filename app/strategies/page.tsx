@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
        file convention contributes, which silently downgrades the card to
        twitter:card=summary. Restated, not inherited. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
@@ -220,13 +220,22 @@ export default function StrategiesPage() {
     <>
       <PageHeader
         eyebrow="The funds"
-        /* Hand-split so the break is ours, but the numbers are the real
-           stats.strategyCount / stats.amcCount — 30 and 17. */
-        lines={["Thirty schemes.", "Seventeen houses."]}
+        /* Hand-split so the break is ours; both figures are read off
+           `stats`, so the headline cannot go stale as schemes launch. */
+        lines={[
+          <span key="s" className="tabular">
+            {stats.strategyCount} schemes.
+          </span>,
+          <span key="h" className="tabular">
+            {stats.amcCount} houses.
+          </span>,
+        ]}
         standfirst={
           <>
             Every SIF scheme currently offered in India — {stats.equityCount}{" "}
-            equity, {stats.hybridCount} hybrid, no debt scheme yet — across{" "}
+            equity, {stats.hybridCount} hybrid,{" "}
+            {stats.debtCount > 0 ? `${stats.debtCount} debt` : "no debt scheme yet"}{" "}
+            — across{" "}
             {stats.mandateCount} distinct long-short mandates.{" "}
             {stats.disclosedCount === stats.strategyCount ? (
               <>
@@ -262,7 +271,7 @@ export default function StrategiesPage() {
             <span className="tabular">
               {stats.liveNavCount} of {stats.strategyCount}
             </span>{" "}
-            with a live NAV
+            in the latest AMFI NAV file
           </>,
           <>Updated {formatUpdated(navLastUpdated)}</>,
         ]}
@@ -289,9 +298,8 @@ export default function StrategiesPage() {
 
       {/* Filter pills, tilt cards and the disclosure rows already live here.
           Rebuilding it would fork the disclosure logic. */}
-      {/* embedded: the PageHeader above already says "Thirty schemes.
-          Seventeen houses.", and this page carries its own risk-disclosure
-          block. */}
+      {/* embedded: the PageHeader above already states the scheme and house
+          counts, and this page carries its own risk-disclosure block. */}
       <StrategyGrid embedded />
 
       <HowToInvest />
@@ -393,7 +401,7 @@ function CategoryCard({ card }: { card: (typeof CATEGORY_CARDS)[number] }) {
             >
               {bandLabel(s.bands)}
             </Fact>
-            <Fact label="Live NAV">
+            <Fact label="Latest NAV filed">
               <span className="tabular">
                 {s.live} of {s.count}
               </span>
