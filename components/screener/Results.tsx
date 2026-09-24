@@ -49,7 +49,7 @@ export function ResultsTable({ rows, universe, columns, state, commit, picked, o
       role="region"
       aria-label="Screener results"
       tabIndex={0}
-      className="hidden overflow-x-auto border border-hairline bg-surface outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:block"
+      className="relative hidden overflow-x-auto border border-hairline bg-surface outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:block"
     >
       <table className="w-full min-w-max border-separate border-spacing-0 text-left">
         <caption className="sr-only">

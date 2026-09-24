@@ -83,7 +83,7 @@ export function LatestNavs() {
               role="region"
               aria-label="Latest SIF NAVs"
               tabIndex={0}
-              className="hidden overflow-x-auto md:block"
+              className="relative hidden overflow-x-auto md:block"
             >
               <table className="w-full min-w-[960px] border-collapse text-left">
                 <caption className="sr-only">

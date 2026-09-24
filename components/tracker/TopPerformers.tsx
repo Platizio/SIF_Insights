@@ -148,7 +148,7 @@ export function TopPerformers({
             role="region"
             aria-label={`Top ${noun} by ${periodName.toLowerCase()} return`}
             tabIndex={0}
-            className="hidden overflow-x-auto md:block"
+            className="relative hidden overflow-x-auto md:block"
           >
             <table className="w-full min-w-[880px] border-collapse text-left">
               <caption className="sr-only">

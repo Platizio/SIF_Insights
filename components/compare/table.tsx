@@ -275,7 +275,7 @@ export function CompareTable({
         aria-label={caption}
         tabIndex={0}
         className={cn(
-          "overflow-x-auto border border-hairline bg-surface",
+          "relative overflow-x-auto border border-hairline bg-surface",
           allSame && "group-data-[diff=on]/diff:hidden",
         )}
       >

@@ -124,7 +124,7 @@ export function Heatmap({
           role="region"
           aria-label="SIF performance heatmap"
           tabIndex={0}
-          className="overflow-x-auto overscroll-x-contain"
+          className="relative overflow-x-auto overscroll-x-contain"
         >
           <table className="w-full min-w-[1120px] border-collapse text-left">
             <caption className="sr-only">
