@@ -141,7 +141,7 @@ export default function AboutPage() {
           SITE.legalEntity,
           SITE.arnLine,
           <>
-            <span className="tabular">{stats.strategyCount}</span> SIFs tracked
+            <span className="tabular">{stats.strategyCount}</span> SIF schemes tracked
             across <span className="tabular">{stats.amcCount}</span> AMCs
           </>,
         ]}

@@ -180,10 +180,9 @@ const CLAUSES: LegalClause[] = [
         <P>
           When you submit an enquiry, book a consultation or otherwise share
           your contact details with us, you consent to Platizio contacting you
-          by telephone, SMS, WhatsApp or email about your enquiry and about SIFs
-          and mutual funds, even if your number is registered on the National
-          Customer Preference Register. You may withdraw this consent at any
-          time by writing to <A href={mailtoHref}>{SITE.email}</A>.
+          by telephone, WhatsApp or email about your enquiry, as described in
+          our <A href="/privacy">Privacy Policy</A>. You may withdraw this
+          consent at any time by writing to <A href={mailtoHref}>{SITE.email}</A>.
         </P>
         <P>
           Conversations with our team are for information and for helping you

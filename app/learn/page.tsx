@@ -11,7 +11,7 @@ import { Group, GroupItem } from "@/components/motion/Reveal";
 import { Section, Shell } from "@/components/primitives";
 import { Faq } from "@/components/sections/Faq";
 import { VideoCard } from "@/components/video/VideoCard";
-import { articles, channel, experts, videos } from "@/lib/content";
+import { articles, channel, experts, videos, videoTitle } from "@/lib/content";
 import { faqs } from "@/lib/data";
 
 /**
@@ -61,7 +61,9 @@ export default function LearnPage() {
         standfirst={DESCRIPTION}
         meta={[
           plural(videos.length, "video", "videos"),
-          plural(articles.length, "article", "articles"),
+          /* Counted only once something is published: "0 articles" in the
+             hero reads as an empty library, not as work in review. */
+          ...(articles.length > 0 ? [plural(articles.length, "article", "articles")] : []),
           plural(faqs.length, "answered question", "answered questions"),
         ]}
         aside={<LearnSubNav />}
@@ -126,7 +128,7 @@ function VideoLibrary() {
               <li key={video.id} className="h-full">
                 <VideoCard
                   id={video.id}
-                  title={video.title}
+                  title={videoTitle(video)}
                   durationSec={video.durationSec}
                 />
               </li>

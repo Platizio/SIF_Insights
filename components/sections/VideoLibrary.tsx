@@ -3,7 +3,7 @@ import { LineReveal } from "@/components/motion/LineReveal";
 import { Group, GroupItem, Rise } from "@/components/motion/Reveal";
 import { Eyebrow, Section, Shell } from "@/components/primitives";
 import { VideoCard } from "@/components/video/VideoCard";
-import { featuredVideos } from "@/lib/content";
+import { featuredVideos, videoTitle } from "@/lib/content";
 import { SITE } from "@/lib/site";
 
 import { VideoCarousel, type CarouselVideo } from "./VideoLibraryClient";
@@ -24,7 +24,7 @@ import { VideoCarousel, type CarouselVideo } from "./VideoLibraryClient";
 export function VideoLibrary() {
   const videos: CarouselVideo[] = featuredVideos.slice(0, 4).map((v) => ({
     id: v.id,
-    title: v.title,
+    title: videoTitle(v),
     durationSec: v.durationSec,
   }));
   const youtube = SITE.socials.youtube;

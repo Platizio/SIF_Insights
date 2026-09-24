@@ -46,6 +46,7 @@ export function makeRow(
     aumCr: NONE,
     aumAsOf: null,
     amcAumCr: NONE,
+    amcAumAsOf: null,
     ter: NONE,
     terAsOf: null,
     ber: NONE,

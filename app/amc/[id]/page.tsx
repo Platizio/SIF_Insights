@@ -8,6 +8,7 @@ import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { ConsultCta } from "@/components/ConsultCta";
 import { AmcMark } from "@/components/AmcMark";
 import { PageHeader } from "@/components/PageHeader";
+import { ExpenseValue } from "@/components/ui/ExpenseValue";
 import { NotCaptured } from "@/components/ui/NotCaptured";
 import {
   Card,
@@ -23,8 +24,8 @@ import {
   amcAum,
   amcById,
   amcs,
+  currentTer,
   formatCr,
-  formatExpense,
   formatMonth,
   formatInr,
   formatUpdated,
@@ -231,6 +232,13 @@ export default async function AmcDetailPage({
 
   const withBand = own.filter((s) => s.riskBand !== null).length;
 
+  /* The charged total TER, where held — a different number from the caps
+     above, so it is never folded into their range. */
+  const charged = own.flatMap((s) => {
+    const t = currentTer(s.amfiSchemeCode);
+    return t ? [t.pct] : [];
+  });
+
   /* A partial sum is not the house's AUM: a total is stated only when every
      scheme is counted for the same month; otherwise the coverage is. */
   const aum = amcAum(amc.id);
@@ -275,7 +283,7 @@ export default async function AmcDetailPage({
           </Fragment>,
           <Fragment key="disclosed">
             <span className="tabular">{disclosed}</span> of{" "}
-            <span className="tabular">{own.length}</span> with disclosures
+            <span className="tabular">{own.length}</span> with a scheme document read
           </Fragment>,
           <Fragment key="updated">
             NAV updated {formatUpdated(navLastUpdated)}
@@ -348,7 +356,17 @@ export default async function AmcDetailPage({
               </SummaryCell>
 
               <SummaryCell label="Expense ratio">
-                {expenses.length === 0 ? (
+                {charged.length > 0 ? (
+                  <>
+                    <span className={cn(FIGURE, "tabular")}>{span(charged).text}</span>
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      Total TER charged, Regular plan
+                      {expenses.length > 0
+                        ? ` · base-ratio ${formatExpenseRange(expenses).toLowerCase()}`
+                        : null}
+                    </span>
+                  </>
+                ) : expenses.length === 0 ? (
                   <span className={FIGURE_ABSENT}>Not captured</span>
                 ) : (
                   <span className={cn(FIGURE, "tabular")}>
@@ -369,13 +387,15 @@ export default async function AmcDetailPage({
                   the rest of this page exists to avoid. */}
               {disclosed === 0
                 ? "We hold no scheme information document for this house yet, so risk band and expense are shown as not captured rather than estimated."
-                : `Risk band is captured for ${withBand} of ${own.length}; expense ratio for ${expenses.length} of ${own.length}. The cells above count only those.`}
+                : `Risk band is captured for ${withBand} of ${own.length}; expense ratio ceiling for ${expenses.length} of ${own.length}; charged TER for ${charged.length} of ${own.length}. The cells above count only those.`}
               {expenses.some((e) => e.isCap) ? (
                 <>
                   {" "}
-                  An expense figure is the maximum ratio the information
-                  document permits, not the ratio being charged — that is
-                  published on the asset manager&apos;s own site and moves.
+                  A ceiling is the maximum base expense ratio the information
+                  document permits. The total TER charged adds brokerage,
+                  transaction costs and statutory levies on top; each
+                  scheme&apos;s is shown, dated, on its card below and on its
+                  scheme page.
                 </>
               ) : null}
             </p>
@@ -536,6 +556,7 @@ function SummaryCell({
 
 function SchemeCard({ strategy }: { strategy: Strategy }) {
   const nav = getNav(strategy.id);
+  const ter = currentTer(strategy.amfiSchemeCode);
 
   return (
     <Card className="p-7 sm:p-10">
@@ -630,11 +651,13 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
               )}
             </Disclosure>
             <Disclosure label="Expense ratio">
-              {strategy.expenseRatio === null ? null : (
-                <span className="tabular">
-                  {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
-                </span>
-              )}
+              {ter || strategy.expenseRatio !== null ? (
+                <ExpenseValue
+                  ter={ter}
+                  ratio={strategy.expenseRatio}
+                  isCap={strategy.expenseRatioIsCap}
+                />
+              ) : null}
             </Disclosure>
             <Disclosure label="Exit load">{strategy.exitLoad}</Disclosure>
             <Disclosure label="Risk band">

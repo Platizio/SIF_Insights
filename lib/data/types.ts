@@ -378,6 +378,8 @@ export type SifRow = {
   aumAsOf: string | null;
   /** Only when every scheme of the house is counted — a partial sum is not the house's AUM. */
   amcAumCr: Cell<number>;
+  /** Month end `amcAumCr` is summed over; null with no house total. */
+  amcAumAsOf: string | null;
 
   /** Total TER charged (Regular plan), dated: base ratio + brokerage +
       transaction costs + statutory levies. Never the cap. */

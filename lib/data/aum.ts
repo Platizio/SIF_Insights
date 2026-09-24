@@ -12,7 +12,8 @@ import type { SourceRef, StrategySlug } from "./types";
    aum.json holds MONTH-END scheme AUM in ₹ crore and nothing else.
    Totals are never stored, because a stored total is a second claim
    that can disagree with the rows it sums. Every total here is summed
-   over ONE month — the month the most schemes report — and says how
+   over ONE month — the month the most schemes report, which house
+   totals share where they can — and says how
    many schemes it counts out of how many exist, so "₹X Cr" can never
    quietly mean "₹X Cr for the nine houses we happened to read". A sum
    across different months would add August to July and call it
@@ -96,10 +97,38 @@ function totalOver(codes: string[]): (Total & { month: string }) | null {
 
 const ALL_CODES = strategies.map((s) => s.amfiSchemeCode);
 
-/** One house's SIF AUM, over its own best-covered month. */
+/**
+ * One house's SIF AUM, over the INDUSTRY's month whenever the house reports
+ * any scheme for it — so every house total on a page is dated the same and
+ * ranks like with like beside the industry figure. Its own best-covered month
+ * would let one house's June stand in a column of Augusts: a house with five
+ * schemes in June and four in August read as the smaller June sum. A house
+ * with nothing in the industry month falls back to its own best-covered month,
+ * and `asOf` says which month that is. Coverage is stated either way.
+ */
 export function amcAum(amcId: string): Total | null {
   const codes = strategies.filter((s) => s.amcId === amcId).map((s) => s.amfiSchemeCode);
   if (codes.length === 0) return null;
+  const industry = totalOver(ALL_CODES);
+  if (industry) {
+    let cr = 0;
+    let counted = 0;
+    for (const code of codes) {
+      const point = byCode.get(code.toUpperCase())?.find((p) => p.month === industry.month);
+      if (!point) continue;
+      cr += point.cr;
+      counted += 1;
+    }
+    if (counted > 0) {
+      return {
+        cr,
+        asOf: industry.asOf,
+        counted,
+        total: codes.length,
+        complete: counted === codes.length,
+      };
+    }
+  }
   const t = totalOver(codes);
   return t && { cr: t.cr, asOf: t.asOf, counted: t.counted, total: t.total, complete: t.complete };
 }

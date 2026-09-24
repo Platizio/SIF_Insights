@@ -1,5 +1,45 @@
 [
   {
+    "id": 6,
+    "question": "What is a SIF?",
+    "answer": "A Specialised Investment Fund (SIF) is a category of investment product introduced by SEBI in 2025. SIFs are offered by asset management companies under SEBI's SIF framework, which allows more flexible strategies than a traditional mutual fund, including up to 25% of net assets in unhedged short exposure, with a higher minimum investment."
+  },
+  {
+    "id": 7,
+    "question": "Who can invest in SIFs?",
+    "answer": "Investors who are KYC-compliant and meet the eligibility conditions in a scheme's information documents (ISID and SID) can invest, subject to the minimum investment. Accredited investors are exempt from the minimum, as SEBI's framework provides. Where anything here differs from a scheme's documents, the scheme documents prevail."
+  },
+  {
+    "id": 8,
+    "question": "What is the minimum investment?",
+    "answer": "₹10 lakh, measured across all the SIF strategies of one asset management company at the level of the investor's PAN, so the amount can be split across that AMC's strategies. Accredited investors are exempt from the minimum."
+  },
+  {
+    "id": 9,
+    "question": "How are SIFs different from Mutual Funds?",
+    "answer": "Both are offered by SEBI-regulated asset management companies. Mutual funds invest in equity, debt or hybrid schemes under strict diversification limits. SIFs follow SEBI's separate SIF framework, which permits long-short strategies, including up to 25% of net assets in unhedged short exposure, and they carry a ₹10 lakh minimum investment across an AMC's SIF strategies."
+  },
+  {
+    "id": 10,
+    "question": "What strategies can SIFs use?",
+    "answer": "SEBI's framework defines long-short investment strategies in three categories. Equity: Equity Long-Short, Equity Ex-Top 100 Long-Short and Sector Rotation Long-Short. Hybrid: Hybrid Long-Short and Active Asset Allocator Long-Short. Debt: Debt Long-Short and Sectoral Debt Long-Short. Each scheme's objective and permitted asset allocation are set out in its ISID."
+  },
+  {
+    "id": 3,
+    "question": "How liquid are SIFs? Can I redeem anytime?",
+    "answer": "It depends on the strategy. Some SIF strategies allow redemption on every business day; others allow it only on set days (for example once or twice a week) and may require a notice period. Exit loads, if any, also vary. Check each scheme's redemption terms in its ISID/SID before investing; the SIF Screener shows each scheme's redemption frequency."
+  },
+  {
+    "id": 11,
+    "question": "What are Risk Bands?",
+    "answer": "Each SIF strategy carries a risk band assigned by its asset management company under the SEBI framework, on a scale from Band 1 (lowest risk) to Band 5 (highest risk). The band is the AMC's assessment of the strategy's risk, not a rating by SIF Insight, and it may change over time. Check the current band in the scheme's ISID and the AMC's latest disclosures."
+  },
+  {
+    "id": 12,
+    "question": "What are the costs involved?",
+    "answer": "The main costs are the total expense ratio (TER) and any exit load. SEBI caps the base expense ratio; brokerage, transaction costs and statutory levies are charged on top of it, so the total TER can be higher than the cap. Exit loads, where they apply, depend on how long you hold the units and vary by scheme. The Regular plan carries a higher expense ratio than the Direct plan because it includes the distributor's commission. Each scheme's costs are set out in its scheme documents."
+  },
+  {
     "id": 1,
     "question": "Can I diversify across multiple SIFs?",
     "answer": "Yes. The Rs 10 lakh minimum investment can be split across various strategies within the same AMC, allowing for deeper diversification."
@@ -7,12 +47,7 @@
   {
     "id": 2,
     "question": "How do I know which SIF is right for me?",
-    "answer": "This depends on your personal profile, financial goals and asset allocation. SIF Insight helps match the right strategy to your personal financial situation."
-  },
-  {
-    "id": 3,
-    "question": "How liquid are SIFs? Can I redeem anytime?",
-    "answer": "Yes, SIFs provide mutual-fund-style liquidity. However, exit loads (if any) vary by scheme. Investors should review the scheme information document (SID)."
+    "answer": "This depends on your profile, goals, risk appetite and existing asset allocation. SIF Insight can walk you through the strategies available and their scheme documents; the decision is yours, and you may wish to consult a SEBI-registered investment adviser for advice on your circumstances."
   },
   {
     "id": 4,

@@ -8,7 +8,7 @@ import { fieldLabel, isSortable, type Field, type ScreenState } from "@/lib/scre
 import { CategoryChip, MiniRow, SelectBox, TEXT_BUTTON } from "./bits";
 import type { Commit } from "./controls";
 import { FieldValue } from "./FieldValue";
-import { effectiveSort, headerSort, sortLabels } from "./model";
+import { commonAumAsOf, effectiveSort, headerSort, sortLabels } from "./model";
 
 /* ============================================================
    Results — a real table from md up, cards below it.
@@ -43,6 +43,7 @@ const sifHref = (r: SifRow) => `/sif/${r.id}`;
 
 export function ResultsTable({ rows, universe, columns, state, commit, picked, onPick, onClear, hiddenTotal }: Props) {
   const [primary, secondary] = effectiveSort(state.sort);
+  const aumAsOf = commonAumAsOf(universe);
 
   return (
     <div
@@ -168,7 +169,7 @@ export function ResultsTable({ rows, universe, columns, state, commit, picked, o
                           i === columns.length - 1 && "pr-5",
                         )}
                       >
-                        <FieldValue field={f} row={r} compact={right} />
+                        <FieldValue field={f} row={r} compact={right} aumAsOf={aumAsOf} />
                       </td>
                     );
                   })}
@@ -220,6 +221,7 @@ export function ResultCards({ rows, universe, columns, picked, onPick, amcs, onC
   const HEADER = new Set(["name", "amc", "cat", "str", "risk"]);
   const lines = columns.filter((f) => !HEADER.has(f.id));
   const showRisk = columns.some((f) => f.id === "risk");
+  const aumAsOf = commonAumAsOf(universe);
 
   return (
     <ul aria-label="Screener results" className="border border-hairline bg-surface md:hidden">
@@ -266,7 +268,7 @@ export function ResultCards({ rows, universe, columns, picked, onPick, amcs, onC
                     <dl className="mt-4 border-t border-hairline">
                       {lines.map((f) => (
                         <MiniRow key={f.id} label={fieldLabel(f, universe)}>
-                          <FieldValue field={f} row={r} />
+                          <FieldValue field={f} row={r} aumAsOf={aumAsOf} />
                         </MiniRow>
                       ))}
                     </dl>

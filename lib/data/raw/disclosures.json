@@ -100,7 +100,7 @@
       "benchmark": "Nifty 500 TRI",
       "redemptionFrequency": "Daily (open ended - redemption/switch-out on each business day at NAV based prices)",
       "taxation": "Classified as an \"equity oriented fund\". LTCG 12.5% without indexation on gains exceeding Rs. 1.25 lakhs (u/s 112A); STCG (held not more than 12 months) 20% (u/s 111A); both where STT is paid on transfer. IDCW taxable at applicable slab rates. STT applies at applicable rates. Rates exclude surcharge and cess.",
-      "dividend": "Growth and IDCW (Income Distribution cum Capital Withdrawal) options available under both Regular and Direct Plans; IDCW sub-options: Payout and Re-investment. Default option: Growth; default IDCW sub-option: Re-investment.",
+      "dividend": "Not applicable — IDCW option is disabled; the Investment Strategy currently offers only the Growth option",
       "expenseRatioIsCap": true,
       "verified": true,
       "verifiedAgainst": "ISID/KIM, independently re-read (two passes)"

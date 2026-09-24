@@ -21,8 +21,9 @@
  *   SIF-9202                   —         —       40
  *
  *   → industry: 2026-08 (3 of 4 schemes) = ₹480 Cr, not complete
- *   → alpha:    2026-07 and 2026-08 tie on coverage, the later wins: ₹180 Cr, complete
- *   → beta:     2026-08 and 2026-09 tie at 1 of 2, the later wins: ₹40 Cr, not complete
+ *   → alpha:    over the industry's 2026-08: ₹180 Cr, complete
+ *   → beta:     over the industry's 2026-08, not its own newer 2026-09: ₹300 Cr,
+ *               1 of 2, not complete
  */
 import { describe, expect, it, vi } from "vitest";
 
@@ -214,7 +215,7 @@ describe("AUM", () => {
     });
   });
 
-  it("a house total says how much of the house it counts", () => {
+  it("a house total is over the industry's month, and says how much of the house it counts", () => {
     expect(amcAum("alpha")).toEqual({
       cr: 180,
       asOf: "2026-08-31",
@@ -222,9 +223,11 @@ describe("AUM", () => {
       total: 2,
       complete: true,
     });
+    // Beta's 2026-09 figure is newer, but the industry total is dated
+    // 2026-08, so the house is too — never a lone September beside August.
     expect(amcAum("beta")).toEqual({
-      cr: 40,
-      asOf: "2026-09-30",
+      cr: 300,
+      asOf: "2026-08-31",
       counted: 1,
       total: 2,
       complete: false,

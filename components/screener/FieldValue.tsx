@@ -3,8 +3,8 @@
 import type { SifRow } from "@/lib/data/types";
 import { Delta, RiskBand } from "@/components/primitives";
 import { NotCaptured } from "@/components/ui/NotCaptured";
-import { formatDays, formatExpense, formatUpdated } from "@/lib/format";
-import { LIQUIDITY_LABEL, type Field } from "@/lib/screener/fields";
+import { formatDays, formatExpense, formatMonth, formatUpdated } from "@/lib/format";
+import { LIQUIDITY_LABEL, type Field, type NumberField } from "@/lib/screener/fields";
 import { cn } from "@/lib/cn";
 import { CategoryChip } from "./bits";
 import { absentFor, formatValue, isMissing } from "./model";
@@ -22,11 +22,14 @@ export function FieldValue({
   field,
   row,
   compact = false,
+  aumAsOf = null,
 }: {
   field: Field;
   row: SifRow;
   /** Narrow contexts: "N/A" with the full phrase for assistive tech. */
   compact?: boolean;
+  /** The month-end most rows' AUM is dated to (`commonAumAsOf`). */
+  aumAsOf?: string | null;
 }) {
   const v = field.get(row);
   const text = "text-[13px] leading-[20px]";
@@ -55,6 +58,17 @@ export function FieldValue({
     case "liq":
     case "sub":
       return <span className={cn(text, "text-body")}>{LIQUIDITY_LABEL[v as keyof typeof LIQUIDITY_LABEL]}</span>;
+    case "aum":
+      return (
+        <span className={cn(text, "tabular text-ink")}>
+          {formatValue(field as NumberField, v as number)}
+          {row.aumAsOf && aumAsOf && row.aumAsOf !== aumAsOf ? (
+            <span className="block text-[12px] leading-[16px] text-muted">
+              {formatMonth(row.aumAsOf.slice(0, 7))} month-end
+            </span>
+          ) : null}
+        </span>
+      );
     case "ter":
     case "termax":
       return (

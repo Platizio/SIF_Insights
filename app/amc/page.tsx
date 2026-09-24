@@ -135,10 +135,15 @@ export default function AmcIndexPage() {
           <Fragment key="schemes">
             <span className="tabular">{stats.strategyCount}</span> schemes
           </Fragment>,
+          /* "With a scheme document read", not "with disclosures": this
+             counts schemes whose ISID we hold at all. The Tracker's
+             Disclosure Coverage counts schemes with EVERY headline field
+             (stats.fullyDisclosedCount), a stricter figure — two counts
+             under one name read as a contradiction. */
           <Fragment key="disclosed">
             <span className="tabular">{stats.disclosedCount}</span> of{" "}
-            <span className="tabular">{stats.strategyCount}</span> with
-            disclosures
+            <span className="tabular">{stats.strategyCount}</span> with a
+            scheme document read
           </Fragment>,
           <Fragment key="updated">
             NAV updated {formatUpdated(navLastUpdated)}
@@ -180,7 +185,7 @@ export default function AmcIndexPage() {
                   ) : (
                     <>
                       All <span className="tabular">{stats.strategyCount}</span>{" "}
-                      schemes have their disclosures captured.
+                      schemes have their information document read.
                     </>
                   )}
                 </h2>
@@ -369,7 +374,7 @@ function HouseCard({ house }: { house: House }) {
               </span>
             </CardRow>
 
-            <CardRow label="Disclosures">
+            <CardRow label="Documents read">
               <span
                 className={cn(
                   "tabular text-[15px]",

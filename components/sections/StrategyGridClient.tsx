@@ -15,10 +15,10 @@ import {
   Stagger,
   StaggerItem,
 } from "@/components/primitives";
+import { ExpenseValue } from "@/components/ui/ExpenseValue";
 import { cn } from "@/lib/cn";
 import type { Category, Strategy } from "@/lib/data/types";
 import {
-  formatExpense,
   formatInr,
   formatNav,
   formatUpdated,
@@ -51,6 +51,8 @@ export type GridCard = {
   sifName: string | null;
   /** Null when the scheme has no live quote. */
   nav: { today: number; asOf: string } | null;
+  /** The charged total TER (Regular plan), dated; null when not held. */
+  ter: { pct: number; asOf: string } | null;
 };
 
 /** Every count the section prints, derived on the server from `stats`. */
@@ -315,11 +317,18 @@ function StrategyCard({ card }: { card: GridCard }) {
           />
         </DisclosureRow>
         <DisclosureRow label="Expense">
-          <DisclosureValue
-            value={
-              formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)
-            }
-          />
+          {/* The charged total leads; the document's figure caps only the
+              base ratio, so alone it would understate the cost. */}
+          {card.ter || strategy.expenseRatio !== null ? (
+            <ExpenseValue
+              ter={card.ter}
+              ratio={strategy.expenseRatio}
+              isCap={strategy.expenseRatioIsCap}
+              className="text-[13px] text-ink"
+            />
+          ) : (
+            <DisclosureValue value={null} />
+          )}
         </DisclosureRow>
         <DisclosureRow label="Exit load">
           <DisclosureValue value={strategy.exitLoad} />

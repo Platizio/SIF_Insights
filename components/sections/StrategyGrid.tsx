@@ -1,4 +1,4 @@
-import { amcById, getNav, stats, strategies } from "@/lib/data";
+import { amcById, currentTer, getNav, stats, strategies } from "@/lib/data";
 
 import { StrategyGridClient, type GridCard } from "./StrategyGridClient";
 
@@ -12,6 +12,7 @@ import { StrategyGridClient, type GridCard } from "./StrategyGridClient";
 export function StrategyGrid({ embedded = false }: { embedded?: boolean }) {
   const cards: GridCard[] = strategies.map((s) => {
     const nav = getNav(s.id);
+    const ter = currentTer(s.amfiSchemeCode);
     return {
       strategy: {
         id: s.id,
@@ -27,6 +28,7 @@ export function StrategyGrid({ embedded = false }: { embedded?: boolean }) {
       },
       sifName: amcById.get(s.amcId)?.sifName ?? null,
       nav: nav.status === "live" ? { today: nav.today, asOf: nav.asOf } : null,
+      ter: ter ? { pct: ter.pct, asOf: ter.asOf } : null,
     };
   });
 

@@ -336,11 +336,15 @@ function Browser() {
 
           <Clause index={2} heading="Videos">
             <P>
-              The video library on the{" "}
+              The video sections on the{" "}
+              <Link href="/#videos" className={INLINE_LINK}>
+                home page
+              </Link>{" "}
+              and the{" "}
               <Link href="/learn#videos" className={INLINE_LINK}>
                 Learn page
               </Link>{" "}
-              shows still images served by Google from img.youtube.com, so
+              show still images served by Google from img.youtube.com, so
               Google sees your IP address and browser when those pages load.
               A player loads only when you click a video, and then from
               youtube-nocookie.com. Once a video plays, YouTube may set its

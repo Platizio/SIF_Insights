@@ -43,6 +43,10 @@ export type TrackerRow = Pick<
   | "returns"
   | "riskBand"
   | "benchmark"
+  | "exitLoad"
+  | "ter"
+  | "terMax"
+  | "minInvestment"
 >;
 
 export function trackerRow(r: SifRow): TrackerRow {
@@ -63,6 +67,10 @@ export function trackerRow(r: SifRow): TrackerRow {
     returns: r.returns,
     riskBand: r.riskBand,
     benchmark: r.benchmark,
+    exitLoad: r.exitLoad,
+    ter: r.ter,
+    terMax: r.terMax,
+    minInvestment: r.minInvestment,
   };
 }
 

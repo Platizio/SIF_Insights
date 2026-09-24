@@ -24,7 +24,7 @@ import { Screener } from "./Screener";
    declaring the key replaces the root layout's block, image included. */
 export const metadata: Metadata = {
   title: "SIF Screener",
-  description: `Screen and shortlist all ${stats.strategyCount} Specialised Investment Funds from ${stats.amcCount} AMCs by strategy, performance, risk, AUM, cost, liquidity and fund manager.`,
+  description: `Screen and shortlist all ${stats.strategyCount} Specialised Investment Fund schemes from ${stats.amcCount} AMCs by strategy, performance, risk, AUM, cost, liquidity and fund manager.`,
   alternates: { canonical: "/sif-screener" },
   openGraph: {
     title: `SIF Screener — filter, sort and shortlist all ${stats.strategyCount} SIFs`,

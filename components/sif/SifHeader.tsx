@@ -33,7 +33,7 @@ export const SIF_SECTIONS = [
 ] as const;
 
 export function SifHeader({ detail }: { detail: SifDetail }) {
-  const { row, strategy, amc } = detail;
+  const { row, strategy, amc, ter } = detail;
   const category = CATEGORY_LABEL[row.category];
   const article = row.category === "equity" ? "An" : "A";
   const mandate = row.strategy
@@ -133,7 +133,24 @@ export function SifHeader({ detail }: { detail: SifDetail }) {
                 <RiskBand band={row.riskBand} />
               </KeyFact>
               <KeyFact label="Expense ratio">
-                {strategy.expenseRatio === null ? (
+                {/* The charged total leads when we hold it; the document's cap
+                    is a limit on the BASE ratio only, so on its own it would
+                    understate what the investor pays. */}
+                {ter ? (
+                  <>
+                    <span className="tabular">{ter.pct.toFixed(2)}%</span>
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      Total TER, Regular plan, as of {formatUpdated(ter.asOf)}.
+                      {strategy.expenseRatio !== null && strategy.expenseRatioIsCap ? (
+                        <>
+                          {" "}Base expense ratio capped at{" "}
+                          <span className="tabular">{strategy.expenseRatio.toFixed(2)}%</span>.
+                        </>
+                      ) : null}{" "}
+                      <a href="#costs" className="underline decoration-hairline underline-offset-4 hover:text-ink">Costs below</a>
+                    </span>
+                  </>
+                ) : strategy.expenseRatio === null ? (
                   <NotCaptured />
                 ) : (
                   <>

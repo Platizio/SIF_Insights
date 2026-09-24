@@ -82,7 +82,7 @@ export const metadata: Metadata = {
     default: SITE_TITLE,
     template: "%s | SIF Insight",
   },
-  description: `Understand, track and compare India's ${stats.strategyCount} Specialised Investment Funds from ${stats.amcCount} AMCs — latest NAVs, returns, scheme disclosures and expert guidance.`,
+  description: `Understand, track and compare India's Specialised Investment Funds: ${stats.strategyCount} schemes from ${stats.amcCount} AMCs, with latest NAVs, returns, scheme disclosures and expert guidance.`,
   /* Restated in full, not partially: see the shallow-merge note above.
      No `url` and no `images` — a `url` here would be inherited as og:url
      by every route that does not set its own, and the image comes from the

@@ -23,6 +23,7 @@ import {
 
 import {
   rawAumFile,
+  rawDisclosures,
   rawDocumentsFile,
   rawFactsFile,
   rawNfoEntries,
@@ -131,6 +132,25 @@ describe("scheme-facts.json", () => {
         expect(loaded[field], `${code}.${field} was dropped by lib/data/facts.ts`).not.toBeNull();
         expect(loaded[field]!.source.id).toBe(facts[field].src);
       }
+    }
+  });
+
+  /* Two files, two readings of one document: disclosures.json's `dividend`
+     prose and scheme-facts.json's `options` list. SIF-34 once carried both
+     "Growth only (IDCW disabled)" and "Growth and IDCW available" on one page. */
+  it("the dividend text never offers IDCW where the options list is Growth only", () => {
+    const offersIdcw = (text: string) =>
+      /\bIDCW\b/i.test(text) &&
+      /\bavailable\b|\boffered\b/i.test(text) &&
+      !/not applicable|disabled|not offering|not offered|no IDCW|growth option only|only the growth/i.test(text);
+    for (const [code, facts] of entries) {
+      const options = facts.options?.value;
+      const dividend = rawDisclosures[code]?.dividend;
+      if (!Array.isArray(options) || !dividend) continue;
+      if (options.some((o) => /IDCW/i.test(String(o)))) continue;
+      expect(offersIdcw(dividend), `${code}: options [${options.join(", ")}] vs dividend "${dividend}"`).toBe(
+        false,
+      );
     }
   });
 

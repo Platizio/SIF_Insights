@@ -7,6 +7,7 @@ import { Odometer } from "@/components/motion/Odometer";
 import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { ConsultCta } from "@/components/ConsultCta";
 import { PageHeader } from "@/components/PageHeader";
+import { ExpenseValue } from "@/components/ui/ExpenseValue";
 import {
   Delta,
   Eyebrow,
@@ -17,6 +18,7 @@ import {
 } from "@/components/primitives";
 import {
   amcById,
+  currentTer,
   formatExpense,
   formatInr,
   formatNav,
@@ -548,7 +550,7 @@ function AtAGlance({ facts }: { facts: Facts }) {
                     `summarise`. Printing the raw ratio with a "%" glued on
                     would state a ceiling as a charge. */}
                 <TallyRow
-                  label="Expense ratio"
+                  label="Base expense cap"
                   scope={scopeOf(facts.expenses)}
                   counts={facts.expenses}
                   render={(v) => <span className="tabular">{v}</span>}
@@ -770,6 +772,7 @@ function Schemes({ list, facts }: { list: Strategy[]; facts: Facts }) {
 function StrategyDetail({ strategy }: { strategy: Strategy }) {
   const amc = amcById.get(strategy.amcId);
   const nav = getNav(strategy.id);
+  const ter = currentTer(strategy.amfiSchemeCode);
 
   return (
     <article className="border border-hairline bg-surface">
@@ -860,12 +863,15 @@ function StrategyDetail({ strategy }: { strategy: Strategy }) {
             )}
           </DetailRow>
           <DetailRow label="Expense ratio">
-            {strategy.expenseRatio === null ? (
-              <NotCaptured />
+            {ter || strategy.expenseRatio !== null ? (
+              <ExpenseValue
+                ter={ter}
+                ratio={strategy.expenseRatio}
+                isCap={strategy.expenseRatioIsCap}
+                noteClassName="mt-1 block text-[13px] leading-[20px] text-muted"
+              />
             ) : (
-              <span className="tabular">
-                {formatExpense(strategy.expenseRatio, strategy.expenseRatioIsCap)}
-              </span>
+              <NotCaptured />
             )}
           </DetailRow>
           <DetailRow label="Exit load">

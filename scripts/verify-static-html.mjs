@@ -15,7 +15,8 @@
    3. Copy the contract bans (lib/compliance.ts BANNED_COPY) and the
       retired literals — the old inbox, the stale scheme counts, the old
       tagline. Verbatim YouTube titles are exempt: they are the channel's
-      own words, quoted.
+      own words, quoted. A video with a `displayTitle` is not: the site
+      prints that instead, and it is our copy.
 
    No dependencies: the build manifests say which routes exist, and a
    regex pass is enough for server HTML we generate ourselves.
@@ -69,7 +70,7 @@ const RETIRED = [
   "India's SIF market, in full view",
 ];
 const videos = json(join(ROOT, "lib", "content", "videos.json")).videos ?? [];
-const EXEMPT_TITLES = videos.map((v) => v.title);
+const EXEMPT_TITLES = videos.filter((v) => !v.displayTitle).map((v) => v.title);
 
 /* Visible text only: drop scripts, styles and tags, decode the few entities
    that matter for matching. */

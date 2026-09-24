@@ -125,6 +125,25 @@ describe("buildSifRows", () => {
       expect(r.aumAsOf).toBe(aum?.asOf ?? null);
       const house = amcAum(r.amcId);
       expect(r.amcAumCr).toEqual(house?.complete ? { v: house.cr } : { absent: "not-captured" });
+      expect(r.amcAumAsOf).toBe(house?.complete ? house.asOf : null);
+    }
+  });
+
+  it("a house total is dated to the industry month whenever the house reports any scheme for it", () => {
+    const industry = industryAum();
+    if (!industry) return;
+    const month = industry.asOf.slice(0, 7);
+    for (const r of rows) {
+      const house = amcAum(r.amcId);
+      const inMonth = rows.filter(
+        (x) => x.amcId === r.amcId && "v" in x.aumCr && x.aumAsOf?.slice(0, 7) === month,
+      ).length;
+      if (inMonth > 0) {
+        expect(house?.asOf, r.amcId).toBe(industry.asOf);
+        /* ≥: a scheme whose latest figure is newer still counts its own
+           figure for the industry month. */
+        expect(house?.counted ?? 0, r.amcId).toBeGreaterThanOrEqual(inMonth);
+      }
     }
   });
 

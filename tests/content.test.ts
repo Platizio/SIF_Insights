@@ -16,10 +16,12 @@ import {
   experts,
   featuredVideos,
   videos,
+  videoTitle,
 } from "@/lib/content";
 import articlesJson from "@/lib/content/articles.json";
 import expertsJson from "@/lib/content/experts.json";
 import videosJson from "@/lib/content/videos.json";
+import { BANNED_COPY } from "@/lib/compliance";
 import { faqs } from "@/lib/data";
 
 import { rawFaqs } from "./raw-source";
@@ -70,6 +72,38 @@ describe("videos", () => {
       .sort((a, b) => a.featuredOrder! - b.featuredOrder!)
       .map((v) => v.id);
     expect(featuredVideos.map((v) => v.id)).toEqual(expected);
+  });
+
+  /* The titles a page prints are on-page copy: a distributor's site may not
+     call a fund the best, or promise it beats the market or pays a steady
+     income. Anything the channel titled that way carries a `displayTitle`. */
+  it("no title a page prints makes a banned or return-promising claim", () => {
+    const PROMISES = [
+      /\bbest\b/i,
+      /beat the market/i,
+      /fastest-growing/i,
+      /right for you/i,
+      /steady returns/i,
+      /monthly income/i,
+      /consistent performer/i,
+      /stable income/i,
+      /alpha-returns/i,
+    ];
+    for (const v of videos) {
+      const title = videoTitle(v);
+      for (const phrase of BANNED_COPY) {
+        expect(title.toLowerCase().includes(phrase.toLowerCase()), `${v.id}: "${title}"`).toBe(false);
+      }
+      for (const re of PROMISES) expect(re.test(title), `${v.id}: "${title}"`).toBe(false);
+    }
+  });
+
+  it("a display title is never empty and never the verbatim title again", () => {
+    for (const v of videos) {
+      if (v.displayTitle === undefined) continue;
+      expect(v.displayTitle.trim().length, v.id).toBeGreaterThan(0);
+      expect(v.displayTitle, v.id).not.toBe(v.title);
+    }
   });
 
   it("durations and dates are null or real — never estimated placeholders", () => {

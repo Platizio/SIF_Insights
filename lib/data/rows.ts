@@ -136,6 +136,7 @@ function buildRow(s: Strategy): SifRow {
     aumAsOf: aum?.asOf ?? null,
     /* A partial sum is not the house's AUM, so it is not offered as one. */
     amcAumCr: house?.complete ? { v: house.cr } : { absent: "not-captured" },
+    amcAumAsOf: house?.complete ? house.asOf : null,
 
     ter: ter ? { v: ter.pct } : { absent: "not-captured" },
     terAsOf: ter?.asOf ?? null,

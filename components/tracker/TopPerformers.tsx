@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useId, useState, type ReactNode } from "react";
-import { Delta } from "@/components/primitives";
+import { Delta, RiskBand } from "@/components/primitives";
 import { NotCaptured } from "@/components/ui/NotCaptured";
 import { Segmented } from "@/components/ui/Segmented";
 import { cn } from "@/lib/cn";
 import { PAST_PERFORMANCE_NOTE } from "@/lib/compliance";
-import { formatNav } from "@/lib/format";
+import { formatDays, formatExpense, formatInr, formatNav } from "@/lib/format";
 
 import { CategoryFilter } from "./CategoryFilter";
 import {
@@ -35,6 +35,10 @@ import {
    Benchmark returns are not in the data yet, so that column says
    "Not captured" on every row rather than being dropped: the PRD
    asks for it, and the gap is information.
+
+   Every ranked row also carries the four fields each fund row on the
+   site does (spec §0.6) — risk band, expense, exit load and minimum —
+   after the PRD's own columns, so a return is never read without them.
 
    The server renders the default state (All · 1 Month) through this
    island's own SSR; the first client render is the same pure
@@ -150,7 +154,7 @@ export function TopPerformers({
             tabIndex={0}
             className="relative hidden overflow-x-auto md:block"
           >
-            <table className="w-full min-w-[880px] border-collapse text-left">
+            <table className="w-full min-w-[1280px] border-collapse text-left">
               <caption className="sr-only">
                 Top {ranked.length} {noun} by {periodName.toLowerCase()} return, NAV data as of {asOfLabel}
               </caption>
@@ -162,8 +166,12 @@ export function TopPerformers({
                   <Th>Strategy</Th>
                   <Th align="right">{returnHeading(period)}</Th>
                   <Th align="right">Benchmark Return</Th>
+                  <Th align="right">Latest NAV</Th>
+                  <Th>Risk band</Th>
+                  <Th align="right">Total TER</Th>
+                  <Th>Exit load</Th>
                   <Th align="right" className="pr-6">
-                    Latest NAV
+                    Min. investment
                   </Th>
                 </tr>
               </thead>
@@ -189,8 +197,20 @@ export function TopPerformers({
                     <td className="px-4 py-4 text-right align-top leading-[22px]">
                       <BenchmarkReturn benchmark={row.benchmark} />
                     </td>
-                    <td className="tabular py-4 pl-4 pr-6 text-right align-top text-[15px] leading-[22px] text-ink">
+                    <td className="tabular px-4 py-4 text-right align-top text-[15px] leading-[22px] text-ink">
                       <Nav value={row.nav} />
+                    </td>
+                    <td className="px-4 py-4 align-top leading-[22px]">
+                      <RiskBand band={row.riskBand} />
+                    </td>
+                    <td className="px-4 py-4 text-right align-top text-[13px] leading-[22px] text-ink">
+                      <Expense row={row} />
+                    </td>
+                    <td className="px-4 py-4 align-top text-[13px] leading-[22px] text-body">
+                      <ExitLoad row={row} />
+                    </td>
+                    <td className="py-4 pl-4 pr-6 text-right align-top text-[13px] leading-[22px] text-ink">
+                      <MinInvestment value={row.minInvestment} />
                     </td>
                   </tr>
                 ))}
@@ -219,6 +239,26 @@ export function TopPerformers({
                       <MobileFact label="Latest NAV">
                         <span className="tabular text-[13px] text-ink">
                           <Nav value={row.nav} />
+                        </span>
+                      </MobileFact>
+                    </dl>
+                    <dl className="mt-4 grid grid-cols-2 gap-3">
+                      <MobileFact label="Risk band">
+                        <RiskBand band={row.riskBand} />
+                      </MobileFact>
+                      <MobileFact label="Total TER">
+                        <span className="text-[13px] text-ink">
+                          <Expense row={row} />
+                        </span>
+                      </MobileFact>
+                      <MobileFact label="Exit load">
+                        <span className="text-[13px] text-body">
+                          <ExitLoad row={row} />
+                        </span>
+                      </MobileFact>
+                      <MobileFact label="Min. investment">
+                        <span className="text-[13px] text-ink">
+                          <MinInvestment value={row.minInvestment} />
                         </span>
                       </MobileFact>
                     </dl>
@@ -286,6 +326,33 @@ function BenchmarkReturn({ benchmark }: { benchmark: string | null }) {
 /** A scheme's own latest NAV. Printed per row, never compared across rows. */
 function Nav({ value }: { value: number }) {
   return Number.isFinite(value) ? <>{formatNav(value)}</> : <NotCaptured />;
+}
+
+/** The charged total TER; the document's cap, said to be one, only when no charged figure is held. */
+function Expense({ row }: { row: TrackerRow }) {
+  if ("v" in row.ter) return <span className="tabular">{row.ter.v.toFixed(2)}%</span>;
+  if ("v" in row.terMax) return <span className="tabular">{formatExpense(row.terMax.v, true)} cap</span>;
+  return <NotCaptured reason={row.ter.absent} />;
+}
+
+/** The exit load in short — the scheme page carries the document's own sentence. */
+function ExitLoad({ row }: { row: TrackerRow }) {
+  const el = row.exitLoad;
+  if (el.applicable === null) return <NotCaptured />;
+  if (el.applicable === false) return <>No exit load</>;
+  const parts = [
+    el.pct !== null ? `${el.tiered ? "Up to " : ""}${el.pct.toFixed(2)}%` : null,
+    el.periodDays !== null ? `within ${formatDays(el.periodDays)}` : null,
+  ].filter(Boolean);
+  return (
+    <span className="tabular" title={el.text ?? undefined}>
+      {parts.length ? parts.join(" ") : "Applies"}
+    </span>
+  );
+}
+
+function MinInvestment({ value }: { value: number | null }) {
+  return value === null ? <NotCaptured /> : <span className="tabular">{formatInr(value)}</span>;
 }
 
 function MobileFact({ label, children }: { label: string; children: ReactNode }) {

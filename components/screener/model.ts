@@ -139,6 +139,24 @@ export function absentFor(f: Field, r: SifRow): Absent {
   return f.absent?.(r) ?? "not-captured";
 }
 
+/**
+ * The month-end most rows' AUM is dated to — the latest on a tie. A row
+ * whose AUM is from another month prints that month under its figure, so a
+ * June value in a column of Augusts is never read as current.
+ */
+export function commonAumAsOf(rows: readonly SifRow[]): string | null {
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    if (r.aumAsOf && "v" in r.aumCr) counts.set(r.aumAsOf, (counts.get(r.aumAsOf) ?? 0) + 1);
+  }
+  let best: string | null = null;
+  for (const [asOf, n] of counts) {
+    const top = best === null ? 0 : (counts.get(best) ?? 0);
+    if (best === null || n > top || (n === top && asOf > best)) best = asOf;
+  }
+  return best;
+}
+
 /** A number in its field's unit, as a table cell prints it. */
 export function formatValue(f: NumberField, n: number): string {
   switch (f.unit) {

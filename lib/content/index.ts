@@ -18,6 +18,12 @@ export type Video = {
   id: string;
   /** The video's own title, verbatim. */
   title: string;
+  /**
+   * The neutral title the site prints instead, where the verbatim one makes
+   * a return or outcome claim ("Beat the Market", "Steady Returns") or uses
+   * banned words ("Best"). Read through `videoTitle`, never directly.
+   */
+  displayTitle?: string;
   /** Null until read from YouTube — never estimated. */
   durationSec: number | null;
   publishedAt: string | null;
@@ -68,6 +74,11 @@ export const excludedVideoIds: ReadonlySet<string> = new Set(
 );
 
 export const channel: Channel = videoFile.channel;
+
+/** The title a page prints: the neutral `displayTitle` where one is set. */
+export function videoTitle(v: Video): string {
+  return v.displayTitle ?? v.title;
+}
 
 /** The library, in catalogue order, minus anything excluded. */
 export const videos: Video[] = videoFile.videos.filter((v) => !excludedVideoIds.has(v.id));

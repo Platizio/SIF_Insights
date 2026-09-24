@@ -15,6 +15,7 @@ import {
   formatCr,
   formatDays,
   formatExpense,
+  formatMonth,
   formatNav,
   formatPct,
   formatUpdated,
@@ -287,7 +288,17 @@ export function CompareView({ rows }: { rows: SifRow[] }) {
   );
   const size: CompareRow[] = [
     registryRow("aum", rows, { label: "SIF AUM", cell: (_, r) => aumCell(r) }),
-    registryRow("amcaum", rows, { label: "AMC total SIF AUM" }),
+    registryRow("amcaum", rows, {
+      label: "AMC total SIF AUM",
+      /* The month is part of the figure: a house total and the scheme AUM
+         above it are only comparable when both say which month-end. */
+      cell: (f, r) => {
+        const cell = fieldCell(f, r, rows);
+        return cell.key !== null && r.amcAumAsOf
+          ? { ...cell, sub: `Month-end ${formatMonth(r.amcAumAsOf.slice(0, 7))}` }
+          : cell;
+      },
+    }),
     registryRow("mgr", rows, { label: "Fund manager(s)" }),
     ...(tenure.some((t) => t.length > 0)
       ? [customRow("tenure", "Fund manager experience", tenure.map((t) => listCell(t)), "Tenure on this scheme")]
@@ -321,6 +332,16 @@ export function CompareView({ rows }: { rows: SifRow[] }) {
       num: r.ter.v,
     };
   };
+  const berCell = (r: SifRow): CellSpec => {
+    if (!("v" in r.ber)) return absentCell(r.ber.absent);
+    const text = `${r.ber.v.toFixed(2)}%`;
+    return {
+      key: text,
+      node: <span className="tabular">{text}</span>,
+      sub: r.terAsOf ? `Regular plan · as of ${dateText(r.terAsOf)}` : "Regular plan",
+      num: r.ber.v,
+    };
+  };
   const terMaxCell = (r: SifRow): CellSpec => {
     if (!("v" in r.terMax)) return absentCell(r.terMax.absent);
     const text = formatExpense(r.terMax.v, true) ?? "";
@@ -328,9 +349,17 @@ export function CompareView({ rows }: { rows: SifRow[] }) {
   };
   const costs: CompareRow[] = [
     registryRow("ter", rows, {
-      label: "Current TER",
-      hint: "Ratio charged, as the AMC publishes it",
+      label: "Total TER (incl. levies)",
+      hint: "Ratio charged, as the AMC publishes it: the base expense ratio plus brokerage, transaction costs and statutory levies",
       cell: (_, r) => terCell(r),
+    }),
+    /* Between the total and the cap, so the cap sits under the figure it
+       actually limits — a 4.24% total beside a 2.10% cap otherwise reads as
+       a breach. */
+    registryRow("ber", rows, {
+      label: "Base expense ratio (charged)",
+      hint: "The part of the TER that the scheme document's cap limits",
+      cell: (_, r) => berCell(r),
     }),
     registryRow("termax", rows, {
       label: "Maximum permitted base expense ratio",
@@ -366,7 +395,15 @@ export function CompareView({ rows }: { rows: SifRow[] }) {
     customRow(
       "days",
       "Redemption days",
-      facts.map((f) => textCell(f.redemptionTerms?.value.days?.join(", "))),
+      /* A scheme that redeems every business day has no set days: that is
+         "Not applicable", not a gap in the data. */
+      facts.map((f, i) => {
+        const days = f.redemptionTerms?.value.days;
+        if ((!days || days.length === 0) && rows[i].liquidity === "daily") {
+          return absentCell("not-applicable");
+        }
+        return textCell(days?.join(", "));
+      }),
     ),
     customRow("el-liq", "Exit load", rows.map(exitLoadCell)),
     customRow(

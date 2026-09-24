@@ -172,12 +172,27 @@ export function SifCosts({ detail }: { detail: SifDetail }) {
       <Rise>
         <FactList>
           <FactRow
-            label="Current TER (Regular plan)"
+            label="Total TER charged (Regular plan)"
             tabular
             note={ter ? `As of ${formatUpdated(ter.asOf)}` : undefined}
             source={ter ? <FactSource source={ter.source} /> : undefined}
           >
             {ter ? `${ter.pct.toFixed(2)}%` : <NotCaptured />}
+          </FactRow>
+
+          {/* Between the total and the cap: the cap limits THIS figure, not
+              the total above it, which adds brokerage, transaction costs and
+              statutory levies. */}
+          <FactRow
+            label="Base expense ratio charged (Regular plan)"
+            tabular
+            note={
+              ter && ter.berPct !== null
+                ? `As of ${formatUpdated(ter.asOf)}. Total TER = base expense ratio + brokerage and transaction costs + statutory levies.`
+                : undefined
+            }
+          >
+            {ter && ter.berPct !== null ? `${ter.berPct.toFixed(2)}%` : <NotCaptured />}
           </FactRow>
 
           <FactRow

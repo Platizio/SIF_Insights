@@ -1,5 +1,5 @@
 {
-  "_comment": "The SIF Insight YouTube catalogue. `id` is the YouTube video id; `title` is the video's own title, verbatim. `durationSec` and `publishedAt` stay null until read from YouTube itself — never estimated. `featuredOrder` 1-4 picks the home-page videos (null = library only); the final pick is the client's. `excluded` records ids that must NEVER be shown, with the reason, so a copy-paste from the old site cannot bring one back.",
+  "_comment": "The SIF Insight YouTube catalogue. `id` is the YouTube video id; `title` is the video's own title, verbatim. `displayTitle`, where present, is the neutral title the site prints instead: a verbatim title that makes a return or outcome claim, or uses words the compliance copy bans, is quoted nowhere on the site. `durationSec` and `publishedAt` stay null until read from YouTube itself — never estimated. `featuredOrder` 1-4 picks the home-page videos (null = library only); the final pick is the client's. `excluded` records ids that must NEVER be shown, with the reason, so a copy-paste from the old site cannot bring one back.",
   "channel": {
     "url": "https://www.youtube.com/@SIFinsight",
     "handle": "@SIFinsight"
@@ -15,6 +15,7 @@
     {
       "id": "U4fCuLJx7LU",
       "title": "Which Hybrid Long-Short SIF Is Right for You? Full Comparison",
+      "displayTitle": "Hybrid Long-Short SIFs: a full comparison",
       "durationSec": 333,
       "publishedAt": "2026-07-24",
       "featuredOrder": null
@@ -99,6 +100,7 @@
     {
       "id": "ZWi5r7jnrr4",
       "title": "Markets Not Moving? This Options Strategy Generates Monthly Income! Bear Call Spread.",
+      "displayTitle": "The bear call spread options strategy explained",
       "durationSec": 192,
       "publishedAt": "2025-12-24",
       "featuredOrder": null
@@ -113,6 +115,7 @@
     {
       "id": "HzYoV3xS5cE",
       "title": "Altiva Hybrid Long-Short November Portfolio Update 2025. Consistent Performer?",
+      "displayTitle": "Altiva Hybrid Long-Short: November 2025 portfolio update",
       "durationSec": 218,
       "publishedAt": "2025-12-11",
       "featuredOrder": null
@@ -148,6 +151,7 @@
     {
       "id": "HQ4N1ZuZLNM",
       "title": "SBI Magnum SIF Update: India’s Fastest-Growing Hybrid Long-Short Fund? Full October Breakdown",
+      "displayTitle": "SBI Magnum SIF update: Hybrid Long-Short Fund, October breakdown",
       "durationSec": 163,
       "publishedAt": "2025-11-25",
       "featuredOrder": null
@@ -155,6 +159,7 @@
     {
       "id": "kavum2vPX7w",
       "title": "Altiva Hybrid Long-Short October Portfolio Update 2025. Stable Income for Retirees?",
+      "displayTitle": "Altiva Hybrid Long-Short: October 2025 portfolio update",
       "durationSec": 246,
       "publishedAt": "2025-11-20",
       "featuredOrder": null
@@ -183,6 +188,7 @@
     {
       "id": "-HQ89973S2s",
       "title": "SBI Magnum SIF’s Hidden Trick for Steady Returns | Collar Strategy Explained Simply!",
+      "displayTitle": "SBI Magnum SIF: the collar strategy explained",
       "durationSec": 179,
       "publishedAt": "2025-10-31",
       "featuredOrder": null
@@ -190,6 +196,7 @@
     {
       "id": "3uci9zH8nok",
       "title": "Quant vs SBI vs Edelweiss SIF | Best Hybrid Long Short Fund 2025? | Full Comparison",
+      "displayTitle": "Quant vs SBI vs Edelweiss SIF: Hybrid Long-Short Fund comparison",
       "durationSec": 252,
       "publishedAt": "2025-10-29",
       "featuredOrder": null
@@ -246,6 +253,7 @@
     {
       "id": "dr8LxUHyVB8",
       "title": "Equity SIFs Explained: The Smart Way to Beat the Market!",
+      "displayTitle": "Equity SIFs explained",
       "durationSec": 188,
       "publishedAt": "2025-09-03",
       "featuredOrder": null
@@ -253,6 +261,7 @@
     {
       "id": "A97xFnE4hew",
       "title": "Want Alpha-Returns? Here’s why Smart Money will move to SIFs",
+      "displayTitle": "Why SIFs? An explainer",
       "durationSec": 278,
       "publishedAt": "2025-09-01",
       "featuredOrder": null
