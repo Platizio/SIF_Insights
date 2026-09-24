@@ -10,8 +10,7 @@ import { SourceNote } from "@/components/ui/SourceNote";
 import { navSourceUrl } from "@/lib/data";
 import { formatExpense, formatInr, formatNav, formatUpdated } from "@/lib/format";
 import { PRIMARY_CTA } from "@/lib/nav";
-import { compareHref } from "@/lib/screener/url";
-import { DEFAULT_SCREEN, screenHref } from "@/lib/screener/url";
+import { compareHref, DEFAULT_SCREEN, screenHref } from "@/lib/screener/url";
 import type { SifDetail } from "./detail";
 
 /* ============================================================

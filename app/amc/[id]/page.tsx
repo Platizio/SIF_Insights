@@ -8,6 +8,7 @@ import { Group, GroupItem, Rise, Rule } from "@/components/motion/Reveal";
 import { ConsultCta } from "@/components/ConsultCta";
 import { AmcMark } from "@/components/AmcMark";
 import { PageHeader } from "@/components/PageHeader";
+import { NotCaptured } from "@/components/ui/NotCaptured";
 import {
   Card,
   Delta,
@@ -17,10 +18,14 @@ import {
   Shell,
 } from "@/components/primitives";
 import { cn } from "@/lib/cn";
+import { SITE } from "@/lib/site";
 import {
+  amcAum,
   amcById,
   amcs,
+  formatCr,
   formatExpense,
+  formatMonth,
   formatInr,
   formatUpdated,
   getNav,
@@ -154,12 +159,8 @@ export async function generateMetadata({
   };
 }
 
-/** Matches `metadataBase` in app/layout.tsx. JSON-LD needs absolute URLs.
-    Also mirrored in app/robots.ts and app/sitemap.ts — four in total, and
-    they move together. `www` because the apex 307s to it; a BreadcrumbList
-    naming a redirect is a trail Google has to resolve before it can use it.
-    See the note in app/layout.tsx. */
-const ORIGIN = "https://www.sifinsight.com";
+/** JSON-LD needs absolute URLs. One origin site-wide, from lib/site.ts. */
+const ORIGIN = SITE.origin;
 
 /**
  * BreadcrumbList — Home → Asset managers → this house.
@@ -230,6 +231,10 @@ export default async function AmcDetailPage({
 
   const withBand = own.filter((s) => s.riskBand !== null).length;
 
+  /* A partial sum is not the house's AUM: a total is stated only when every
+     scheme is counted for the same month; otherwise the coverage is. */
+  const aum = amcAum(amc.id);
+
   const index = amcs.findIndex((a) => a.id === amc.id);
   const prev = index > 0 ? amcs[index - 1] : null;
   const next = index < amcs.length - 1 ? amcs[index + 1] : null;
@@ -294,7 +299,29 @@ export default async function AmcDetailPage({
           <Rise>
             {/* gap-px over a hairline ground: the dividers stay exact at every
                 wrap point, which a per-cell border cannot do. */}
-            <div className="grid gap-px border border-hairline bg-hairline sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-px border border-hairline bg-hairline sm:grid-cols-2 xl:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
+              <SummaryCell label="SIF AUM" className="sm:col-span-2 xl:col-span-1">
+                {aum && aum.complete ? (
+                  <>
+                    <span className={cn(FIGURE, "tabular")}>{formatCr(aum.cr)}</span>
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      Month-end {formatMonth(aum.asOf.slice(0, 7))}, all{" "}
+                      <span className="tabular">{aum.total}</span>{" "}
+                      {aum.total === 1 ? "scheme" : "schemes"}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <NotCaptured className="text-[22px] font-medium leading-[30px]" />
+                    <span className="mt-1 block text-[13px] leading-[20px] text-muted">
+                      AUM held for <span className="tabular">{aum ? aum.counted : 0}</span> of{" "}
+                      <span className="tabular">{own.length}</span>{" "}
+                      {own.length === 1 ? "scheme" : "schemes"}
+                    </span>
+                  </>
+                )}
+              </SummaryCell>
+
               <SummaryCell label="Schemes tracked">
                 <Odometer value={own.length} className={FIGURE} />
               </SummaryCell>
@@ -491,12 +518,14 @@ function formatExpenseRange(figures: ExpenseFigure[]): string {
 function SummaryCell({
   label,
   children,
+  className,
 }: {
   label: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className="bg-surface px-7 py-6">
+    <div className={cn("bg-surface px-7 py-6", className)}>
       <p className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-muted">
         {label}
       </p>
@@ -521,7 +550,12 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
           </div>
 
           <h3 className="mt-6 text-[22px] font-medium leading-[30px] text-ink">
-            {strategy.name}
+            <Link
+              href={`/sif/${strategy.id}`}
+              className="underline decoration-transparent underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent hover:decoration-current"
+            >
+              {strategy.name}
+            </Link>
           </h3>
           <p className="mt-2 text-[12px] leading-[18px] text-muted">
             AMFI scheme code{" "}
@@ -564,11 +598,11 @@ function SchemeCard({ strategy }: { strategy: Strategy }) {
                 */}
                 <p className="mt-4 max-w-[42ch] text-[12px] leading-[18px] text-muted">
                   Change is measured against this scheme’s previous published
-                  NAV. See the{" "}
-                  <Link href="/nav-tracker" className="underline">
-                    NAV tracker
+                  NAV. The{" "}
+                  <Link href={`/sif/${strategy.id}`} className="underline">
+                    scheme page
                   </Link>{" "}
-                  for the full series.
+                  carries the full series, returns and documents.
                 </p>
               </>
             ) : (

@@ -20,6 +20,7 @@ import {
   type SifRow,
   type Strategy,
 } from "@/lib/data";
+import disclosuresRaw from "@/lib/data/raw/disclosures.json";
 
 /* ============================================================
    Everything /sif/[id] renders, gathered once on the server.
@@ -52,7 +53,22 @@ export type SifDetail = {
   houseAum: ReturnType<typeof amcAum>;
   /** Every scheme of the same house, this one included, in feed order. */
   siblings: SifRow[];
+  /**
+   * Which copy of the scheme document the disclosure fields were read from,
+   * in the researcher's own words (e.g. "ISID/KIM, independently re-read").
+   * Null when no disclosure entry is held or it names no copy.
+   */
+  verifiedAgainst: string | null;
 };
+
+const disclosureEntries = (disclosuresRaw as {
+  disclosures: Record<string, { verifiedAgainst?: unknown }>;
+}).disclosures;
+
+function verifiedAgainstOf(code: string): string | null {
+  const v = disclosureEntries[code]?.verifiedAgainst;
+  return typeof v === "string" && v.trim() !== "" ? v.trim() : null;
+}
 
 export function sifDetail(id: string): SifDetail | null {
   const strategy = strategyById.get(id);
@@ -75,5 +91,6 @@ export function sifDetail(id: string): SifDetail | null {
     aum: schemeAum(strategy.amfiSchemeCode),
     houseAum: amcAum(strategy.amcId),
     siblings: buildSifRows().filter((r) => r.amcId === strategy.amcId),
+    verifiedAgainst: verifiedAgainstOf(strategy.amfiSchemeCode),
   };
 }
