@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: `SIF Screener — filter, sort and shortlist all ${stats.strategyCount} SIFs`,
     description: `Every standardised metric on ${SITE.name} as a filter, a sort key and a column — across all ${stats.strategyCount} Specialised Investment Funds.`,
     url: "/sif-screener",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

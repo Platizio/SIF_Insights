@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     title: "Disclaimer — SIF Insight",
     description: DESCRIPTION,
     url: "/disclaimer",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: article.title,
       description: article.description,
       url,
-      images: "/opengraph-image.png",
+      images: "/opengraph-image",
       siteName: "SIF Insight",
       locale: "en_IN",
       type: "article",

@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
        file convention contributes, which silently downgrades the card to
        twitter:card=summary. Restated, not inherited. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
@@ -187,7 +187,7 @@ export default function AmcIndexPage() {
                 <p className="mt-4 text-[15px] leading-[26px] text-body">
                   {undisclosedSchemes > 0 ? (
                     <>
-                      Every scheme below has a live NAV. What most of them do
+                      Every scheme below has a published NAV on file. What most of them do
                       not have is a minimum, an expense ratio, an exit load or a
                       risk band — those live in each house&apos;s scheme
                       information document, not in AMFI&apos;s feed. We mark the
@@ -196,7 +196,7 @@ export default function AmcIndexPage() {
                     </>
                   ) : (
                     <>
-                      Every scheme below has a live NAV, and the minimum,
+                      Every scheme below has a published NAV on file, and the minimum,
                       expense ratio, exit load and risk band behind it were read
                       from that scheme&apos;s own information document — AMFI&apos;s
                       feed carries none of those fields. Where a document does

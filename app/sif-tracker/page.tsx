@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "SIF Tracker — India’s SIF market in one place",
     description: DESCRIPTION,
     url: "/sif-tracker",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

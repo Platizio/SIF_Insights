@@ -5,6 +5,7 @@ import { WhatIsSif } from "@/components/sections/WhatIsSif";
 import { VideoLibrary } from "@/components/sections/VideoLibrary";
 import { WhyUs } from "@/components/sections/WhyUs";
 import { ClosingCta } from "@/components/sections/ClosingCta";
+import { LeadPopup } from "@/components/leads/LeadPopup";
 
 /* ============================================================
    Homepage metadata.
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
     title: "SIF Insight — Understand, track and compare India's SIFs",
     description: DESCRIPTION,
     url: "/",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
@@ -55,6 +56,9 @@ export default function Home() {
       <VideoLibrary />
       <WhyUs />
       <ClosingCta />
+      {/* PRD p.8: the contact prompt after 15 s, on the homepage only. It
+          renders nothing on the server and nothing until its timer fires. */}
+      <LeadPopup />
     </>
   );
 }

@@ -45,7 +45,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       description: DESCRIPTION,
       url: "/compare",
       /* Declaring openGraph drops the root image convention; restated. */
-      images: "/opengraph-image.png",
+      images: "/opengraph-image",
       siteName: "SIF Insight",
       locale: "en_IN",
       type: "website",

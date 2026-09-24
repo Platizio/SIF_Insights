@@ -27,14 +27,11 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const posix = (p: string) => relative(ROOT, p).split(sep).join("/");
 
 /**
- * Client files that still value-import `@/lib/data`, and why they may.
- * Both are retired in W3, when their routes become redirects and their parts
- * move into server-fed components; delete the entry with the file.
+ * Client files that may value-import `@/lib/data`, and why. Empty: the last
+ * two (the old tracker table and NAV explorer) were retired with their
+ * routes. An entry here ships the NAV history to every page that loads it.
  */
-const ALLOWLIST: Record<string, string> = {
-  "app/sif-tracker/TrackerTable.tsx": "retired in W3",
-  "app/nav-tracker/NavExplorer.tsx": "retired in W3",
-};
+const ALLOWLIST: Record<string, string> = {};
 
 /** The only module under lib/data a client file may import. */
 const CLIENT_SAFE_DATA = "lib/data/types.ts";

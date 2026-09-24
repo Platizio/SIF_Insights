@@ -48,7 +48,7 @@ export const metadata: Metadata = {
       "What SIF Insight collects when you ask for a call-back, who processes it, how long it is kept and your rights under the DPDP Act 2023.",
     url: "/privacy",
     /* Declaring `openGraph` drops the root opengraph-image; restated. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

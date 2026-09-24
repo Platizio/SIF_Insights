@@ -24,7 +24,7 @@ export const metadata: Metadata = {
       "Leave your name and mobile number and the SIF Insight team will call you back to talk through the SIF category.",
     url: "/contact",
     /* Declaring `openGraph` drops the root opengraph-image; restated. */
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

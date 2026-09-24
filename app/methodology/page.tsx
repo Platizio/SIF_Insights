@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Methodology — SIF Insight",
     description: DESCRIPTION,
     url: "/methodology",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: SITE.name,
     locale: "en_IN",
     type: "website",

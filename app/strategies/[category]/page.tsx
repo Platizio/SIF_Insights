@@ -285,7 +285,7 @@ export async function generateMetadata({
       title: `${copy.metaTitle} — SIF Insight`,
       description: copy.metaDescription,
       url: `/strategies/${category}`,
-      images: "/opengraph-image.png",
+      images: "/opengraph-image",
       siteName: "SIF Insight",
       locale: "en_IN",
       type: "website",

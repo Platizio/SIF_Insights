@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Learn with SIF Insight",
     description: DESCRIPTION,
     url: "/learn",
-    images: "/opengraph-image.png",
+    images: "/opengraph-image",
     siteName: "SIF Insight",
     locale: "en_IN",
     type: "website",
