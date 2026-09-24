@@ -1,87 +1,50 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import {
+  ExternalIcon,
+  FacebookIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  MailIcon,
+  MapPinIcon,
+  PhoneIcon,
+  WhatsAppIcon,
+  XIcon,
+  YouTubeIcon,
+} from "@/components/icons";
 import { Group, GroupItem, Rule } from "@/components/motion/Reveal";
 import { Shell } from "@/components/primitives";
-import { stats } from "@/lib/data";
+import { FOOTER_QUICK_LINKS, LEGAL_LINKS } from "@/lib/nav";
+import {
+  SITE,
+  activeSocials,
+  mailtoHref,
+  telHref,
+  whatsappHref,
+  type SocialNetwork,
+} from "@/lib/site";
 
 /**
- * The sign-off. Server Component — the year is computed at render.
+ * The sign-off, laid out as the PRD asks (pp.18–20): four columns — SIF
+ * Insight · Quick Links · Contact Us · Legal & Policies — then the
+ * regulatory information, the short disclaimer and the copyright bar.
  *
- * Entries without an `href` are pages that have not been published yet. They
- * render as plain text with a `title` rather than as links to `#`, so the
- * footer never ships a dead link. Give them an `href` the day the page exists.
+ * Server Component. Every contact detail, regulatory line and social URL
+ * comes from lib/site.ts and every link from lib/nav.ts; nothing is typed
+ * here, which is how the footer and the Organization JSON-LD stopped
+ * disagreeing about the email address.
+ *
+ * THE DISCLAIMER IS SPLIT. The footer carries the PRD's short text,
+ * verbatim, and links to /disclaimer for the complete one. The long,
+ * partly DERIVED disclaimer this footer used to hold (the "we hold no
+ * document yet" clause counted from `stats`) belongs on that page now, so
+ * the footer no longer reads the dataset at all.
+ *
+ * Legal pages that are still being written get their real hrefs anyway:
+ * they ship in the same release as this footer, so a titled-text
+ * placeholder would outlive the gap it was covering.
  */
-
-type FooterLink = {
-  label: string;
-  href?: string;
-  external?: boolean;
-  /** Shown as a tooltip when the destination is not live yet. */
-  pendingNote?: string;
-};
-
-type FooterColumn = { heading: string; links: FooterLink[] };
-
-const COLUMNS: FooterColumn[] = [
-  {
-    heading: "Explore",
-    links: [
-      { label: "What is a SIF", href: "/what-is-sif" },
-      { label: "SIF Tracker", href: "/sif-tracker" },
-      { label: "NAV Tracker", href: "/nav-tracker" },
-      { label: "AMCs", href: "/amc" },
-    ],
-  },
-  {
-    heading: "Strategies",
-    links: [
-      { label: `Equity (${stats.equityCount})`, href: "/strategies/equity" },
-      { label: `Hybrid (${stats.hybridCount})`, href: "/strategies/hybrid" },
-      // The page exists and says so honestly; the category is genuinely empty.
-      { label: "Debt — soon", href: "/strategies/debt" },
-    ],
-  },
-  {
-    heading: "Company",
-    links: [
-      { label: "About", href: "/about" },
-      { label: "Media", href: "/media" },
-      { label: "Downloads", href: "/downloads" },
-      { label: "Contact", href: "/contact" },
-    ],
-  },
-  {
-    heading: "Regulatory",
-    links: [
-      {
-        label: "SEBI SIF Circular",
-        href: "https://www.sebi.gov.in/legal/circulars/feb-2025/regulatory-framework-for-specialized-investment-funds-sif-_92299.html",
-        external: true,
-      },
-      {
-        label: "AMFI SIF Portal",
-        href: "https://www.amfiindia.com/sif",
-        external: true,
-      },
-    ],
-  },
-];
-
-/* The "still awaited" clause is DERIVED, never asserted.
-
-   Asserted, it shipped on all 30 routes claiming AMC documents were awaited
-   while the pages above it named the information documents those very fields
-   were read from — a contradiction a reader could spot from one screen.
-   Counted here, the sentence retires itself the day the gap closes and comes
-   back the day a scheme arrives with no document behind it.
-
-   `disclosedCount`, not the stricter `fullyDisclosedCount`: the clause is
-   about whether a DOCUMENT is still awaited, and disclosedCount is exactly
-   "we have read one". Four schemes hold a document that simply does not state
-   one of the four headline fields; calling their documents awaited would swap
-   one false claim for another. The "not captured" sentence covers those. */
-const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
 
 /* `inline-block py-[5px]` is for the thumb, not the eye. The bare line box
    measured 21px tall on a phone, under the 24px minimum in WCAG 2.5.8, in
@@ -100,46 +63,51 @@ const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
 const LINK_CLASS =
   "group inline-block py-[5px] text-[16px] leading-[24px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
 
-/* The sign-off row under the disclaimer sets its own 14px, so a link in it
-   cannot borrow LINK_CLASS — 16px there would out-shout the copyright line
-   beside it. Same colour, same hover, same underline wipe; its own size. */
+/* The sign-off row sets its own 14px, so a link in it cannot borrow
+   LINK_CLASS — 16px there would out-shout the copyright line beside it.
+   Same colour, same hover, same underline wipe; its own size. */
 const SIGNOFF_LINK_CLASS =
   "group text-[14px] leading-[20px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink";
 
+const HEADING_CLASS = "mb-7 text-[17px] font-medium leading-[24px] text-ink";
+
+/** The first three legal links, in the PRD's bottom-bar order. */
+const SIGNOFF_LINKS = LEGAL_LINKS.filter((link) =>
+  ["/terms", "/privacy", "/disclaimer"].includes(link.href),
+);
+
+const SOCIAL: Record<SocialNetwork, { label: string; Icon: typeof YouTubeIcon }> = {
+  youtube: { label: "YouTube", Icon: YouTubeIcon },
+  linkedin: { label: "LinkedIn", Icon: LinkedInIcon },
+  instagram: { label: "Instagram", Icon: InstagramIcon },
+  x: { label: "X", Icon: XIcon },
+  facebook: { label: "Facebook", Icon: FacebookIcon },
+};
+
 export function SiteFooter() {
+  /* Evaluated when the page is rendered — for these statically prerendered
+     routes, at build time. A Server Component, so there is no client pass
+     to disagree with and no hydration mismatch at New Year. The year can
+     only lag if nothing is rebuilt across 1 January; the weekday NAV
+     commits redeploy the site, so that window is a few days at most. */
   const currentYear = new Date().getFullYear();
+  const socials = activeSocials();
 
   return (
-    <footer className="border-t border-hairline bg-ground pt-[100px] pb-12">
+    /* pb-28, not 12: the floating WhatsApp button (56px, 20px up from the
+       viewport edge) would otherwise sit on top of the right-aligned
+       legal links in the bottom bar once the page is scrolled to its end. */
+    <footer className="border-t border-hairline bg-ground pt-[100px] pb-28">
       <Shell>
-        <Group className="flex flex-col items-start gap-14 lg:flex-row lg:justify-between">
-          <div className="grid w-full grid-cols-2 gap-x-12 gap-y-12 sm:grid-cols-4 lg:w-auto lg:gap-x-16">
-            {COLUMNS.map((column) => (
-              <GroupItem key={column.heading}>
-                <h2 className="mb-7 text-[17px] font-medium leading-[24px] text-ink">
-                  {column.heading}
-                </h2>
-                <ul className="flex flex-col gap-2">
-                  {column.links.map((link) => (
-                    <li key={link.label}>
-                      <FooterEntry link={link} />
-                    </li>
-                  ))}
-                </ul>
-              </GroupItem>
-            ))}
-          </div>
-
-          <GroupItem className="flex flex-col items-start gap-6 lg:shrink-0">
+        {/* Four columns at lg, deliberately unequal — the brand column
+            carries the tagline and the icons, Contact carries the address.
+            Two unequal columns below that, one on a phone. */}
+        <Group className="grid gap-x-12 gap-y-14 sm:grid-cols-[1.25fr_1fr] lg:grid-cols-[1.3fr_0.8fr_1.15fr_0.9fr] lg:gap-x-16">
+          <GroupItem className="flex flex-col items-start gap-6">
             {/* No plate behind the logo — it sits natively on warm paper.
-
-                A link, not a bare <span>: a site logo is the one element a
-                visitor will click expecting to be taken home, and the header
-                mark already behaves that way. This one used to be inert, so
-                the affordance answered in one place and not the other.
-
-                `sizes` for the same reason as the header mark — h-11 against
-                a 1024x313 PNG is 144px of rendered width, not 2048. */}
+                A link home, as the header mark is. `sizes` for the same
+                reason as the header: h-11 against a 1024x313 PNG is 144px
+                of rendered width, not 2048. */}
             <Link
               href="/"
               className="inline-flex items-center transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:opacity-70"
@@ -153,80 +121,176 @@ export function SiteFooter() {
                 className="h-11 w-auto"
               />
             </Link>
-            <p className="text-[14px] leading-[20px] text-muted">
-              Powered by Platizio Services LLP
-            </p>
-            <div className="flex flex-col gap-2">
-              <a href="mailto:info@sifinsight.com" className={LINK_CLASS}>
-                <LinkLabel>info@sifinsight.com</LinkLabel>
-              </a>
-              <a href="tel:+919205523100" className={`tabular ${LINK_CLASS}`}>
-                <LinkLabel>+91 92055 23100</LinkLabel>
-              </a>
+            <div>
+              <p className="text-[17px] font-medium leading-[24px] text-ink">
+                {SITE.byline}
+              </p>
+              <p className="mt-2 max-w-[40ch] text-[14px] leading-[22px] text-muted">
+                {SITE.tagline}
+              </p>
             </div>
+
+            {socials.length > 0 ? (
+              <div>
+                <p className="text-[14px] leading-[20px] text-muted">
+                  Follow SIF Insight
+                </p>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {socials.map(({ network, href }) => {
+                    const { label, Icon } = SOCIAL[network];
+                    return (
+                      <li key={network}>
+                        {/* 44px, in px — icon-only targets get the full
+                            touch minimum, not the 24px floor. */}
+                        <a
+                          href={href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`SIF Insight on ${label} (opens in a new tab)`}
+                          className="inline-flex h-[44px] w-[44px] items-center justify-center rounded-full border border-hairline text-body transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent hover:bg-accent-wash hover:text-ink"
+                        >
+                          <Icon size={18} />
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            ) : null}
+          </GroupItem>
+
+          <GroupItem>
+            <h2 className={HEADING_CLASS}>Quick Links</h2>
+            <ul className="flex flex-col gap-1">
+              {FOOTER_QUICK_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={LINK_CLASS}>
+                    <LinkLabel>{link.label}</LinkLabel>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </GroupItem>
+
+          <GroupItem>
+            <h2 className={HEADING_CLASS}>Contact Us</h2>
+            <address className="flex flex-col gap-6 not-italic">
+              <ContactRow label="Call / WhatsApp">
+                <a href={telHref} className={`tabular inline-flex items-center gap-2.5 ${LINK_CLASS}`}>
+                  <PhoneIcon size={16} />
+                  <LinkLabel>{SITE.phoneDisplay}</LinkLabel>
+                </a>
+                <a
+                  href={whatsappHref()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`inline-flex items-center gap-2.5 ${LINK_CLASS}`}
+                >
+                  <WhatsAppIcon size={16} />
+                  <LinkLabel>Chat on WhatsApp</LinkLabel>
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              </ContactRow>
+
+              <ContactRow label="Email">
+                <a href={mailtoHref} className={`inline-flex items-center gap-2.5 ${LINK_CLASS}`}>
+                  <MailIcon size={16} />
+                  <LinkLabel>{SITE.email}</LinkLabel>
+                </a>
+              </ContactRow>
+
+              <ContactRow label="Office Address">
+                <p className="flex gap-2.5 py-[5px] text-[16px] leading-[24px] text-muted">
+                  <MapPinIcon size={16} className="mt-1" />
+                  <span>
+                    <span className="block text-body">{SITE.address.locality}</span>
+                    {SITE.address.lines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
+                  </span>
+                </p>
+              </ContactRow>
+            </address>
+          </GroupItem>
+
+          <GroupItem>
+            <h2 className={HEADING_CLASS}>Legal &amp; Policies</h2>
+            <ul className="flex flex-col gap-1">
+              {LEGAL_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className={LINK_CLASS}>
+                    <LinkLabel>{link.label}</LinkLabel>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </GroupItem>
         </Group>
 
         <Rule className="mt-20" />
 
         <Group>
-          <GroupItem className="mt-10">
-            {/* Names the four headline fields on purpose, but claims only that
-                where they appear they were READ — never that all thirty carry
-                the full set. The sentence after it is what makes that safe, and
-                is why this copy does not need `fullyDisclosedCount`. */}
+          <GroupItem className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)] lg:gap-16">
+            <section aria-labelledby="footer-regulatory">
+              <h2
+                id="footer-regulatory"
+                className="text-[14px] font-medium leading-[20px] text-ink"
+              >
+                Regulatory Information
+              </h2>
+              <p className="mt-3 text-[14px] leading-[22px] text-muted">
+                {SITE.name} by {SITE.legalEntity}
+                <br />
+                {SITE.arnLine}
+              </p>
+              {/* Both required by the design contract (§5): the regulator's
+                  framework and the industry body's SIF portal. */}
+              <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-1">
+                <li>
+                  <ExternalLink href={SITE.sebiSifCircularUrl}>SEBI SIF Circular</ExternalLink>
+                </li>
+                <li>
+                  <ExternalLink href={SITE.amfiSifUrl}>AMFI SIF Portal</ExternalLink>
+                </li>
+              </ul>
+            </section>
+
             <p className="max-w-[900px] text-[14px] leading-[24px] text-muted">
-              <strong className="font-medium text-body">Disclaimer:</strong> The
-              scheme terms shown on this site — minimum, expense ratio, exit
-              load, risk band and the rest — are read from each scheme&apos;s own
-              information document, and net asset values come from AMFI&apos;s
-              published SIF feed. Where a document does not state a field, it is
-              marked not captured rather than filled in.
-              {undisclosedSchemes > 0 ? (
-                <>
-                  {" "}
-                  For <span className="tabular">
-                    {undisclosedSchemes}
-                  </span>{" "}
-                  of the{" "}
-                  <span className="tabular">{stats.strategyCount}</span> schemes
-                  we hold no document yet, and nothing beyond AMFI&apos;s feed is
-                  published for them.
-                </>
-              ) : null}{" "}
-              News and commentary elsewhere on this site are drawn from public
-              sources and are not communications of any Asset Management Company
-              (AMC). Documents are amended and net asset values move: the
-              AMC&apos;s own site and the current scheme information document
-              remain the authority on any figure here. SIF Insight is a
-              distributor of Mutual Funds and Specialised Investment Funds, not
-              an investment adviser or an AMC, and nothing on this site is
-              investment advice or a recommendation to buy or sell any scheme.
+              <strong className="font-medium text-body">Disclaimer:</strong>{" "}
+              {SITE.disclaimerShort}{" "}
+              {/* Underlined at rest, unlike the list links: it sits inside a
+                  paragraph of the same colour, and a link in running text
+                  must be told apart by more than colour (WCAG 1.4.1). */}
+              <Link
+                href="/disclaimer"
+                className="text-body underline decoration-1 underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink"
+              >
+                Read the full disclaimer
+              </Link>
             </p>
           </GroupItem>
 
           <GroupItem className="mt-10 flex flex-col gap-4 text-[14px] leading-[20px] text-muted sm:flex-row sm:items-center sm:justify-between">
             <p>
-              © {currentYear} SIF Insight by Platizio Services LLP. All rights
-              reserved.
+              © <span className="tabular">{currentYear}</span> {SITE.name} by{" "}
+              {SITE.legalEntity}. All Rights Reserved.
             </p>
-            {/* Both of these used to be plain text, because neither page had
-                been written and the rule in `FooterEntry` is that the
-                affordance has to match the behaviour.
-
-                /privacy now exists, so Privacy Policy is a link — the
-                condition was met, not overridden. Terms of Service stays as
-                text for precisely the same rule: there is no /terms route,
-                and a link that goes nowhere is the thing this footer was
-                built to avoid. Give it an href the day the page ships. */}
-            <p className="flex items-center gap-5">
-              <Link href="/privacy" className={SIGNOFF_LINK_CLASS}>
-                <LinkLabel>Privacy Policy</LinkLabel>
-              </Link>
-              <span className="text-muted" title="Pending publication">
-                Terms of Service
-              </span>
-            </p>
+            <ul className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              {SIGNOFF_LINKS.map((link, i) => (
+                <li key={link.href} className="flex items-center gap-3">
+                  {i > 0 ? (
+                    <span aria-hidden="true" className="text-hairline">
+                      |
+                    </span>
+                  ) : null}
+                  <Link href={link.href} className={SIGNOFF_LINK_CLASS}>
+                    <LinkLabel>{link.label}</LinkLabel>
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </GroupItem>
         </Group>
       </Shell>
@@ -234,41 +298,32 @@ export function SiteFooter() {
   );
 }
 
-function FooterEntry({ link }: { link: FooterLink }) {
-  // Unpublished destinations stay as titled text. No underline wipe either —
-  // the affordance has to match the behaviour.
-  if (!link.href) {
-    return (
-      <span className={`${LINK_CLASS} cursor-default`} title={link.pendingNote}>
-        {link.label}
-      </span>
-    );
-  }
-
-  if (link.external) {
-    return (
-      <a
-        href={link.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${LINK_CLASS} inline-flex items-center gap-1.5`}
-      >
-        <LinkLabel>{link.label}</LinkLabel>
-        <ExternalGlyph />
-        <span className="sr-only">(opens in a new tab)</span>
-      </a>
-    );
-  }
-
+function ContactRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <Link href={link.href} className={LINK_CLASS}>
-      <LinkLabel>{link.label}</LinkLabel>
-    </Link>
+    <div>
+      <p className="text-[14px] leading-[20px] text-muted">{label}</p>
+      <div className="mt-1 flex flex-col items-start">{children}</div>
+    </div>
   );
 }
 
-/** The same hairline-wipe underline the header nav uses. Label only, so the
-    external-link glyph never gets dragged under the rule. */
+function ExternalLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`${SIGNOFF_LINK_CLASS} inline-flex items-center gap-1.5 py-[2px]`}
+    >
+      <LinkLabel>{children}</LinkLabel>
+      <ExternalIcon size={11} />
+      <span className="sr-only">(opens in a new tab)</span>
+    </a>
+  );
+}
+
+/** The same hairline-wipe underline the header nav uses. Label only, so a
+    glyph beside it never gets dragged under the rule. */
 function LinkLabel({ children }: { children: ReactNode }) {
   return (
     <span className="relative inline-block">
@@ -278,19 +333,5 @@ function LinkLabel({ children }: { children: ReactNode }) {
         className="absolute -bottom-[3px] left-0 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-x-100 group-focus-visible:scale-x-100"
       />
     </span>
-  );
-}
-
-function ExternalGlyph() {
-  return (
-    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <path
-        d="M4.75 1.5h5.75v5.75M10.5 1.5 5.25 6.75M9 7v3.5H1.5V3H5"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
   );
 }

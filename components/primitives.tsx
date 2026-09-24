@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Link from "next/link";
-import { useRef, type ReactNode } from "react";
+import { useRef, type ComponentPropsWithRef, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { rise as reveal, stagger } from "@/lib/motion";
 import { useRevealed } from "@/components/motion/Reveal";
@@ -150,41 +150,86 @@ export function Eyebrow({
    The arrow slides on X; reveals move on Y.
    ============================================================ */
 
+type ButtonVariant = "primary" | "ghost" | "inverse";
+
+/* Tinted translucent glass. Text colours are picked for contrast against
+   the tint over warm paper, not for brand tidiness — accent-dim on the
+   primary tint, ink on the near-clear ghost. Shared by <Button> and
+   <ActionButton> so a link and an action that sit side by side cannot
+   drift apart. */
+const GLASS_VARIANTS: Record<ButtonVariant, string> = {
+  primary: "glass glass-primary text-accent-dim",
+  ghost: "glass glass-ghost text-ink",
+  inverse: "glass glass-inverse text-ground",
+};
+
+const BUTTON_BASE =
+  "group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-medium transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]";
+
 type ButtonProps = {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "ghost" | "inverse";
+  variant?: ButtonVariant;
   className?: string;
 };
 
+/** Navigation. Always a link, always carries the arrow — the arrow says
+    "this takes you somewhere", which is why <ActionButton> has none. */
 export function Button({
   href,
   children,
   variant = "primary",
   className,
 }: ButtonProps) {
-  /* Tinted translucent glass. Text colours are picked for contrast against
-     the tint over warm paper, not for brand tidiness — accent-dim on the
-     primary tint, ink on the near-clear ghost. */
-  const styles = {
-    primary: "glass glass-primary text-accent-dim",
-    ghost: "glass glass-ghost text-ink",
-    inverse: "glass glass-inverse text-ground",
-  }[variant];
-
   return (
-    <Link
-      href={href}
+    <Link href={href} className={cn(BUTTON_BASE, GLASS_VARIANTS[variant], className)}>
+      <span>{children}</span>
+      <Arrow />
+    </Link>
+  );
+}
+
+/**
+ * An action on this page — open a player, add to a comparison, reveal a
+ * panel. Same glass as <Button>, but a real `<button type="button">`,
+ * because an action dressed as a link is announced as navigation and
+ * cannot carry `aria-expanded` / `aria-pressed`.
+ *
+ * `type` is fixed to "button" on purpose: the browser default is "submit",
+ * and a stray ActionButton inside a form would send it.
+ *
+ * Disabled drops the glass entirely rather than dimming it — a
+ * translucent lens at half opacity reads as "loading", not "unavailable".
+ */
+export function ActionButton({
+  children,
+  variant = "primary",
+  icon,
+  className,
+  disabled,
+  ...rest
+}: Omit<ComponentPropsWithRef<"button">, "type" | "children"> & {
+  children: ReactNode;
+  variant?: ButtonVariant;
+  /** Trailing glyph from components/icons.tsx. Decorative. */
+  icon?: ReactNode;
+}) {
+  return (
+    <button
+      {...rest}
+      type="button"
+      disabled={disabled}
       className={cn(
-        "group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-medium",
-        "transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)]",
-        styles,
+        BUTTON_BASE,
+        disabled
+          ? "cursor-not-allowed border border-hairline text-pending"
+          : GLASS_VARIANTS[variant],
         className,
       )}
     >
       <span>{children}</span>
-      <Arrow />
-    </Link>
+      {icon}
+    </button>
   );
 }
 
