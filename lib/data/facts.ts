@@ -207,21 +207,36 @@ const KIND_ORDER: DocumentKind[] = [
 ];
 
 /**
+ * A verified entry of a known kind with an https URL — a link we have not
+ * opened is not one we hand a reader — and a real date and publisher. The date
+ * is checked as strictly as the AUM and TER loaders check theirs: the sort
+ * below reads it, so one undated entry would otherwise throw, and every page
+ * that builds rows would fail to prerender.
+ */
+function isDocument(d: unknown): d is RawDocument {
+  return (
+    isRecord(d) &&
+    d.verified === true &&
+    typeof d.kind === "string" &&
+    (KIND_ORDER as string[]).includes(d.kind) &&
+    typeof d.url === "string" &&
+    /^https:\/\//.test(d.url) &&
+    isText(d.title) &&
+    isIsoDate(d.date) &&
+    isText(d.publisher)
+  );
+}
+
+/**
  * The scheme's documents, governing documents first and newest first within
- * a kind. Only verified entries with an https URL — a link we have not opened
- * is not one we hand a reader.
+ * a kind. Anything malformed is dropped, not thrown — tests/raw-facts.test.ts
+ * is where a bad entry fails loudly.
  */
 export function schemeDocuments(code: string): DocumentRef[] {
-  const raw = documentsFile.schemes[code.toUpperCase()] ?? [];
+  const raw: unknown = documentsFile.schemes[code.toUpperCase()];
+  if (!Array.isArray(raw)) return [];
   return raw
-    .filter(
-      (d) =>
-        d.verified === true &&
-        (KIND_ORDER as string[]).includes(d.kind) &&
-        typeof d.url === "string" &&
-        /^https:\/\//.test(d.url) &&
-        isText(d.title),
-    )
+    .filter(isDocument)
     .map((d) => ({
       kind: d.kind as DocumentKind,
       title: d.title,

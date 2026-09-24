@@ -96,6 +96,7 @@ function buildRow(s: Strategy): SifRow {
   const ter = currentTer(s.amfiSchemeCode);
   const documents = schemeDocuments(s.amfiSchemeCode);
   const brand = amc?.sifName ?? s.amcId;
+  const face = faceValue(s.id);
 
   return {
     id: s.id,
@@ -116,7 +117,8 @@ function buildRow(s: Strategy): SifRow {
        every consumer tests Number.isFinite before printing it. */
     nav: nav.status === "live" ? nav.today : Number.NaN,
     navAsOf: nav.status === "live" ? nav.asOf : (navHistory(s.id).at(-1)?.date ?? ""),
-    faceValue: faceValue(s.id).value,
+    faceValue: face.value,
+    faceValueBasis: face.basis,
 
     returns,
     returnsMeta,

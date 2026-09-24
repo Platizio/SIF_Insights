@@ -43,11 +43,28 @@ export type FieldGroup =
   | "manager"
   | "disclosure";
 
+export type FieldSource =
+  | "AMFI"
+  | "AMC disclosure"
+  | "Factsheet"
+  | "Scheme document"
+  | "SIF Insight calculation";
+
 type Base = {
   id: string;
+  /**
+   * `label` and `source` must hold for EVERY row. Where the truth differs by
+   * row — a face value read off a document or inferred from the first NAV,
+   * an inception that is an allotment date or only the first NAV date — they
+   * carry the weaker claim, and `labelFor` / `sourceFor` the exact one. Pages
+   * resolve both through `fieldLabel` / `fieldSource`, never by reading these
+   * two directly for a row they could name.
+   */
   label: string;
   group: FieldGroup;
-  source: "AMFI" | "AMC disclosure" | "Factsheet" | "Scheme document" | "SIF Insight calculation";
+  source: FieldSource;
+  labelFor?: (r: SifRow) => string;
+  sourceFor?: (r: SifRow) => FieldSource;
   /** Anchor on /methodology that explains the figure. */
   methodology?: `#${string}`;
   column?: { default?: boolean; align: "left" | "right" };
@@ -262,16 +279,31 @@ const PERIOD_FIELDS: Record<Period, { id: string; label: string; default?: boole
   "6M": { id: "r6m", label: "6M return", default: true },
   "1Y": { id: "r1y", label: "1Y return (CAGR)" },
   "2Y": { id: "r2y", label: "2Y return (CAGR)" },
-  SI: { id: "rsi", label: "Since inception", default: true },
+  /* True of either basis; `siLabel` gives the exact one per row. */
+  SI: { id: "rsi", label: "Since inception / first NAV", default: true },
 };
 
 const RETURN_SORT = { asc: "Lowest first", desc: "Highest first" } as const;
+
+/**
+ * "Since inception" only when SI runs from face value at a sourced allotment
+ * date. Otherwise it runs from the first NAV AMFI published, and the plan's
+ * wording for that is "since first published NAV". An absent return has no
+ * basis of its own, so it takes the one the engine would have used: both the
+ * allotment date and the face value sourced.
+ */
+function siLabel(r: SifRow): string {
+  const sourced = r.inception?.basis === "allotment" && r.faceValueBasis === "sourced";
+  const basis = r.returnsMeta.SI.basis ?? (sourced ? "face-value" : "nav");
+  return basis === "face-value" ? "Since inception" : "Since first published NAV";
+}
 
 function returnField(period: Period): NumberField {
   const { id, label, default: isDefault } = PERIOD_FIELDS[period];
   return {
     id,
     label,
+    ...(period === "SI" ? { labelFor: siLabel } : {}),
     group: "performance",
     source: "SIF Insight calculation",
     methodology: "#returns",
@@ -427,9 +459,23 @@ export const FIELDS: Field[] = [
   },
   {
     id: "inc",
-    label: "Inception",
+    /* Until an allotment date is sourced, the date is the first NAV AMFI
+       published — a different fact, from a different publisher. */
+    label: "Inception / first NAV",
+    labelFor: (r) =>
+      r.inception === null
+        ? "Inception / first NAV"
+        : r.inception.basis === "allotment"
+          ? "Inception"
+          : "First published NAV",
     group: "fund",
-    source: "Scheme document",
+    source: "SIF Insight calculation",
+    sourceFor: (r) =>
+      r.inception === null
+        ? "SIF Insight calculation"
+        : r.inception.basis === "allotment"
+          ? "Scheme document"
+          : "AMFI",
     methodology: "#inception",
     column: { align: "right" },
     compare: { section: "terms" },
@@ -629,7 +675,9 @@ export const FIELDS: Field[] = [
     id: "fv",
     label: "Face value",
     group: "nav",
-    source: "Scheme document",
+    /* Inferred from the first NAV (> ₹200 ⇒ ₹1,000) until a document states it. */
+    source: "SIF Insight calculation",
+    sourceFor: (r) => (r.faceValueBasis === "sourced" ? "Scheme document" : "SIF Insight calculation"),
     methodology: "#face-value",
     column: { align: "right" },
     compare: { section: "terms" },
@@ -881,6 +929,28 @@ export function getField(id: string): Field | undefined {
 }
 
 export const isLive = (f: Field) => f.status !== "planned";
+
+/** One answer when every row gives the same one, else the field's own weaker claim. */
+function agreed<T>(rows: readonly SifRow[], read: ((r: SifRow) => T) | undefined, fallback: T): T {
+  if (!read || rows.length === 0) return fallback;
+  const first = read(rows[0]);
+  return rows.every((r) => read(r) === first) ? first : fallback;
+}
+
+/**
+ * A field's label over the rows it heads: the table's rows for a column
+ * header, the picked schemes for a Compare row, `[row]` on a scheme page.
+ * The exact per-row label when every row shares it, else the static one,
+ * which is true of all of them.
+ */
+export function fieldLabel(f: Field, rows: readonly SifRow[] = []): string {
+  return agreed(rows, f.labelFor, f.label);
+}
+
+/** A field's source over the rows it heads — resolved as `fieldLabel` is. */
+export function fieldSource(f: Field, rows: readonly SifRow[] = []): FieldSource {
+  return agreed(rows, f.sourceFor, f.source);
+}
 
 /** Every field that may be rendered: live static fields plus one per completed month. */
 export function fieldsFor(rows: SifRow[]): Field[] {

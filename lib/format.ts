@@ -202,10 +202,26 @@ export function heatGrade(pct: number, period: Period): number {
    can sit open across a closing date. lib/data re-exports both, so
    server code imports them from there as before.
 
-   All comparisons are on ISO date strings in UTC, so the answer
-   cannot shift by a day with the reader's timezone. Both ends of a
-   window are inclusive: an offer open "to 30 Jan" is open ON 30 Jan.
+   All comparisons are on ISO date strings of the INDIAN calendar: an
+   NFO's dates are Indian dates, as `navLastUpdated` is, so an instant
+   is turned into one with `indianIsoDate` — never its UTC date, which
+   runs 5½ hours behind — and the reader's own timezone cannot shift
+   the answer. Both ends of a window are inclusive: an offer open
+   "to 30 Jan" is open ON 30 Jan.
    ============================================================ */
+
+/* India keeps one offset all year (no daylight saving since 1945), so a fixed
+   +05:30 is exact and needs no time-zone data from the runtime. */
+const IST_OFFSET_MS = 330 * 60_000;
+
+/**
+ * The date in India at instant `at`, as "YYYY-MM-DD". At 00:30 IST on 25 Sep
+ * the UTC date is still the 24th, and an offer that closed on the 24th would
+ * read as live until 05:30.
+ */
+export function indianIsoDate(at: Date): string {
+  return new Date(at.getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+}
 
 /**
  * Where an offer stands on `today` (ISO date).
@@ -245,11 +261,12 @@ export function nfoStatus(
  * end date is not evidence that it is open — it is an absence, and the ticker
  * is the one surface on this site that asserts liveness.
  *
- * Defined through `nfoStatus` so the two can never disagree.
+ * Defined through `nfoStatus` so the two can never disagree, on the date in
+ * India at `today`.
  */
 export function isOpenNfo(
   nfo: Pick<Nfo, "active" | "opensOn" | "closesOn">,
   today: Date = new Date(),
 ): boolean {
-  return nfoStatus(nfo, today.toISOString().slice(0, 10)) === "open";
+  return nfoStatus(nfo, indianIsoDate(today)) === "open";
 }

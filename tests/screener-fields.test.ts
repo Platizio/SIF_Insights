@@ -14,6 +14,8 @@ import { PERIODS, buildSifRows, monthlyReturns, strategies } from "@/lib/data";
 import {
   DEFAULT_COLUMNS,
   FIELDS,
+  fieldLabel,
+  fieldSource,
   fieldsFor,
   filterKind,
   getField,
@@ -186,6 +188,45 @@ describe("month fields", () => {
       for (const m of r.monthly) expect(byId(`m${m.month}`).get(r)).toBe(m.pct);
       expect(byId("m1999-01").get(r)).toBeNull();
     }
+  });
+});
+
+describe("labels and sources never claim more than a row holds", () => {
+  const [rsi, inc, fv] = ["rsi", "inc", "fv"].map(byId);
+
+  it("the static label and source — what a page reads with no row to ask — hold for every basis", () => {
+    expect(rsi.label).not.toBe("Since inception");
+    expect(inc.label).not.toBe("Inception");
+    expect(fieldSource(inc)).toBe("SIF Insight calculation");
+    expect(fieldSource(fv)).toBe("SIF Insight calculation");
+    expect(fieldLabel(rsi)).toBe(rsi.label);
+  });
+
+  it("each row is labelled and cited by what research actually sourced for it", () => {
+    for (const r of rows) {
+      const allotted = r.inception?.basis === "allotment";
+      expect(fieldSource(fv, [r]), r.code).toBe(r.faceValueBasis === "sourced" ? "Scheme document" : "SIF Insight calculation");
+      if (r.inception) {
+        expect(fieldLabel(inc, [r]), r.code).toBe(allotted ? "Inception" : "First published NAV");
+        expect(fieldSource(inc, [r]), r.code).toBe(allotted ? "Scheme document" : "AMFI");
+      }
+      const basis = r.returnsMeta.SI.basis;
+      if (basis) expect(fieldLabel(rsi, [r]), r.code).toBe(basis === "face-value" ? "Since inception" : "Since first published NAV");
+    }
+  });
+
+  it("over several rows, the exact label only when they all agree", () => {
+    const first = { ...rows[0], faceValueBasis: "inferred" as const, inception: { date: "2025-10-07", basis: "first-nav" as const }, returnsMeta: { ...rows[0].returnsMeta, SI: { basis: "nav" as const } } };
+    const allotted = { ...first, faceValueBasis: "sourced" as const, inception: { date: "2025-10-06", basis: "allotment" as const }, returnsMeta: { ...first.returnsMeta, SI: { basis: "face-value" as const } } };
+    expect(fieldLabel(rsi, [first, first])).toBe("Since first published NAV");
+    expect(fieldLabel(rsi, [allotted])).toBe("Since inception");
+    expect(fieldLabel(rsi, [first, allotted])).toBe(rsi.label);
+    expect(fieldSource(inc, [first, allotted])).toBe(inc.source);
+    // An absent SI return takes the basis the engine would have used.
+    expect(fieldLabel(rsi, [{ ...allotted, returnsMeta: { ...allotted.returnsMeta, SI: {} } }])).toBe("Since inception");
+    expect(fieldLabel(rsi, [{ ...first, returnsMeta: { ...first.returnsMeta, SI: {} } }])).toBe("Since first published NAV");
+    // A field with no row-dependent label is its static one, over any rows.
+    expect(fieldLabel(byId("r6m"), [first, allotted])).toBe(byId("r6m").label);
   });
 });
 

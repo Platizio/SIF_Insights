@@ -25,9 +25,13 @@ import {
      in display units: percent as percent, AUM in crore, money in
      rupees, days as days, dates as ISO.
    - Sets are comma-joined. Each value is encodeURIComponent'd and
-     joined with a RAW comma, so a comma inside a value (encoded %2C)
-     can never split it. URLSearchParams.toString() would encode the
-     separators too and turn every URL into %2C soup.
+     joined with a RAW comma — URLSearchParams.toString() would encode
+     the separators too and turn every URL into %2C soup. On the way IN,
+     an encoded comma separates just as a raw one does: no set id can
+     hold a comma (they are slugs, AMFI codes and digits), and the
+     already-decoded forms — Next's `searchParams`, a URLSearchParams —
+     cannot tell the two apart. Reading %2C literally made the server
+     page and the client read one URL two ways.
    - CANONICAL: params in a fixed order (q, then filters in registry
      order, then sort, cols, nulls, pick), defaults omitted, set values
      de-duplicated and sorted. One screen, one URL — so a shared link
@@ -52,11 +56,16 @@ export const DEFAULT_SCREEN: ScreenState = {
 
 const RESERVED = new Set(["q", "sort", "cols", "nulls", "pick"]);
 const CODE = /^SIF-\d+$/;
+/** In code points, so the cut can never halve an emoji. */
 const MAX_QUERY = 120;
 /* A bound past this prints in exponent form ("1e+21"), which the parser
    rightly refuses — so it could never survive a round trip. No field on the
    site comes within ten orders of it. */
 const MAX_BOUND = 1e15;
+/* The small end of the same trap: String(1e-7) is "1e-7". Bounds are rounded
+   to this many decimals, and the smallest non-zero result, 0.000001, still
+   prints plainly. The finest filter step on the site is 0.05. */
+const BOUND_DECIMALS = 6;
 
 type Input = string | URLSearchParams | Record<string, string | string[] | undefined>;
 
@@ -75,12 +84,33 @@ function decodePart(part: string, encoded: boolean): string | null {
 /** The whole value, decoded. */
 const whole = (raw: Raw) => decodePart(raw.value, raw.encoded);
 
-/** The value split on RAW commas, each part decoded, empties dropped. */
+/**
+ * The value split on commas, each part decoded, empties dropped. Split again
+ * AFTER decoding, so a %2C in a raw string separates exactly as the comma it
+ * decodes to does in a URLSearchParams or Next's `searchParams`.
+ */
 const parts = (raw: Raw) =>
   raw.value
     .split(",")
-    .map((p) => decodePart(p, raw.encoded)?.trim() ?? "")
+    .flatMap((p) => (decodePart(p, raw.encoded) ?? "").split(","))
+    .map((p) => p.trim())
     .filter((p) => p.length > 0);
+
+/* A lone UTF-16 surrogate — half an emoji — makes encodeURIComponent throw.
+   With the `u` flag a whole pair is one code point outside this range, so
+   only orphans match. */
+const LONE_SURROGATE = /[\uD800-\uDFFF]/gu;
+
+/**
+ * The search text made canonical: orphaned surrogates dropped, whitespace
+ * collapsed, cut to MAX_QUERY code points, and trimmed again AFTER the cut.
+ * A cut that lands just past a space must not leave it on the end, or the
+ * next pass would shorten the text and normalising would not be idempotent.
+ */
+function normaliseQuery(q: string): string {
+  const tidy = q.replace(LONE_SURROGATE, "").replace(/\s+/g, " ").trim();
+  return Array.from(tidy).slice(0, MAX_QUERY).join("").trim();
+}
 
 /** First occurrence of each key. A canonical URL never repeats one. */
 function readInput(input: Input): Map<string, Raw> {
@@ -147,8 +177,14 @@ function normaliseFilter(id: string, value: FilterValue): FilterValue | null {
   if (kind !== value.t) return null;
 
   if (value.t === "set") {
-    const ids = [...new Set(value.ids.map((s) => s.trim()).filter(Boolean))].sort(byNaturalOrder);
-    return ids.length ? { t: "set", ids } : null;
+    /* A comma always separates on the way in (see `parts`), so an id holding
+       one is two ids here too — or decode(encode(s)) would not be normalise(s). */
+    const ids = value.ids
+      .flatMap((s) => s.replace(LONE_SURROGATE, "").split(","))
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const unique = [...new Set(ids)].sort(byNaturalOrder);
+    return unique.length ? { t: "set", ids: unique } : null;
   }
   if (value.t === "range") {
     const ok = (n: number | null) => n === null || (Number.isFinite(n) && Math.abs(n) < MAX_BOUND);
@@ -159,9 +195,16 @@ function normaliseFilter(id: string, value: FilterValue): FilterValue | null {
       const integral = (n: number | null) => n === null || Number.isInteger(n);
       if (!integral(value.min) || !integral(value.max)) return null;
     }
-    /* −0 prints as "0", so it is folded here or the round trip would not be exact. */
-    const min = value.min === 0 ? 0 : value.min;
-    const max = value.max === 0 ? 0 : value.max;
+    /* Rounded so the bound prints without an exponent (BOUND_DECIMALS), and
+       −0 folded — it prints as "0", and it is what a tiny negative rounds
+       to — or the round trip would not be exact. */
+    const tidy = (n: number | null) => {
+      if (n === null) return null;
+      const r = Number(n.toFixed(BOUND_DECIMALS));
+      return r === 0 ? 0 : r;
+    };
+    const min = tidy(value.min);
+    const max = tidy(value.max);
     return min !== null && max !== null && min > max
       ? { t: "range", min: max, max: min }
       : { t: "range", min, max };
@@ -230,7 +273,7 @@ export function normaliseScreen(
     if (value) filters[id] = value;
   }
   return {
-    q: state.q.replace(/\s+/g, " ").trim().slice(0, MAX_QUERY),
+    q: normaliseQuery(state.q),
     filters,
     sort: normaliseSort(state.sort),
     cols: normaliseCols(state.cols),
@@ -339,7 +382,7 @@ export function screenHref(state: ScreenState, path = "/sif-screener"): string {
  * four, and (given `known`) unknown codes dropped. Accepts the raw string or
  * Next's decoded `searchParams.ids` (string | string[] | undefined).
  *
- * Unlike a Screener set, an ENCODED comma separates here too: no AMFI code
+ * As in a Screener set, an ENCODED comma separates here too: no AMFI code
  * contains one, and `URLSearchParams.toString()` — the obvious way for a page
  * to build this link — writes every comma as %2C.
  */

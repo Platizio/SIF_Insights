@@ -31,6 +31,7 @@ export function makeRow(
     nav: 10,
     navAsOf: "2026-09-22",
     faceValue: 10,
+    faceValueBasis: "inferred",
     returns: Object.fromEntries(
       PERIODS.map((p) => [p, returns?.[p] ?? { absent: "insufficient-history" }]),
     ) as SifRow["returns"],

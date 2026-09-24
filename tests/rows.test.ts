@@ -97,6 +97,7 @@ describe("buildSifRows", () => {
       const first = navHistory(r.id)[0]?.nav;
       const fv = faceValue(r.id);
       expect(r.faceValue).toBe(fv.value);
+      expect(r.faceValueBasis).toBe(fv.basis);
       if (fv.basis === "inferred") expect(r.faceValue).toBe(first! > 200 ? 1000 : 10);
     }
   });

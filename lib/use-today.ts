@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 
+import { indianIsoDate } from "@/lib/format";
 import { useIsClient } from "@/lib/use-is-client";
 
 /* ============================================================
@@ -59,11 +60,13 @@ export function useToday(recheckMs: number = RECHECK_MS): Date | null {
 }
 
 /**
- * Today as an ISO date (UTC) — `fallback` until the client clock is available.
- * Pass the build's `navLastUpdated` (or whatever date the server rendered
- * against) so the first client render matches the server's HTML exactly.
+ * Today IN INDIA as an ISO date — `fallback` until the client clock is
+ * available. The dates it is compared with (NFO windows, `navLastUpdated`)
+ * are Indian dates, and the UTC date would roll over at 05:30 IST instead of
+ * midnight. Pass the build's `navLastUpdated` (or whatever date the server
+ * rendered against) so the first client render matches the server's HTML.
  */
 export function useTodayIso(fallback: string): string {
   const now = useToday();
-  return now ? now.toISOString().slice(0, 10) : fallback;
+  return now ? indianIsoDate(now) : fallback;
 }

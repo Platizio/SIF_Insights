@@ -157,7 +157,14 @@ const synthetic = vi.hoisted(() => {
           { kind: "KIM", title: "KIM", url: "https://e.org/kim.pdf", date: "2025-01-01", publisher: "Alpha", verified: false },
           { kind: "ISID", title: "ISID", url: "http://e.org/isid.pdf", date: "2025-01-01", publisher: "Alpha", verified: true },
           { kind: "brochure", title: "Brochure", url: "https://e.org/b.pdf", date: "2025-01-01", publisher: "Alpha", verified: true },
+          // Malformed but verified: each would once have thrown in the sort, or shipped half a citation.
+          { kind: "factsheet", title: "Factsheet undated", url: "https://e.org/fs-x.pdf", publisher: "Alpha", verified: true },
+          { kind: "factsheet", title: "Factsheet numeric date", url: "https://e.org/fs-y.pdf", date: 20260831, publisher: "Alpha", verified: true },
+          { kind: "factsheet", title: "Factsheet impossible date", url: "https://e.org/fs-z.pdf", date: "2026-02-31", publisher: "Alpha", verified: true },
+          { kind: "SID", title: "SID with no publisher", url: "https://e.org/sid2.pdf", date: "2025-06-01", verified: true },
+          null,
         ],
+        "SIF-9202": "not a list",
       },
       amcs: {},
     },
@@ -185,6 +192,7 @@ import {
   stats,
   trailingReturn,
 } from "@/lib/data";
+import { fieldLabel, fieldSource, getField } from "@/lib/screener/fields";
 
 describe("AUM", () => {
   it("a scheme's figure is its latest verified month, dated at month end", () => {
@@ -285,6 +293,14 @@ describe("documents", () => {
     ]);
     expect(schemeDocuments("SIF-9102")).toEqual([]);
   });
+
+  it("drop an entry with no real date or publisher, or a list that is not one, rather than throw", () => {
+    // SIF-9101 holds an undated factsheet, a numeric date, 31 Feb, a SID with no publisher and a null.
+    expect(() => schemeDocuments("SIF-9101")).not.toThrow();
+    expect(schemeDocuments("SIF-9101").every((d) => d.publisher === "Alpha")).toBe(true);
+    expect(schemeDocuments("SIF-9202")).toEqual([]);
+    expect(() => buildSifRows()).not.toThrow();
+  });
 });
 
 describe("SifRow over the research", () => {
@@ -320,5 +336,26 @@ describe("SifRow over the research", () => {
     expect(r.options).toEqual([]);
     expect(r.objective).toBeNull();
     expect(buildSifRows()).toHaveLength(4);
+  });
+
+  it("names inception, and cites a scheme document, only where research sourced them", () => {
+    const sourced = sifRow("SIF-9101")!; // allotment date and face value both verified
+    const inferred = sifRow("SIF-9201")!; // nothing researched
+    expect(sourced.faceValueBasis).toBe("sourced");
+    expect(inferred.faceValueBasis).toBe("inferred");
+
+    const [rsi, inc, fv] = ["rsi", "inc", "fv"].map((id) => getField(id)!);
+    expect(fieldLabel(rsi, [sourced])).toBe("Since inception");
+    expect(fieldLabel(rsi, [inferred])).toBe("Since first published NAV");
+    expect(fieldLabel(inc, [sourced])).toBe("Inception");
+    expect(fieldSource(inc, [sourced])).toBe("Scheme document");
+    expect(fieldLabel(inc, [inferred])).toBe("First published NAV");
+    expect(fieldSource(inc, [inferred])).toBe("AMFI");
+    expect(fieldSource(fv, [sourced])).toBe("Scheme document");
+    expect(fieldSource(fv, [inferred])).toBe("SIF Insight calculation");
+
+    // A column over both reads the claim true of each.
+    expect(fieldLabel(rsi, [sourced, inferred])).toBe(rsi.label);
+    expect(fieldSource(fv, [sourced, inferred])).toBe("SIF Insight calculation");
   });
 });

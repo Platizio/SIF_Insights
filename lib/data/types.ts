@@ -352,6 +352,8 @@ export type SifRow = {
   nav: number;
   navAsOf: string;
   faceValue: number;
+  /** `inferred` = read off the first NAV (see `faceValue`), not a document. Say so. */
+  faceValueBasis: "sourced" | "inferred";
 
   /** Percent. */
   returns: Record<Period, Cell<number>>;

@@ -76,6 +76,33 @@ describe("decodeScreen", () => {
     expect(decodeScreen({ ...record, q: ["tata", "other"] })).toEqual(PRD_STATE);
   });
 
+  it("reads one URL the same way in every form — an encoded comma separates in all three", () => {
+    /* The server page decodes Next's searchParams and the client decodes
+       location.search. If the forms disagreed, one link would render two screens. */
+    const urls = [
+      "str=equity-long-short%2Chybrid-long-short&risk=1%2C2",
+      new URLSearchParams(PRD_URL).toString(), // every separator written as %2C
+      "q=tata+%26+sons%2B&cols=name%2Cr6m&sort=r6m.desc%2Cvol.asc&pick=SIF-3%2Csif-93",
+      "amc=icici,quant&amc=other&cat=equity",
+    ];
+    for (const url of urls) {
+      const fromString = decodeScreen(url);
+      const params = new URLSearchParams(url);
+      const record: Record<string, string | string[]> = {};
+      for (const key of new Set(params.keys())) {
+        const all = params.getAll(key);
+        record[key] = all.length > 1 ? all : all[0];
+      }
+      expect(decodeScreen(params), url).toEqual(fromString);
+      expect(decodeScreen(record), url).toEqual(fromString);
+    }
+    expect(decodeScreen(urls[0]).filters).toEqual({
+      str: { t: "set", ids: ["equity-long-short", "hybrid-long-short"] },
+      risk: { t: "set", ids: ["1", "2"] },
+    });
+    expect(decodeScreen(urls[1])).toEqual(PRD_STATE);
+  });
+
   it("the empty URL is the default screen", () => {
     expect(decodeScreen("")).toEqual(DEFAULT_SCREEN);
     expect(decodeScreen("?")).toEqual(DEFAULT_SCREEN);
@@ -104,10 +131,50 @@ describe("encodeScreen", () => {
   });
 
   it("encodes each value and joins with a RAW comma, never %2C soup", () => {
-    const qs = encodeScreen({ ...DEFAULT_SCREEN, q: "tata, & sons", filters: { mgr: { t: "set", ids: ["a,b", "c d"] } } });
-    expect(qs).toBe("q=tata%2C%20%26%20sons&mgr=a%2Cb,c%20d");
-    expect(decodeScreen(qs).filters.mgr).toEqual({ t: "set", ids: ["a,b", "c d"] });
+    const qs = encodeScreen({ ...DEFAULT_SCREEN, q: "tata, & sons", filters: { mgr: { t: "set", ids: ["c d", "a"] } } });
+    expect(qs).toBe("q=tata%2C%20%26%20sons&mgr=a,c%20d");
+    expect(decodeScreen(qs).filters.mgr).toEqual({ t: "set", ids: ["a", "c d"] });
     expect(decodeScreen(qs).q).toBe("tata, & sons");
+  });
+
+  it("a comma inside a set id separates, as it does on the way in", () => {
+    const s: ScreenState = { ...DEFAULT_SCREEN, filters: { mgr: { t: "set", ids: ["a,b", "c d"] } } };
+    expect(normaliseScreen(s).filters.mgr).toEqual({ t: "set", ids: ["a", "b", "c d"] });
+    expect(encodeScreen(s)).toBe("mgr=a,b,c%20d");
+  });
+
+  it("never throws on a query cut inside an emoji, or holding half of one", () => {
+    const emoji = "\u{1F600}";
+    const url = `q=${"a".repeat(119)}${encodeURIComponent(emoji)}${encodeURIComponent(emoji)}`;
+    const s = decodeScreen(url);
+    // Cut at 120 CODE POINTS: the first emoji whole, the second gone, nothing halved.
+    expect(s.q).toBe(`${"a".repeat(119)}${emoji}`);
+    expect(() => encodeScreen(s)).not.toThrow();
+    expect(decodeScreen(encodeScreen(s))).toEqual(s);
+
+    // A lone surrogate typed or pasted into the box is dropped, not encoded.
+    const orphan = { ...DEFAULT_SCREEN, q: "ab\uD83D", filters: { mgr: { t: "set" as const, ids: ["x\uDE00"] } } };
+    expect(() => encodeScreen(orphan)).not.toThrow();
+    expect(encodeScreen(orphan)).toBe("q=ab&mgr=x");
+  });
+
+  it("trims after the cut, so normalising a long query is idempotent", () => {
+    const s = { ...DEFAULT_SCREEN, q: `${"a".repeat(119)} b` };
+    const once = normaliseScreen(s);
+    expect(once.q).toBe("a".repeat(119));
+    expect(normaliseScreen(once)).toEqual(once);
+    expect(decodeScreen(encodeScreen(s))).toEqual(once);
+  });
+
+  it("prints a tiny bound without an exponent, so it survives the link", () => {
+    const tiny = (min: number): ScreenState => ({ ...DEFAULT_SCREEN, filters: { r6m: { t: "range", min, max: null } } });
+    expect(encodeScreen(tiny(1e-7))).toBe("r6m=0~");
+    expect(decodeScreen(encodeScreen(tiny(1e-7)))).toEqual(normaliseScreen(tiny(1e-7)));
+    // A tiny negative rounds to −0, which is folded (toEqual tells −0 from 0).
+    expect(normaliseScreen(tiny(-1e-7)).filters.r6m).toEqual({ t: "range", min: 0, max: null });
+    expect(encodeScreen(tiny(0.000001))).toBe("r6m=0.000001~");
+    expect(encodeScreen(tiny(1.23456789))).toBe("r6m=1.234568~");
+    expect(decodeScreen("r6m=0.00000001~").filters.r6m).toEqual({ t: "range", min: 0, max: null });
   });
 });
 
@@ -231,6 +298,36 @@ describe("garbage in, a wider screen out", () => {
       expect(() => (s = decodeScreen(input)), input).not.toThrow();
       expect(normaliseScreen(s!), input).toEqual(s!);
       expect(decodeScreen(encodeScreen(s!)), input).toEqual(s!);
+    }
+  });
+
+  it("encodes any state without throwing, and round-trips it — long, emoji-laden queries and extreme bounds included", () => {
+    /* The decode fuzz above never builds a long query or a tiny bound, which
+       is where encoding broke. This one fuzzes the STATE side. */
+    const rand = prng(20260924);
+    const pieces = ["a", "Z", " ", "  ", "-", ",", "\u{1F600}", "é", "\uD83D", "\uDE00", "\t", "é"];
+    const magnitudes = [0, 1e-9, 1e-7, 1e-6, 0.05, 1.5, 123.456789, 1e6, 1e14];
+    const pick = <T,>(xs: readonly T[]) => xs[Math.floor(rand() * xs.length)];
+    for (let i = 0; i < 1000; i++) {
+      let q = "";
+      const len = Math.floor(rand() * 200);
+      for (let j = 0; j < len; j++) q += pick(pieces);
+      const bound = () => (rand() < 0.2 ? null : pick(magnitudes) * (rand() < 0.5 ? -1 : 1));
+      const s: ScreenState = {
+        ...DEFAULT_SCREEN,
+        q,
+        filters: {
+          r6m: { t: "range", min: bound(), max: bound() },
+          mgr: { t: "set", ids: [pick(pieces) + pick(pieces), pick(pieces)] },
+        },
+      };
+      let qs = "";
+      expect(() => (qs = encodeScreen(s)), JSON.stringify(s)).not.toThrow();
+      const once = normaliseScreen(s);
+      expect(Array.from(once.q).length).toBeLessThanOrEqual(120);
+      expect(normaliseScreen(once), JSON.stringify(s)).toEqual(once);
+      expect(decodeScreen(qs), JSON.stringify(s)).toEqual(once);
+      expect(encodeScreen(decodeScreen(qs))).toBe(qs);
     }
   });
 });

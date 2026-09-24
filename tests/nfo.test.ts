@@ -6,7 +6,7 @@
  * seven months. Status is now DERIVED from the dates by `nfoStatus`, and
  * `isOpenNfo` is defined through it: active AND a stated closing date that has
  * not passed AND, when one is stated, an opening date that has arrived — both
- * ends inclusive, compared as UTC calendar dates.
+ * ends inclusive, compared as Indian calendar dates.
  *
  * The build-time lists are measured against `navLastUpdated`, never the wall
  * clock, so they are recomputed here from the raw file rather than pinned.
@@ -23,6 +23,7 @@ import {
   upcomingNfos,
   type Nfo,
 } from "@/lib/data";
+import { indianIsoDate } from "@/lib/format";
 
 import { rawNfoEntries, rawNfos } from "./raw-source";
 
@@ -120,15 +121,22 @@ describe("isOpenNfo", () => {
     expect(isOpenNfo({ ...base, active: false, closesOn: "2026-03-15" }, today)).toBe(false);
   });
 
-  it("compares in UTC, so a late-evening local clock cannot shift the answer", () => {
-    const lateInTheDay = new Date("2026-03-15T23:59:59Z");
-    expect(isOpenNfo({ ...base, closesOn: "2026-03-15" }, lateInTheDay)).toBe(true);
-    const justAfter = new Date("2026-03-16T00:00:00Z");
-    expect(isOpenNfo({ ...base, closesOn: "2026-03-15" }, justAfter)).toBe(false);
-    const justBefore = new Date("2026-03-14T23:59:59Z");
-    expect(isOpenNfo({ ...base, opensOn: "2026-03-15", closesOn: "2026-03-20" }, justBefore)).toBe(
-      false,
-    );
+  it("turns over at midnight in INDIA — NFO dates are Indian dates, not UTC ones", () => {
+    const closes15 = { ...base, closesOn: "2026-03-15" };
+    const opens15 = { ...base, opensOn: "2026-03-15", closesOn: "2026-03-20" };
+    expect(isOpenNfo(closes15, new Date("2026-03-15T23:59:59+05:30"))).toBe(true);
+    expect(isOpenNfo(closes15, new Date("2026-03-16T00:00:00+05:30"))).toBe(false);
+    expect(isOpenNfo(opens15, new Date("2026-03-14T23:59:59+05:30"))).toBe(false);
+    expect(isOpenNfo(opens15, new Date("2026-03-15T00:00:00+05:30"))).toBe(true);
+    // 00:30 IST on the 16th is still the 15th in UTC; the offer has closed all the same.
+    expect(isOpenNfo(closes15, new Date("2026-03-15T19:00:00Z"))).toBe(false);
+  });
+
+  it("indianIsoDate is the date in India, whatever the reader's timezone", () => {
+    expect(indianIsoDate(new Date("2026-09-24T18:29:59Z"))).toBe("2026-09-24");
+    expect(indianIsoDate(new Date("2026-09-24T18:30:00Z"))).toBe("2026-09-25");
+    expect(indianIsoDate(new Date("2026-09-25T00:30:00+05:30"))).toBe("2026-09-25");
+    expect(indianIsoDate(new Date("2026-12-31T23:00:00-08:00"))).toBe("2027-01-01");
   });
 
   it("agrees with nfoStatus on every date, for every shape of entry", () => {

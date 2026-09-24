@@ -11,7 +11,7 @@ import { describe, expect, it } from "vitest";
 
 import { currentTer, exitLoadParsed, liquidityBucket, type ExitLoad } from "@/lib/data";
 
-import { rawDisclosures } from "./raw-source";
+import { rawDisclosures, rawSchemes, rawTerFile } from "./raw-source";
 
 type Expected = Omit<ExitLoad, "text">;
 
@@ -210,8 +210,14 @@ describe("liquidityBucket", () => {
 });
 
 describe("currentTer", () => {
+  /* Asserted against the file, not against today's empty seed: the research
+     merge adding a verified TER is a correct change and must not fail here. */
   it("degrades to null for a scheme with nothing on file, or an unknown code", () => {
-    expect(currentTer("SIF-3")).toBeNull();
+    for (const s of rawSchemes) {
+      if ((rawTerFile.schemes[s.amfiSchemeCode] ?? []).length === 0) {
+        expect(currentTer(s.amfiSchemeCode), s.amfiSchemeCode).toBeNull();
+      }
+    }
     expect(currentTer("no-such-code")).toBeNull();
   });
 });
