@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, type Variants } from "motion/react";
+import Link from "next/link";
 import { useState, type ReactNode } from "react";
 import { LineReveal } from "@/components/motion/LineReveal";
 import { GlassField } from "@/components/motion/GlassField";
@@ -59,6 +60,8 @@ export type GridCounts = {
   hybrid: number;
   debt: number;
   disclosed: number;
+  /** Asset managers with at least one scheme — the "houses" in the headline. */
+  amc: number;
 };
 
 type Filter = Category | "all";
@@ -141,7 +144,14 @@ export function StrategyGridClient({
             <LineReveal
               as="h2"
               className="mt-4 text-[clamp(32px,4.6vw,48px)] leading-[1.14] tracking-[-0.015em]"
-              lines={["Thirty schemes.", "Seventeen houses."]}
+              lines={[
+                <span key="s" className="tabular">
+                  {counts.all} schemes.
+                </span>,
+                <span key="h" className="tabular">
+                  {counts.amc} houses.
+                </span>,
+              ]}
             />
 
             <Stagger>
@@ -186,10 +196,13 @@ export function StrategyGridClient({
           })}
         </div>
 
-        {/* Debt is empty on purpose. Say so, don't hide it. */}
-        <p className="mt-4 text-[13px] leading-[20px] text-muted">
-          No debt SIFs have launched yet.
-        </p>
+        {/* Debt is empty today. Say so, don't hide it — and stop saying it
+            the day a debt scheme is filed. */}
+        {counts.debt === 0 ? (
+          <p className="mt-4 text-[13px] leading-[20px] text-muted">
+            No debt SIFs have launched yet.
+          </p>
+        ) : null}
 
         <Stagger className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           <AnimatePresence mode="popLayout">
@@ -235,6 +248,12 @@ function StrategyCard({ card }: { card: GridCard }) {
   const { strategy, sifName, nav } = card;
 
   return (
+    /* The whole card is the link to the scheme page. Its accessible name is
+       the card's text, which leads with the house and the scheme name. */
+    <Link
+      href={`/sif/${strategy.id}`}
+      className="group block h-full focus-visible:outline-offset-4"
+    >
     <TiltCard className="flex h-full min-h-[420px] flex-col justify-between p-8">
       <div>
         <div className="flex items-start justify-between gap-4">
@@ -249,7 +268,7 @@ function StrategyCard({ card }: { card: GridCard }) {
           </span>
         </div>
 
-        <h3 className="mt-9 text-[22px] font-medium leading-[30px] text-ink">
+        <h3 className="mt-9 text-[22px] font-medium leading-[30px] text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-accent">
           {strategy.name}
         </h3>
         <p className="mt-2 text-[13px] leading-[20px] text-muted">
@@ -318,6 +337,7 @@ function StrategyCard({ card }: { card: GridCard }) {
         </p>
       )}
     </TiltCard>
+    </Link>
   );
 }
 

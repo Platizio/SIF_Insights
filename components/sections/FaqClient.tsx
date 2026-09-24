@@ -157,11 +157,19 @@ function PlusMinus() {
  * `faqs` from `@/lib/data` here put the whole NAV history into the client
  * bundle of every page that shows the section.
  */
-export function FaqClient({ faqs }: { faqs: Faq[] }) {
+export type FaqCopy = {
+  id: string;
+  eyebrow: string;
+  lines: string[];
+  intro: string;
+  cta: { label: string; href: string };
+};
+
+export function FaqClient({ faqs, copy }: { faqs: Faq[]; copy: FaqCopy }) {
   // No section background here — the <GlassField> behind the CTA gives that
   // one button its backdrop without texturing the whole section.
   return (
-    <Section id="faq" className="relative isolate">
+    <Section id={copy.id} className="relative isolate">
       <style href="sif-faq-motion" precedence="default">
         {ACCORDION_CSS}
       </style>
@@ -176,25 +184,25 @@ export function FaqClient({ faqs }: { faqs: Faq[] }) {
               can break the stick. */}
           <div className="xl:sticky xl:top-32 xl:self-start">
             <Rise>
-              <Eyebrow>Questions</Eyebrow>
+              <Eyebrow>{copy.eyebrow}</Eyebrow>
             </Rise>
 
             <LineReveal
-              lines={["Before you", "invest."]}
+              lines={copy.lines}
               className="mt-6 text-[clamp(38px,4vw,54px)] font-medium leading-[1.12] text-ink"
             />
 
             <Rise delay={0.1}>
               <p className="mt-6 text-[17px] leading-[30px] text-body">
-                The category is new. These are the questions we are asked most often.
+                {copy.intro}
               </p>
             </Rise>
 
             <Rise delay={0.18} className="relative isolate mt-10 inline-block">
               <GlassField />
               <Magnetic className="inline-block">
-                <Button href="#consult" variant="ghost">
-                  Talk to us
+                <Button href={copy.cta.href} variant="ghost">
+                  {copy.cta.label}
                 </Button>
               </Magnetic>
             </Rise>
