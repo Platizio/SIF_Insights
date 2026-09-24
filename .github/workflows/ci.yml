@@ -87,3 +87,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Checks the prerendered HTML for what the gates above cannot see: an
+      # element shipped at opacity:0 without data-reveal (blank with JS off),
+      # dead internal links, and copy the design contract bans.
+      - name: Verify static HTML
+        run: node scripts/verify-static-html.mjs
