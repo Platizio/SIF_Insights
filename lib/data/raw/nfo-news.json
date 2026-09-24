@@ -1,6 +1,6 @@
 [
   {
-    "_comment": "Entries for the Live NFO ticker. `closesOn` is the ISO date the offer closes, INCLUSIVE — an offer open 'to 30th January' is open ON the 30th and gone on the 31st. It is effectively REQUIRED: isOpenNfo() returns false for any entry without one, so an entry with no `closesOn` never renders however it is flagged, because an offer with no stated end is not evidence that it is open. `active: true` is no longer sufficient on its own — it is only the hand-set 'not withdrawn' flag, and it was `active` with no expiry at all that kept the three January 2026 windows below on screen beside a pulsing 'Live NFO' label until September 2026. Closed offers stay in this file with `active: false` and their real `closesOn` rather than being deleted, so the record survives and the date filter is visibly the thing holding them off the page. Titles here state a day and a month but no year: read the year from the entry's own `date`, since an NFO is announced before its window opens — all three below were posted in Nov/Dec 2025, so their 'January' is the first January after that, 2026. When a year is genuinely ambiguous take the LATEST plausible reading and check it against today: if it is already past the offer is closed either way; if it lands in the future, confirm the real window from the AMC before setting `active`. This first element carries no `active` and no `closesOn`, so the same fail-closed rule makes it unrenderable — it is a comment, not an offer."
+    "_comment": "Entries for the Live NFO ticker. `closesOn` is the ISO date the offer closes, INCLUSIVE — an offer open 'to 30th January' is open ON the 30th and gone on the 31st. It is effectively REQUIRED: isOpenNfo() returns false for any entry without one, so an entry with no `closesOn` never renders however it is flagged, because an offer with no stated end is not evidence that it is open. `active: true` is no longer sufficient on its own — it is only the hand-set 'not withdrawn' flag, and it was `active` with no expiry at all that kept the three January 2026 windows below on screen beside a pulsing 'Live NFO' label until September 2026. Closed offers stay in this file with `active: false` and their real `closesOn` rather than being deleted, so the record survives and the date filter is visibly the thing holding them off the page. Titles here state a day and a month but no year: read the year from the entry's own `date`, since an NFO is announced before its window opens — all three below were posted in Nov/Dec 2025, so their 'January' is the first January after that, 2026. When a year is genuinely ambiguous take the LATEST plausible reading and check it against today: if it is already past the offer is closed either way; if it lands in the future, confirm the real window from the AMC before setting `active`. This first element carries no `active` and no `closesOn`, so the same fail-closed rule makes it unrenderable — it is a comment, not an offer. UPDATE 2026-09-24: entries may also carry `opensOn` (inclusive) — an offer is open only between opensOn and closesOn; an ACTIVE entry with no dates is an announced 'Upcoming' SIF (nfoStatus → upcoming), never shown as open. New entries carry slug, amcId, schemeName, strategyType, category, schemeCode (null until AMFI assigns one), minInvestment and primary `sources`, from the 2026-09-24 research merge."
   },
   {
     "id": 1,
@@ -22,5 +22,412 @@
     "date": "2025-11-25",
     "closesOn": "2026-01-30",
     "active": false
+  },
+  {
+    "id": 4,
+    "title": "Altiva Equity Long-Short Fund NFO open 10 to 24 September 2026",
+    "date": "2026-08-06",
+    "active": true,
+    "slug": "altiva-equity-long-short-fund",
+    "amcId": "edelweiss",
+    "schemeName": "Altiva Equity Long-Short Fund",
+    "strategyType": "Equity Long-Short",
+    "category": "equity",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-34",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/S-34.pdf",
+        "publisher": "Edelweiss Asset Management Limited (Altiva SIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/aug-2026/altiva-equity-long-short-fund_103406.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-09-10",
+    "closesOn": "2026-09-24"
+  },
+  {
+    "id": 5,
+    "title": "Titanium Active Asset Allocator Long-Short Fund NFO open 23 September to 7 October 2026",
+    "date": "2026-09-02",
+    "active": true,
+    "slug": "titanium-active-asset-allocator-long-short-fund",
+    "amcId": "tata",
+    "schemeName": "Titanium Active Asset Allocator Long-Short Fund",
+    "strategyType": "Active Asset Allocator Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-35",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/S-35.pdf",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/sep-2026/titanium-active-asset-allocator-long-short-fund-titanium-sif_104199.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-09-23",
+    "closesOn": "2026-10-07"
+  },
+  {
+    "id": 6,
+    "title": "MSIF Equity Long-Short Fund NFO opens 30 September, closes 14 October 2026",
+    "date": "2026-09-04",
+    "active": true,
+    "slug": "msif-equity-long-short-fund",
+    "amcId": "mahindra-manulife",
+    "schemeName": "MSIF Equity Long-Short Fund",
+    "strategyType": "Equity Long-Short",
+    "category": "equity",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://portal.amfiindia.com/spages/S-36.pdf",
+        "publisher": "Mahindra Manulife Investment Management Private Limited (MSIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-36",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/sep-2026/msif-equity-long-short-fund_104268.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-09-30",
+    "closesOn": "2026-10-14"
+  },
+  {
+    "id": 7,
+    "title": "Apex Equity Long-Short Fund NFO closed 2026-08-24 (opened 2026-08-10)",
+    "date": "2026-07-09",
+    "active": true,
+    "slug": "apex-equity-long-short-fund",
+    "amcId": "apex",
+    "schemeName": "Apex Equity Long-Short Fund",
+    "strategyType": "Equity Long-Short",
+    "category": "equity",
+    "schemeCode": "SIF-154",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-31",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/S-31.pdf",
+        "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jul-2026/apex-equity-long-short-fund_102716.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-08-10",
+    "closesOn": "2026-08-24"
+  },
+  {
+    "id": 8,
+    "title": "Apex Equity Ex-Top 100 Long-short Fund NFO closed 2026-08-24 (opened 2026-08-10)",
+    "date": "2026-07-09",
+    "active": true,
+    "slug": "apex-equity-ex-top-100-long-short-fund",
+    "amcId": "apex",
+    "schemeName": "Apex Equity Ex-Top 100 Long-short Fund",
+    "strategyType": "Equity Ex-Top 100 Long-Short",
+    "category": "equity",
+    "schemeCode": "SIF-156",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-32",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/S-32.pdf",
+        "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jul-2026/apex-equity-ex-top-100-long-short-fund_102718.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-08-10",
+    "closesOn": "2026-08-24"
+  },
+  {
+    "id": 9,
+    "title": "Magnum Equity Ex-Top 100 Long Short Fund NFO closed 2026-08-20 (opened 2026-08-07)",
+    "date": "2026-06-12",
+    "active": true,
+    "slug": "magnum-equity-ex-top-100-long-short-fund",
+    "amcId": "sbi",
+    "schemeName": "Magnum Equity Ex-Top 100 Long Short Fund",
+    "strategyType": "Equity Ex-Top 100 Long-Short",
+    "category": "equity",
+    "schemeCode": "SIF-157",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.amfiindia.com/api/sif-nfo?Scheme_Id=S-33",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/S-33.pdf",
+        "publisher": "SBI Funds Management Limited (Magnum SIF) - ISID as hosted on AMFI SIF portal",
+        "docType": "ISID",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://portal.amfiindia.com/spages/SIF_NAVAll.txt",
+        "publisher": "AMFI",
+        "docType": "amfi-data",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jun-2026/magnum-equity-ex-top-100-long-short-fund_102092.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ],
+    "opensOn": "2026-08-07",
+    "closesOn": "2026-08-20"
+  },
+  {
+    "id": 10,
+    "title": "MSIF Hybrid Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-08-28",
+    "active": true,
+    "slug": "msif-hybrid-long-short-fund",
+    "amcId": "mahindra-manulife",
+    "schemeName": "MSIF Hybrid Long-Short Fund",
+    "strategyType": "Hybrid Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/aug-2026/1787904996676.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/aug-2026/msif-hybrid-long-short-fund_104069.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "title": "Eminence Hybrid Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-08-28",
+    "active": true,
+    "slug": "eminence-hybrid-long-short-fund",
+    "amcId": "alphagrep",
+    "schemeName": "Eminence Hybrid Long-Short Fund",
+    "strategyType": "Hybrid Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/aug-2026/1787905139233.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/aug-2026/eminence-hybrid-long-short-fund_104070.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "title": "Platinum Sectoral Debt Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-07-23",
+    "active": true,
+    "slug": "platinum-sectoral-debt-long-short-fund",
+    "amcId": "mirae",
+    "schemeName": "Platinum Sectoral Debt Long-Short Fund",
+    "strategyType": "Sectoral Debt Long-Short",
+    "category": "debt",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jul-2026/1784786158542.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jul-2026/platinum-sectoral-debt-long-short-fund_103027.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "title": "Summit Active Asset Allocator Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-07-21",
+    "active": true,
+    "slug": "summit-active-asset-allocator-long-short-fund",
+    "amcId": "invesco",
+    "schemeName": "Summit Active Asset Allocator Long-Short Fund",
+    "strategyType": "Active Asset Allocator Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jul-2026/1784614667160.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jul-2026/summit-active-asset-allocator-long-short-fund_102971.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "title": "Infinity Active Asset Allocator Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-06-24",
+    "active": true,
+    "slug": "infinity-active-asset-allocator-long-short-fund",
+    "amcId": "kotak",
+    "schemeName": "Infinity Active Asset Allocator Long-Short Fund",
+    "strategyType": "Active Asset Allocator Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jun-2026/1782282134288.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jun-2026/infinity-active-asset-allocator-long-short-fund_102355.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "title": "Infinity Equity Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-06-24",
+    "active": true,
+    "slug": "infinity-equity-long-short-fund",
+    "amcId": "kotak",
+    "schemeName": "Infinity Equity Long-Short Fund",
+    "strategyType": "Equity Long-Short",
+    "category": "equity",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/jun-2026/1782278862163.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/jun-2026/infinity-equity-long-short-fund-sif-_102341.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "title": "WSIF Hybrid Long-Short Fund - draft ISID filed with SEBI; NFO dates not announced",
+    "date": "2026-04-23",
+    "active": true,
+    "slug": "wsif-hybrid-long-short-fund",
+    "amcId": "wealth",
+    "schemeName": "WSIF Hybrid Long-Short Fund",
+    "strategyType": "Hybrid Long-Short",
+    "category": "hybrid",
+    "minInvestment": 1000000,
+    "sources": [
+      {
+        "url": "https://www.sebi.gov.in/sebi_data/attachdocs/apr-2026/1776941573212.pdf",
+        "publisher": "Securities and Exchange Board of India (draft ISID filed by the AMC)",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      },
+      {
+        "url": "https://www.sebi.gov.in/filings/mutual-funds/apr-2026/wsif-hybrid-long-short-fund_101071.html",
+        "publisher": "Securities and Exchange Board of India",
+        "docType": "sebi-filing",
+        "retrievedOn": "2026-09-24"
+      }
+    ]
   }
 ]

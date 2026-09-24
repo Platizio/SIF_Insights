@@ -2,6 +2,498 @@
   "_comment": "The TER actually CHARGED on the Regular plan, dated, keyed by AMFI scheme code: { \"SIF-3\": [ { \"asOf\": \"2026-09-01\", \"terPct\": 1.95, \"src\": \"<sourceId>\", \"locator\": \"...\", \"verified\": true } ] }. Source: the AMC's TER disclosure page or the factsheet. The ISID's MAXIMUM permissible TER stays in disclosures.json (expenseRatio with expenseRatioIsCap) — the two are different claims and are never mixed or substituted for each other.",
   "schemaVersion": 1,
   "plan": "Regular",
-  "sources": {},
-  "schemes": {}
+  "sources": {
+    "g1:quant-ter-2026-09": {
+      "url": "https://www.qsif.com/Admin/disclouser/Sept_2026.xlsx",
+      "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "qsif daily Total Expense Ratio disclosure - September 2026 (Regular & Direct, BER/brokerage/transaction cost/statutory levies)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:iti-ter-fy27": {
+      "url": "https://sif.itiamc.com/Files/TERFiles/Total%20Expense%20Ratio%20for%20Diviniti%20SIF%20Schemes%202026-2027.xlsx",
+      "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Total Expense Ratio (TER) for Diviniti SIF Schemes 2026-2027 (daily)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g1:wsif-ter-fy27": {
+      "url": "https://www.wealthcompanyamc.in/api/sif-ter-values/year/2026/export",
+      "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "WSIF TER Values FY2026-27 (daily; export linked from /wsif/total-expense-ratio/)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:icici-ter-2026-09": {
+      "url": "https://www.icicipruamc.com/blob/financials-disclosures-files/Files/Total%20Expense%20Ratio/SIF/2026-2027/TotalExpenseRatioSep2026.xlsx",
+      "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Total Expense Ratio (TER) - iSIF - September 2026 (daily)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:bandhan-ter": {
+      "url": "https://arudhasif.com/downloads/assest/file/TER%20of%20ARUDHA%20SIF.xlsx",
+      "publisher": "Bandhan AMC Limited (Arudha SIF, offered by Bandhan Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "TER of Arudha SIF - 01 April 2026 onwards (daily)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g2:hsbc-ter": {
+      "url": "https://digital.camsonline.com/dnlresult/hsbc_sif_ter_report.xlsx",
+      "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Daily TER - HSBC SIF (linked as 'Daily TER' from the RedHex SIF site; file generated client-side by CAMS, the RTA)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:dyna-ter-2026-09-22": {
+      "url": "https://www.360.one/dyna-sif/total-expense-ratio?type=sif-investor",
+      "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Total Expense Ratio (TER) - Latest TER table (rendered page; text saved to research/pdf/G3/dyna_ter_page_2026-09-23.txt)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:edel-ter-2026-09-22": {
+      "url": "https://www.edelweissmf.com/altivasif/statutory/total-expense-of-altiva-sif-scheme",
+      "publisher": "Edelweiss Asset Management Limited (Altiva SIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Total Expense of altiva SIF scheme - FY 2026-2027 table (rendered page; text saved to research/pdf/G3/edel_ter_page_2026-09-23.txt)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g3:mir-ter-2026-09-22": {
+      "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/09/SIF_IN_MF_EXPENSE_RATIO_SEBI_V3_22092026.xls",
+      "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Total Expense Ratio - 22 September 2026 (daily TER file, rows 01-Sep-2026 to 22-Sep-2026)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:apex-ter-hls-2026-09-22": {
+      "url": "https://apexsif.adityabirlacapital.com/download-resource?tab=totalexpenseratio",
+      "publisher": "Aditya Birla Sun Life AMC Limited (Apex SIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Apex SIF Total Expense Ratio - daily TER export for APEX HYBRID LONG-SHORT FUND (SIFAHLS), 01-Aug-2026 to 22-Sep-2026",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-ter-fy2627": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-ter/sif-ter/current-year-ter-w-e-f-1st-april-2026.xlsx?sfvrsn=c9dc69c_338",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Magnum SIF daily TER - current year w.e.f. 1st April 2026 (xlsx; last row dated 22/09/2026)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:sbi-fs-2026-08-31": {
+      "url": "https://www.sbimf.com/docs/default-source/sif-scheme-facsheets/magnum-sif-as-on-august-2026-final.pdf?sfvrsn=38eb72b9_6",
+      "publisher": "SBI Funds Management Limited (Magnum SIF)",
+      "publisherKind": "AMC",
+      "docType": "factsheet",
+      "title": "Magnum SIF Investment update - Report as on August 31, 2026",
+      "asOf": "2026-08-31",
+      "retrievedOn": "2026-09-23"
+    },
+    "g4:kotak-ter-daily": {
+      "url": "https://vatseelabs-s3.kotakmf.com/Images/SIFTER.xlsx",
+      "publisher": "Kotak Mahindra Asset Management Company Limited (Infinity SIF)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Infinity SIF daily Total Expense Ratio (Regular/Direct: BER, brokerage, transaction cost, statutory levies, Total TER); copy retrieved 2026-09-23, last row 22/09/2026",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:arth-ter-daily-2026-09": {
+      "url": "https://www.unionmf.com/Unionmfapi/SIF_GET_TERDATA",
+      "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Arthaya SIF daily TER disclosure (API behind https://www.unionmf.com/arthayasif/about-us/downloads#ter)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:ft-ter-2026-09": {
+      "url": "https://franklintempletonprod.widen.net/content/pbimw6rehx/original/TER-September-2026_SIF.xlsx?u=pl55mb&download=true",
+      "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "TER - September 2026 (SIF)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:sm-ter-2026-09": {
+      "url": "https://summitsif.invescomutualfund.com/customapi/SIFTotalExpenseRatioOfMutualFundSchemePolicy/GetSIFTERExpenseData?title=Summit%20Equity%20Long-Short%20Fund&fincialYear=2026&month=9",
+      "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Summit SIF daily TER - September 2026 (data API of https://summitsif.invescomutualfund.com/statutory-disclosures/total-expense-ratio)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:tata-ter-fy2627": {
+      "url": "https://betacms.tatamutualfund.com/system/files/2026-09/TotalExpenseRatioApril2026%20to%20Mar2027_SIF_10.xlsx",
+      "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Titanium SIF Total Expense Ratio April 2026 to March 2027 (daily)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    },
+    "g5:jbr-ter-2026-09-22": {
+      "url": "https://www.jioblackrockamc.com/prismsif/ter",
+      "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+      "publisherKind": "AMC",
+      "docType": "ter-disclosure",
+      "title": "Prism SIF - Total Expense Ratio page (latest TER, embedded page data)",
+      "asOf": "2026-09-22",
+      "retrievedOn": "2026-09-23"
+    }
+  },
+  "schemes": {
+    "SIF-3": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.24,
+        "src": "g1:quant-ter-2026-09",
+        "locator": "Sept_2026.xlsx row 'qsif Equity Long-Short Fund', TER Date 22-09-2026: 'Regular Plan - Base Expense Ratio (BER) (%)' 1.94; 'Regular Plan - Total TER (%)' 4.24",
+        "verified": true,
+        "berPct": 1.94
+      }
+    ],
+    "SIF-25": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.1,
+        "src": "g1:quant-ter-2026-09",
+        "locator": "Sept_2026.xlsx row 'qsif Equity Ex-Top 100 Long-Short Fund', TER Date 22-09-2026: 'Regular Plan - Base Expense Ratio (BER) (%)' 1.92; 'Regular Plan - Total TER (%)' 4.1",
+        "verified": true,
+        "berPct": 1.92
+      }
+    ],
+    "SIF-7": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.69,
+        "src": "g1:quant-ter-2026-09",
+        "locator": "Sept_2026.xlsx row 'qsif Hybrid Long-Short Fund', TER Date 22-09-2026: 'Regular Plan - Base Expense Ratio (BER) (%)' 1.85; 'Regular Plan - Total TER (%)' 3.69",
+        "verified": true,
+        "berPct": 1.85
+      }
+    ],
+    "SIF-93": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.79,
+        "src": "g1:quant-ter-2026-09",
+        "locator": "Sept_2026.xlsx row 'qsif Active Asset Allocator Long-Short Fund', TER Date 22-09-2026: 'Regular Plan - Base Expense Ratio (BER) (%)' 1.79; 'Regular Plan - Total TER (%)' 3.79",
+        "verified": true,
+        "berPct": 1.79
+      }
+    ],
+    "SIF-117": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.36,
+        "src": "g1:quant-ter-2026-09",
+        "locator": "Sept_2026.xlsx row 'qsif Sector Rotation Long-Short Fund', TER Date 22-09-2026: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.1; 'Regular Plan - Total TER (%)' 4.36",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-21": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.58,
+        "src": "g1:iti-ter-fy27",
+        "locator": "Row 'DIVINITI EQUITY LONG SHORT FUND', TER Date 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.1; 'Regular Plan - Total TER (%)' 4.58",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-111": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.3,
+        "src": "g1:wsif-ter-fy27",
+        "locator": "Row 'WSIF Equity Long-Short Fund', TER Date 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.1; 'Regular Plan Total TER (%)' 4.3",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-105": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.53,
+        "src": "g1:wsif-ter-fy27",
+        "locator": "Row 'WSIF Equity Ex-Top 100 Long-Short Fund', TER Date 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.1; 'Regular Plan Total TER (%)' 4.53",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-34": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.67,
+        "src": "g2:icici-ter-2026-09",
+        "locator": "TotalExpenseRatioSep2026 row 'iSIF Equity Ex-Top 100 Long-Short Fund' 22/09/2026, Regular Plan: BER '1.69%', Total TER '2.67%'",
+        "verified": true,
+        "berPct": 1.69
+      }
+    ],
+    "SIF-126": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.85,
+        "src": "g2:icici-ter-2026-09",
+        "locator": "TotalExpenseRatioSep2026 row 'iSIF Equity Long-Short Fund' 22/09/2026, Regular Plan: BER '2.01%', Total TER '3.85%'",
+        "verified": true,
+        "berPct": 2.01
+      }
+    ],
+    "SIF-124": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.94,
+        "src": "g2:icici-ter-2026-09",
+        "locator": "TotalExpenseRatioSep2026 row 'iSIF Active Asset Allocator Long-Short Fund' 22/09/2026, Regular Plan: BER '1.62%', Total TER '2.94%'",
+        "verified": true,
+        "berPct": 1.62
+      }
+    ],
+    "SIF-35": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.48,
+        "src": "g2:icici-ter-2026-09",
+        "locator": "TotalExpenseRatioSep2026 row 'iSIF Hybrid Long-Short Fund' 22/09/2026, Regular Plan: BER '1.8%', Total TER '2.48%'",
+        "verified": true,
+        "berPct": 1.8
+      }
+    ],
+    "SIF-62": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.24,
+        "src": "g2:bandhan-ter",
+        "locator": "TER of ARUDHA SIF.xlsx row ASIF02 'Arudha Equity Long-Short Fund' 2026-09-22: 'Regular Plan - Base Expense Ratio (BER)' 0.021, 'Regular Plan - Total TER' 0.0324 (fractions x100)",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-40": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 1.27,
+        "src": "g2:bandhan-ter",
+        "locator": "TER of ARUDHA SIF.xlsx row ASIF01 'Arudha Hybrid Long-Short Fund' 2026-09-22: 'Regular Plan - Base Expense Ratio (BER)' 0.0063, 'Regular Plan - Total TER' 0.0127 (fractions x100)",
+        "verified": true,
+        "berPct": 0.63
+      }
+    ],
+    "SIF-128": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 1.86,
+        "src": "g2:hsbc-ter",
+        "locator": "hsbc_sif_ter_report.xlsx sheet 'TER' row RHSIFHY 'RedHex Hybrid Long-Short Fund' 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 0.94, 'Regular Plan - Total TER (%)' 1.86",
+        "verified": true,
+        "berPct": 0.94
+      }
+    ],
+    "SIF-55": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.84,
+        "src": "g3:dyna-ter-2026-09-22",
+        "locator": "Latest TER, DynaSIF Equity Long - Short Fund, Regular: '22 September 2026 2.1 0.35 0.05 1.34 3.84' (BER, brokerage, txn cost, levies, Total TER %)",
+        "verified": true
+      }
+    ],
+    "SIF-87": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.83,
+        "src": "g3:dyna-ter-2026-09-22",
+        "locator": "Latest TER, DynaSIF Active Asset Allocator Long-Short Fund, Regular: '22 September 2026 1.63 0.25 0.05 0.9 2.83'",
+        "verified": true
+      }
+    ],
+    "SIF-143": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.85,
+        "src": "g3:dyna-ter-2026-09-22",
+        "locator": "Latest TER, DynaSIF Equity Ex-Top 100 Long-Short Fund, Regular: '22 September 2026 2.1 0.43 0.03 1.29 3.85'",
+        "verified": true
+      }
+    ],
+    "SIF-122": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.46,
+        "src": "g3:edel-ter-2026-09-22",
+        "locator": "Altiva Equity Ex-Top 100 Long-Short Fund, Regular: '22/09/2026 1.8 0.39 0.03 1.24 3.46' (BER, brokerage, txn cost, levies, Total TER %)",
+        "verified": true
+      }
+    ],
+    "SIF-11": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.03,
+        "src": "g3:edel-ter-2026-09-22",
+        "locator": "Altiva Hybrid Long-Short Fund, Regular: '22/09/2026 1.22 0.1 0.04 0.67 2.03' (BER, brokerage, txn cost, levies, Total TER %)",
+        "verified": true
+      }
+    ],
+    "SIF-136": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.26,
+        "src": "g3:mir-ter-2026-09-22",
+        "locator": "row TER Date 22-09-2026, 'Regular Plan - Total TER (%)' 0.0326 (BER 0.013, brokerage 0.002, txn 0.0007, levies 0.0169; stored as fractions)",
+        "verified": true
+      }
+    ],
+    "SIF-80": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.78,
+        "src": "g4:apex-ter-hls-2026-09-22",
+        "locator": "row 'APEX HYBRID LONG-SHORT FUND' 22-SEP-2026 Regular: BER 1.41, brokerage 0.35, transaction 0.06, statutory levies 0.96, Total TER 2.78",
+        "verified": true
+      },
+      {
+        "asOf": "2026-08-31",
+        "terPct": 2.81,
+        "src": "g4:apex-ter-hls-2026-09-22",
+        "locator": "row 31-AUG-2026 Regular: BER 1.41, brokerage 0.33, transaction 0.07, statutory levies 1, Total TER 2.81",
+        "verified": true
+      }
+    ],
+    "SIF-13": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 1.48,
+        "src": "g4:sbi-ter-fy2627",
+        "locator": "row 'Magnum Hybrid Long Short Fund' 22/09/2026: Regular BER 0.92, brokerage 0.08, transaction 0.03, statutory levies 0.45, Total TER 1.48",
+        "verified": true
+      },
+      {
+        "asOf": "2026-08-31",
+        "terPct": 1.65,
+        "src": "g4:sbi-fs-2026-08-31",
+        "locator": "p.3 'BER\\TER (Regular Plan) 0.92% \\1.65%'",
+        "verified": true
+      }
+    ],
+    "SIF-157": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 5.28,
+        "src": "g4:sbi-ter-fy2627",
+        "locator": "row 'Magnum Equity Ex-Top 100Long Short Fund' 22/09/2026: Regular BER 1.82, brokerage 0.88, transaction 0.13, statutory levies 2.45, Total TER 5.28",
+        "verified": true
+      }
+    ],
+    "SIF-146": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.3146,
+        "src": "g4:kotak-ter-daily",
+        "locator": "row 'Infinity Hybrid Long-Short Fund | 22/09/2026' Regular: BER 1.39, brokerage 0.2592, transaction 0.0754, statutory levies 1.59, Total TER(%) 3.3146",
+        "verified": true
+      },
+      {
+        "asOf": "2026-08-31",
+        "terPct": 3.2338,
+        "src": "g4:kotak-ter-daily",
+        "locator": "row '31/08/2026' Regular: BER 1.4, brokerage 0.1807, transaction 0.0831, statutory levies 1.57, Total TER(%) 3.2338",
+        "verified": true
+      },
+      {
+        "asOf": "2026-07-31",
+        "terPct": 1.66,
+        "src": "g4:kotak-ter-daily",
+        "locator": "row '31/07/2026' Regular: BER 1.41, brokerage 0, transaction 0, statutory levies 0.25, Total TER(%) 1.66",
+        "verified": true
+      }
+    ],
+    "SIF-114": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 5.32,
+        "src": "g5:arth-ter-daily-2026-09",
+        "locator": "API row TER_DATE 2026-09-22 'Arthaya Equity Long Short Fund': R_BASE_TER 2.1, R_ADDITIONAL_EXPENSE_B (brokerage) 0.49, R_ADDITIONAL_EXPENSE_C (transaction cost) 0.09, R_GST (statutory levies incl. GST) 2.64, R_TOTAL_TER 5.32",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-96": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.01,
+        "src": "g5:ft-ter-2026-09",
+        "locator": "Sheet 'FTMF TER', row 'Sapphire Equity Long-Short SIF' Date 2026-09-22, Regular Plan: 'Base Expense Ratio (BER) (%)' 0.021, 'Brokerage cost' 0.0002, 'Transaction Cost' 0.0002, 'Statutory Levies (including GST) (%)' 0.0087, 'Total TER (%)' 0.0301 (cells stored as fractions)",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-150": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 4.15,
+        "src": "g5:sm-ter-2026-09",
+        "locator": "JSON row 'TER Date' 22/09/2026 'Summit Equity Long-Short Fund': 'Regular Plan - Base Expense Ratio (BER) (%)' 2.1, 'Brokerage cost' 0.53, 'Transaction Cost' 0.03, 'Statutory Levies (including GST) (%)' 1.49, 'Regular Plan - Total TER (%)' 4.15",
+        "verified": true,
+        "berPct": 2.1
+      }
+    ],
+    "SIF-102": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.16,
+        "src": "g5:tata-ter-fy2627",
+        "locator": "Sheet1 row 'TITANIUM EQUITY LONG-SHORT FUND' TER Date 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.09, 'Brokerage cost' 0.16, 'Transaction Cost' 0.02, 'Statutory Levies (including GST)' 0.89, 'Regular Plan - Total TER (%)' 3.16",
+        "verified": true,
+        "berPct": 2.09
+      }
+    ],
+    "SIF-29": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 2.71,
+        "src": "g5:tata-ter-fy2627",
+        "locator": "Sheet1 row 'TITANIUM HYBRID LONG-SHORT FUND' TER Date 2026-09-22: 'Regular Plan - Base Expense Ratio (BER) (%)' 2.07, 'Brokerage cost' 0.05, 'Transaction Cost' 0.02, 'Statutory Levies (including GST)' 0.57, 'Regular Plan - Total TER (%)' 2.71",
+        "verified": true,
+        "berPct": 2.07
+      }
+    ],
+    "SIF-138": [
+      {
+        "asOf": "2026-09-22",
+        "terPct": 3.14,
+        "src": "g5:jbr-ter-2026-09-22",
+        "locator": "Embedded page data: 'terDate':'22/09/2026', 'regularPlan':{'baseTer':1.38,'addExp526aB':0.14,'addExp526aC':0.06,'gst':1.56,'totalTer':3.14}",
+        "verified": true,
+        "berPct": 1.38
+      }
+    ]
+  }
 }
