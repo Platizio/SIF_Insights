@@ -19,8 +19,10 @@ import type { Amc } from "@/lib/data/types";
 const EDGE_FADE =
   "linear-gradient(to right, transparent, #000 7%, #000 93%, transparent)";
 
-/** Same speed discipline as the NFO ticker — slow enough to read a name. */
-const SPEED = 32;
+/** px/s. PRD p.12 asks for the strip to move "slowly"; 23 px/s reads a
+    brand name comfortably at xl size and sits well under the contract's
+    40 px/s ceiling. Constant whatever the number of houses — see useMarquee. */
+const SPEED = 23;
 
 export function AmcMarqueeClient({ amcs }: { amcs: Amc[] }) {
   /* WCAG 2.2.2 (Pause, Stop, Hide). Starts false so the server markup and
@@ -30,16 +32,21 @@ export function AmcMarqueeClient({ amcs }: { amcs: Amc[] }) {
   const { trackRef, trackStyle } = useMarquee(paused);
 
   return (
-    <Section id="amcs" className="py-14">
+    <Section id="amcs" className="py-16">
       <Shell>
-        <div className="flex flex-col items-center gap-3">
-          <Eyebrow>Funds we cover</Eyebrow>
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Eyebrow>Participating AMCs</Eyebrow>
+          <h2
+            className="text-[clamp(26px,2.6vw,34px)] font-medium leading-[1.25] text-ink"
+          >
+            SIFs We Offer
+          </h2>
 
           {/* PAUSE, not hide — the opposite call to <NfoBar>, on purpose.
               NfoBar carries time-boxed announcements, so "Dismiss" is the
               right escape: the reader is done with them. This strip is a
               standing index of the houses we cover and every logo is a live
-              link into #strategies, so hiding it would delete 17 links from
+              link to that AMC's page, so hiding it would delete 17 links from
               the page — a worse outcome for the keyboard user than the one
               we are fixing. What is hostile here is the MOTION, not the
               presence, so the control stops the motion and leaves the links.
@@ -64,8 +71,8 @@ export function AmcMarqueeClient({ amcs }: { amcs: Amc[] }) {
             onClick={() => setPaused((wasPaused) => !wasPaused)}
             aria-label={
               paused
-                ? "Resume the fund logo strip"
-                : "Pause the fund logo strip"
+                ? "Resume the SIF logo strip"
+                : "Pause the SIF logo strip"
             }
             className="rounded-full border border-hairline px-3 py-1 text-[12px] leading-[18px] text-muted transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent-dim hover:text-ink motion-reduce:hidden"
           >
@@ -78,7 +85,7 @@ export function AmcMarqueeClient({ amcs }: { amcs: Amc[] }) {
         <Rule />
 
         <div
-          className="marquee-host overflow-hidden py-6"
+          className="marquee-host overflow-hidden py-8"
           style={{ maskImage: EDGE_FADE, WebkitMaskImage: EDGE_FADE }}
         >
           <div ref={trackRef} className="marquee-track" style={trackStyle}>
@@ -100,19 +107,20 @@ function MarqueeRow({ amcs, duplicate = false }: { amcs: Amc[]; duplicate?: bool
       {amcs.map((amc) => (
         <li key={amc.id} className="shrink-0">
           <Link
-            href="#strategies"
+            href={`/amc/${amc.id}`}
             tabIndex={duplicate ? -1 : undefined}
-            className="group flex items-center gap-3.5 px-8 py-1"
+            className="group flex items-center gap-4 px-10 py-1.5 focus-visible:outline-offset-[-2px]"
           >
-            {/* The alpha-channel trap and the nine markless houses are both
-                handled inside <AmcMark>. `hover` needs the `group` above. */}
-            <AmcMark amc={amc} size="md" hover />
+            {/* Original brand colours at rest (PRD p.4, p.12) — no grayscale
+                hover-reveal. The alpha-channel trap and markless houses are
+                handled inside <AmcMark>. */}
+            <AmcMark amc={amc} size="xl" tone="colour" />
 
             <span className="flex flex-col transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5">
-              <span className="text-[14px] leading-[20px] text-body transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:text-ink">
+              <span className="text-[17px] leading-[24px] font-medium text-ink">
                 {amc.sifName}
               </span>
-              <span className="text-[12px] leading-[16px] text-muted">{amc.name}</span>
+              <span className="text-[13px] leading-[18px] text-muted">{amc.name}</span>
             </span>
           </Link>
         </li>

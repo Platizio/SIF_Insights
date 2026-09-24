@@ -28,20 +28,19 @@
    This still server-renders: "use client" only means hydrated, so the
    headline and the standfirst are in the first HTML payload.
 
-   The figures in the trust cluster arrive as PROPS from the server
-   wrapper in Hero.tsx. This file used to import `stats` from
-   `@/lib/data` directly, which put the full NAV history into the
-   home page's client bundle for three numbers.
+   The hero carries no market figures (PRD p.3-4: the counts and the
+   NAV date were removed from the landing view). It closes on the
+   regulatory trust line from SITE instead — a client-safe constant, so
+   this island imports nothing from the data layer.
    ============================================================ */
 
 import { motion, useReducedMotion, type Transition } from "motion/react";
 import Image from "next/image";
-import type { ReactNode } from "react";
 
 import { LineReveal } from "@/components/motion/LineReveal";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Button, Eyebrow, Section, Shell } from "@/components/primitives";
-import { formatUpdated } from "@/lib/format";
+import { SITE } from "@/lib/site";
 import { DUR, EASE } from "@/lib/motion";
 
 /* ============================================================
@@ -50,7 +49,7 @@ import { DUR, EASE } from "@/lib/motion";
    A page-load sequence, not a scroll reveal — the hero is above the
    fold, so nothing here waits on a viewport intersection.
 
-   Headline line 1 fires at 0. Chrome ignores opacity:0 elements when
+   Headline line 1 fires at 0 (the H1 is the LCP candidate). Chrome ignores opacity:0 elements when
    picking an LCP candidate, so any delay on the H1 is a measured LCP
    regression rather than a taste question. All the luxurious pacing is
    spent on elements that can never be the LCP candidate.
@@ -84,14 +83,7 @@ function useEnter() {
    Section
    ============================================================ */
 
-/** The three figures the trust cluster prints — all derived on the server. */
-export type HeroFigures = {
-  amcCount: number;
-  strategyCount: number;
-  navLastUpdated: string;
-};
-
-export function HeroClient({ figures }: { figures: HeroFigures }) {
+export function HeroClient() {
   return (
     <Section
       id="hero"
@@ -102,7 +94,7 @@ export function HeroClient({ figures }: { figures: HeroFigures }) {
       <HeroBanner />
 
       <Shell className="relative z-10">
-        <HeroLede figures={figures} />
+        <HeroLede />
       </Shell>
     </Section>
   );
@@ -138,7 +130,8 @@ function HeroBanner() {
         src="/sif-hero-4k-21x9.png"
         alt=""
         fill
-        priority
+        preload
+        loading="eager"
         sizes="100vw"
         quality={85}
         className="object-cover object-center md:object-right"
@@ -208,10 +201,10 @@ function HeroBanner() {
 }
 
 /* ============================================================
-   The load sequence, ~1.1s to the trust cluster
+   The load sequence, ~1.1s to the trust line
    ============================================================ */
 
-function HeroLede({ figures }: { figures: HeroFigures }) {
+function HeroLede() {
   const enter = useEnter();
 
   return (
@@ -222,41 +215,41 @@ function HeroLede({ figures }: { figures: HeroFigures }) {
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.eyebrow, DUR.reveal)}
       >
-        <Eyebrow>SEBI Regulated · Introduced 2025</Eyebrow>
+        {/* The brand line (PRD p.11). It replaced "SEBI Regulated ·
+            Introduced 2025", which the review struck (p.3). */}
+        <Eyebrow>{SITE.name}</Eyebrow>
       </motion.div>
 
       {/* Masked lines: the type rises from behind its own baseline. Hand-split
-          so the serif swap lands where we want it, not where a resize does. */}
+          so the serif swap lands where we want it, not where a resize does.
+          The swap word is the FIRST of the site's two (the second is in
+          ClosingCta) and it opens line 1, so it sits at the head of a line. */}
       <LineReveal
         as="h1"
         delay={CHOREO.headline}
-        className="mt-7 text-[clamp(40px,5.4vw,80px)] leading-[1.12] font-medium text-ink"
-        /* Line 1 is a plain string; only line 2 needs markup, and an element
-           inside an array literal must carry a key or React warns. */
+        className="mt-7 text-[clamp(38px,5.4vw,80px)] leading-[1.12] font-medium text-ink"
         lines={[
-          "India’s SIF market,",
-          <span key="swap-line">
-            in <em className="swap">full</em> view.
+          <span key="l1">
+            <em className="swap">Understand</em> and invest
           </span>,
+          "in SIFs with SIF Insight",
         ]}
       />
 
       <motion.p
         data-reveal=""
-        /* 44ch, not the 52ch this measure used on flat paper. At 52ch the
-           longest line reached x=908 and ran into the glass massing, where
-           the art drops to luminance 88 and the line measured 3.05:1 —
-           under AA. Pulling the measure in stops the lede short of the
-           architecture instead of veiling the architecture to protect it,
-           and 44ch is still comfortably inside the 45-75ch band. */
+        /* 44ch, not wider. At 52ch the longest line ran into the glass
+           massing of the banner, where the art drops to luminance 88 and
+           the line measured 3.05:1 — under AA. */
         className="mt-8 max-w-[44ch] text-[17px] leading-[30px] text-body"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.standfirst, DUR.reveal)}
       >
-        Specialised Investment Funds sit between mutual funds and PMS —
-        long-short flexibility under SEBI&rsquo;s framework, from a ₹10 lakh
-        minimum. We track every scheme, every NAV, every disclosure.
+        SIF Insight brings India&rsquo;s Specialised Investment Fund ecosystem
+        together — connecting AMCs, fund managers, experts and investors on one
+        platform. Research, track and compare SIFs, and access expert insights
+        to make more informed investment decisions.
       </motion.p>
 
       <motion.div
@@ -266,71 +259,51 @@ function HeroLede({ figures }: { figures: HeroFigures }) {
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.cta, DUR.reveal)}
       >
-        {/* NO <GlassField> here, unlike every other CTA cluster on the site.
-            That field exists to give backdrop-filter something to blur when a
-            glass button sits on flat paper. The banner already supplies it, so
-            the field was pure redundancy — and its -inset-x bleed put a hazy
-            rectangle 38px LEFT of the text column, breaking the hero's left
-            margin against the art. The buttons now frost against the image,
-            which is what the treatment was always meant to do. */}
-        {/* inline-flex is load-bearing: transforms are ignored on inline boxes,
-            so a bare <span> wrapper would silently kill the magnetic pull. */}
+        {/* No <GlassField>: the banner already gives the glass something to
+            frost against. inline-flex is load-bearing — transforms are
+            ignored on inline boxes, so a bare <span> would kill the pull. */}
         <Magnetic className="inline-flex">
-          <Button href="#nav-board" variant="primary">
-            Explore the funds
+          <Button href="/sif-tracker" variant="primary">
+            Explore SIFs
           </Button>
         </Magnetic>
-        <Button href="#what-is-a-sif" variant="ghost">
-          What is a SIF?
+        <Button href="/learn" variant="ghost">
+          Understand SIFs
         </Button>
       </motion.div>
 
       <motion.div
         data-reveal=""
-        className="mt-9"
+        className="mt-10"
         initial={{ opacity: 0, y: 14 }}
         animate={{ opacity: 1, y: 0 }}
         transition={enter(CHOREO.trust, DUR.reveal)}
       >
-        <TrustCluster figures={figures} />
+        <TrustLine />
       </motion.div>
     </div>
   );
 }
 
-/** Every figure traces to `stats` / `navLastUpdated`. Hairline separators only. */
-function TrustCluster({ figures }: { figures: HeroFigures }) {
-  const items: ReactNode[] = [
-    <>
-      <span className="tabular text-ink">{figures.amcCount}</span> AMCs
-    </>,
-    <>
-      <span className="tabular text-ink">{figures.strategyCount}</span> strategies
-    </>,
-    <>
-      NAV from AMFI ·{" "}
-      {/* Formatted with Intl on both passes; the source is a bare date, so a
-          viewer west of UTC can legitimately resolve one day earlier. */}
-      <span className="tabular" suppressHydrationWarning>
-        {formatUpdated(figures.navLastUpdated)}
-      </span>
-    </>,
-  ];
-
+/**
+ * The regulatory trust line that closes the hero (PRD p.11): three strong
+ * labels, hairline-separated. Text only — no badge art, no seal imagery.
+ *
+ * text-body/ink, never muted: this row sits on the darkest band of the art,
+ * where muted measured 3.58:1. Ink on the same pixels clears AA easily.
+ */
+function TrustLine() {
   return (
-    /* text-body, not the text-muted this cluster uses elsewhere. Muted
-       clears only 4.60:1 on bare paper, so it has essentially no headroom
-       left for a background image — measured against the darkest pixels
-       under this row it came out at 3.58:1 even under the old near-opaque
-       scrim, i.e. it was already failing AA before the banner landed. Body
-       on the same pixels clears 4.9:1. */
-    <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] leading-[20px] text-body">
-      {items.map((item, i) => (
-        <li key={i} className="flex items-center gap-5">
+    <ul
+      aria-label="Registration"
+      className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] leading-[20px]"
+    >
+      {SITE.trustLine.map((label, i) => (
+        <li key={label} className="flex items-center gap-5">
           {i > 0 ? (
             <span aria-hidden="true" className="h-3.5 w-px bg-hairline" />
           ) : null}
-          <span>{item}</span>
+          <strong className="font-semibold text-ink">{label}</strong>
         </li>
       ))}
     </ul>

@@ -1,21 +1,12 @@
-import { navLastUpdated, stats } from "@/lib/data";
-
 import { HeroClient } from "./HeroClient";
 
 /**
- * The homepage hero. SERVER wrapper: it reads the three trust-cluster figures
- * from `@/lib/data` and passes them to the client island as plain numbers, so
- * the island's bundle carries no data layer. See HeroClient.tsx for the hero
- * itself.
+ * The homepage hero. The island takes no props: since the PRD rebuild the
+ * hero prints no market figures (the AMC/strategy counts and the NAV date
+ * were struck in review), only brand copy and the SITE trust line. Kept as
+ * a server entry point so app/page.tsx never imports a client file directly
+ * and a future data-fed element has a place to be derived.
  */
 export function Hero() {
-  return (
-    <HeroClient
-      figures={{
-        amcCount: stats.amcCount,
-        strategyCount: stats.strategyCount,
-        navLastUpdated,
-      }}
-    />
-  );
+  return <HeroClient />;
 }
