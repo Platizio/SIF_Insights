@@ -7,7 +7,7 @@ import type {
   SifRow,
   StrategySlug,
 } from "@/lib/data/types";
-import { nfoStatus } from "@/lib/format";
+import { heatGrade, nfoStatus } from "@/lib/format";
 
 /* ============================================================
    The tracker's client-safe model.
@@ -41,7 +41,6 @@ export type TrackerRow = Pick<
   | "nav"
   | "navAsOf"
   | "returns"
-  | "returnsMeta"
   | "riskBand"
   | "benchmark"
 >;
@@ -62,7 +61,6 @@ export function trackerRow(r: SifRow): TrackerRow {
     nav: r.nav,
     navAsOf: r.navAsOf,
     returns: r.returns,
-    returnsMeta: r.returnsMeta,
     riskBand: r.riskBand,
     benchmark: r.benchmark,
   };
@@ -199,6 +197,18 @@ export const PERIOD_LABEL: Record<TrackerPeriod, { short: string; long: string }
   SI: { short: "SI", long: "Since Inception" },
 };
 
+const ANNUALISED: ReadonlySet<TrackerPeriod> = new Set(["1Y", "2Y"]);
+
+/** "1 Month Return", "1 Year Return (CAGR)" — a column heading. */
+export function returnHeading(p: TrackerPeriod): string {
+  return `${PERIOD_LABEL[p].long} Return${ANNUALISED.has(p) ? " (CAGR)" : ""}`;
+}
+
+/** What a scheme too young for `p` lacks — "3 months of NAV history". */
+export function historyPhrase(p: TrackerPeriod): string {
+  return p === "SI" ? "a since-inception return" : `${PERIOD_LABEL[p].long.toLowerCase()} of NAV history`;
+}
+
 /* ============================================================
    New fund offers
    ============================================================ */
@@ -206,6 +216,10 @@ export const PERIOD_LABEL: Record<TrackerPeriod, { short: string; long: string }
 /** One offer, as the tracker's NFO cards print it. Serialisable. */
 export type NfoItem = Pick<Nfo, "id" | "title" | "active" | "opensOn" | "closesOn"> & {
   schemeName: string;
+  /** Dates formatted on the server, so the island's hydrating render cannot
+      disagree with the HTML over an ICU month abbreviation ("Sep"/"Sept"). */
+  opensLabel: string | null;
+  closesLabel: string | null;
   amc: MarkAmc | null;
   strategy: string | null;
   category: Category | null;
@@ -240,3 +254,119 @@ export function partitionNfos<T extends NfoWindow>(
     });
   return { open, upcoming };
 }
+
+/* ============================================================
+   Performance: availability, ranking, sorting
+   ============================================================ */
+
+/** Does any row hold a value for this period? A period nothing reaches is shown inert. */
+export function periodHasData(rows: readonly TrackerRow[], p: TrackerPeriod): boolean {
+  return rows.some((r) => cellValue(r.returns[p]) !== null);
+}
+
+const collator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+
+const byName = (a: Pick<TrackerRow, "shortName" | "code">, b: Pick<TrackerRow, "shortName" | "code">) =>
+  collator.compare(a.shortName, b.shortName) || a.code.localeCompare(b.code);
+
+/**
+ * The top `n` rows by one period's return, among the rows that HAVE that
+ * period. Rows without it are counted, never ranked: "insufficient history"
+ * is not the lowest return. Ties fall back to name, so the order is total.
+ */
+export function rankByPeriod(
+  rows: readonly TrackerRow[],
+  p: TrackerPeriod,
+  n = 5,
+): { ranked: { row: TrackerRow; pct: number }[]; eligible: number; lacking: number } {
+  const withValue = rows.flatMap((row) => {
+    const pct = cellValue(row.returns[p]);
+    return pct === null ? [] : [{ row, pct }];
+  });
+  withValue.sort((a, b) => b.pct - a.pct || byName(a.row, b.row));
+  return {
+    ranked: withValue.slice(0, n),
+    eligible: withValue.length,
+    lacking: rows.length - withValue.length,
+  };
+}
+
+export type HeatSortKey = "name" | "amc" | "strategy" | "risk" | TrackerPeriod;
+export type SortDir = "asc" | "desc";
+
+/**
+ * Heatmap order. A missing value sorts LAST in both directions (the rule
+ * lib/screener/sort.ts applies), and every tie falls back to name.
+ */
+export function sortHeatRows(
+  rows: readonly TrackerRow[],
+  key: HeatSortKey,
+  dir: SortDir,
+): TrackerRow[] {
+  const sign = dir === "asc" ? 1 : -1;
+  const value = (r: TrackerRow): string | number | null => {
+    switch (key) {
+      case "name":
+        return r.shortName;
+      case "amc":
+        return r.brand;
+      case "strategy":
+        return r.strategyLabel;
+      case "risk":
+        return r.riskBand;
+      default:
+        return cellValue(r.returns[key]);
+    }
+  };
+  return [...rows].sort((a, b) => {
+    const va = value(a);
+    const vb = value(b);
+    if (va === null || vb === null) {
+      if (va !== vb) return va === null ? 1 : -1;
+      return byName(a, b);
+    }
+    const c =
+      typeof va === "number" && typeof vb === "number"
+        ? va - vb
+        : collator.compare(String(va), String(vb));
+    return c * sign || byName(a, b);
+  });
+}
+
+/* ============================================================
+   Heat classes — literal strings, because Tailwind scans source
+   text. Each fill carries the text colour its token note pairs it
+   with (app/globals.css): ink on grades 1–2, white on 3–4, muted on
+   N/A — every pair measured at or above 4.5:1.
+   ============================================================ */
+
+const HEAT_CLASS: Record<string, string> = {
+  "-4": "bg-heat-neg-4 text-surface",
+  "-3": "bg-heat-neg-3 text-surface",
+  "-2": "bg-heat-neg-2 text-ink",
+  "-1": "bg-heat-neg-1 text-ink",
+  "0": "bg-heat-na text-ink",
+  "1": "bg-heat-pos-1 text-ink",
+  "2": "bg-heat-pos-2 text-ink",
+  "3": "bg-heat-pos-3 text-surface",
+  "4": "bg-heat-pos-4 text-surface",
+};
+
+export const HEAT_NA_CLASS = "bg-heat-na text-muted";
+
+/** The fill and text classes for one return in one period. */
+export function heatClass(pct: number, p: Period): string {
+  return HEAT_CLASS[String(heatGrade(pct, p))] ?? HEAT_NA_CLASS;
+}
+
+/** The legend's ramp, strongest loss to strongest gain. */
+export const HEAT_LEGEND: { grade: number; className: string }[] = [-4, -3, -2, -1, 1, 2, 3, 4].map(
+  (grade) => ({ grade, className: HEAT_CLASS[String(grade)] }),
+);
+
+/**
+ * The band edges the legend prints — spec §9, the same numbers `heatGrade`
+ * (lib/format.ts) grades by. lib/format keeps its own copy private; if the
+ * thresholds ever move there, move them here too.
+ */
+export const HEAT_EDGES = { long: [1, 3, 7], short: [0.25, 1, 2.5] } as const;
