@@ -1,50 +1,267 @@
 {
   "_comment": "The SIF Insight YouTube catalogue. `id` is the YouTube video id; `title` is the video's own title, verbatim. `durationSec` and `publishedAt` stay null until read from YouTube itself — never estimated. `featuredOrder` 1-4 picks the home-page videos (null = library only); the final pick is the client's. `excluded` records ids that must NEVER be shown, with the reason, so a copy-paste from the old site cannot bring one back.",
   "channel": {
-    "url": "https://www.youtube.com/@sifinsight",
-    "handle": "@sifinsight"
+    "url": "https://www.youtube.com/@SIFinsight",
+    "handle": "@SIFinsight"
   },
   "videos": [
     {
+      "id": "fjOzyk8hpng",
+      "title": "DynaSIF Equity Long-Short Fund Review August 2026 | Performance and Portfolio",
+      "durationSec": 192,
+      "publishedAt": "2026-09-23",
+      "featuredOrder": null
+    },
+    {
+      "id": "U4fCuLJx7LU",
+      "title": "Which Hybrid Long-Short SIF Is Right for You? Full Comparison",
+      "durationSec": 333,
+      "publishedAt": "2026-07-24",
+      "featuredOrder": null
+    },
+    {
+      "id": "RD1kMFbMpHo",
+      "title": "A Smarter Way to Invest in Land via an AIF with Mr Rakesh Kumar",
+      "durationSec": 2115,
+      "publishedAt": "2026-07-22",
+      "featuredOrder": null
+    },
+    {
+      "id": "zPxAMLZ2yro",
+      "title": "How Pre-IPO Category II AIFs Create Value",
+      "durationSec": 1735,
+      "publishedAt": "2026-07-01",
+      "featuredOrder": null
+    },
+    {
+      "id": "nyXfNVSUJwE",
+      "title": "Understanding Mirae Asset's Platinum SIF: Exclusive Interview with Mr. Gaurik Shah",
+      "durationSec": 1466,
+      "publishedAt": "2026-05-29",
+      "featuredOrder": null
+    },
+    {
+      "id": "cWV2NbxaXv8",
+      "title": "How to Become an Accredited Investor in India?",
+      "durationSec": 247,
+      "publishedAt": "2026-05-28",
+      "featuredOrder": null
+    },
+    {
+      "id": "QBRNdK37jJA",
+      "title": "The ONLY Hybrid SIF Comparison Video You'll Ever Need (2026)",
+      "durationSec": 426,
+      "publishedAt": "2026-04-06",
+      "featuredOrder": null
+    },
+    {
+      "id": "2Pi_RjdYgCc",
+      "title": "How the DynaSIF Equity Long-Short Fund Works | Strategy, Allocation & Who Should Invest",
+      "durationSec": 176,
+      "publishedAt": "2026-02-18",
+      "featuredOrder": null
+    },
+    {
+      "id": "EoxZhjcoFDI",
+      "title": "December 2025 Update: Magnum Hybrid Long Short Fund | Portfolio & AUM Snapshot",
+      "durationSec": 142,
+      "publishedAt": "2026-02-02",
+      "featuredOrder": null
+    },
+    {
+      "id": "RmvUDl_cpSw",
+      "title": "Altiva Hybrid Long-Short Fund | December 2025 Update",
+      "durationSec": 139,
+      "publishedAt": "2026-01-28",
+      "featuredOrder": null
+    },
+    {
+      "id": "R_cmQ8vk7jo",
+      "title": "Inside ICICI Prudential's iSIF Hybrid Long-Short Fund: Structure, Allocation & Strategy.#investment",
+      "durationSec": 184,
+      "publishedAt": "2026-01-16",
+      "featuredOrder": null
+    },
+    {
+      "id": "cDmaJm6djhE",
+      "title": "ICICI Prudential's iSIF Ex-Top 100 Long-Short Fund: How This Mid & Small-Cap Strategy Works",
+      "durationSec": 155,
+      "publishedAt": "2026-01-14",
+      "featuredOrder": null
+    },
+    {
+      "id": "JdcudhmGs7I",
+      "title": "Bandhan Mutual Fund's Arudha SIF Launch | Hybrid Long-Short Fund Explained",
+      "durationSec": 117,
+      "publishedAt": "2026-01-08",
+      "featuredOrder": null
+    },
+    {
+      "id": "ZWi5r7jnrr4",
+      "title": "Markets Not Moving? This Options Strategy Generates Monthly Income! Bear Call Spread.",
+      "durationSec": 192,
+      "publishedAt": "2025-12-24",
+      "featuredOrder": null
+    },
+    {
+      "id": "eQyy4zjmKM0",
+      "title": "SBI Magnum Hybrid Long-Short Fund | November Factsheet Breakdown.",
+      "durationSec": 168,
+      "publishedAt": "2025-12-15",
+      "featuredOrder": null
+    },
+    {
+      "id": "HzYoV3xS5cE",
+      "title": "Altiva Hybrid Long-Short November Portfolio Update 2025. Consistent Performer?",
+      "durationSec": 218,
+      "publishedAt": "2025-12-11",
+      "featuredOrder": null
+    },
+    {
       "id": "UVpPGY8GuPQ",
-      "title": "SIFs vs Mutual Funds: The Regulatory Limits That Change Everything",
-      "durationSec": null,
-      "publishedAt": null,
+      "title": "SIFs vs Mutual Funds: The Regulatory Limits That Change Everything",
+      "durationSec": 187,
+      "publishedAt": "2025-12-09",
       "featuredOrder": 1
     },
     {
       "id": "Y6wZcsjc17s",
       "title": "qsif Equity Long-Short Fund December Factsheet | Why the Fund Stayed Strongly \"Long-Biased\"",
-      "durationSec": null,
-      "publishedAt": null,
+      "durationSec": 222,
+      "publishedAt": "2025-12-05",
       "featuredOrder": 2
     },
     {
       "id": "OfF8djLO9Rg",
-      "title": "The Secret Behind SIF's Downside Protection-Part 4 | Unhedged Shorting",
-      "durationSec": null,
-      "publishedAt": null,
+      "title": "The Secret Behind SIF’s Downside Protection-Part 4 | Unhedged Shorting",
+      "durationSec": 204,
+      "publishedAt": "2025-12-02",
       "featuredOrder": 3
     },
     {
       "id": "Ea2M4Ds7zmk",
-      "title": "Tata Mutual Fund Titanium Hybrid Long-Short SIF | Tata's NEW Titanium SIF Explained",
-      "durationSec": null,
-      "publishedAt": null,
+      "title": "Tata Mutual Fund Titanium Hybrid Long-Short SIF | Tata’s NEW Titanium SIF Explained",
+      "durationSec": 237,
+      "publishedAt": "2025-11-27",
       "featuredOrder": 4
     },
     {
       "id": "HQ4N1ZuZLNM",
-      "title": "SBI Magnum SIF Update: India's Fastest-Growing Hybrid Long-Short Fund? Full October Breakdown",
-      "durationSec": null,
-      "publishedAt": null,
+      "title": "SBI Magnum SIF Update: India’s Fastest-Growing Hybrid Long-Short Fund? Full October Breakdown",
+      "durationSec": 163,
+      "publishedAt": "2025-11-25",
+      "featuredOrder": null
+    },
+    {
+      "id": "kavum2vPX7w",
+      "title": "Altiva Hybrid Long-Short October Portfolio Update 2025. Stable Income for Retirees?",
+      "durationSec": 246,
+      "publishedAt": "2025-11-20",
+      "featuredOrder": null
+    },
+    {
+      "id": "e31bzZHMFh4",
+      "title": "The Secret Behind SIF’s Downside Protection-Part 3 | Protective Put",
+      "durationSec": 155,
+      "publishedAt": "2025-11-14",
+      "featuredOrder": null
+    },
+    {
+      "id": "2hxmylt5AD8",
+      "title": "The Secret Behind SIF’s Downside Protection-Part 2 | Covered Calls Simplified #calloption",
+      "durationSec": 136,
+      "publishedAt": "2025-11-11",
+      "featuredOrder": null
+    },
+    {
+      "id": "jhTaXqBQ5oo",
+      "title": "The Secret Behind SIF’s Downside Protection-Part 1 | Index Shorting Simplified.",
+      "durationSec": 174,
+      "publishedAt": "2025-11-05",
+      "featuredOrder": null
+    },
+    {
+      "id": "-HQ89973S2s",
+      "title": "SBI Magnum SIF’s Hidden Trick for Steady Returns | Collar Strategy Explained Simply!",
+      "durationSec": 179,
+      "publishedAt": "2025-10-31",
       "featuredOrder": null
     },
     {
       "id": "3uci9zH8nok",
       "title": "Quant vs SBI vs Edelweiss SIF | Best Hybrid Long Short Fund 2025? | Full Comparison",
-      "durationSec": null,
-      "publishedAt": null,
+      "durationSec": 252,
+      "publishedAt": "2025-10-29",
+      "featuredOrder": null
+    },
+    {
+      "id": "E-L55JBg-dY",
+      "title": "Mutual Funds Were Yesterday. SIFs Are Now — Here’s Why!",
+      "durationSec": 207,
+      "publishedAt": "2025-10-17",
+      "featuredOrder": null
+    },
+    {
+      "id": "TNteNqVfQRQ",
+      "title": "Zee Business Masterclass Highlights You MUST Know | India’s New SIF Era Begins",
+      "durationSec": 178,
+      "publishedAt": "2025-10-13",
+      "featuredOrder": null
+    },
+    {
+      "id": "WzuIiQZMGyg",
+      "title": "Quant Hybrid Long-Short Fund 🚀 New SIF Explained | Equity + Debt + Derivatives in One Fund",
+      "durationSec": 159,
+      "publishedAt": "2025-10-06",
+      "featuredOrder": null
+    },
+    {
+      "id": "iRD6aWGXTWw",
+      "title": "SBI Magnum Hybrid Long Short Fund Explained | SBI SIF NFO 2025 Launch",
+      "durationSec": 192,
+      "publishedAt": "2025-09-30",
+      "featuredOrder": null
+    },
+    {
+      "id": "B0634TElhHA",
+      "title": "Edelweiss Hybrid Long Short Fund NFO 2025 | Equity + Debt + Derivatives",
+      "durationSec": 181,
+      "publishedAt": "2025-09-26",
+      "featuredOrder": null
+    },
+    {
+      "id": "RerYl70tvd0",
+      "title": "Quant Mutual Fund Launches India’s 1st ever Equity Long-Short Fund 🔥 | Explained Simply",
+      "durationSec": 151,
+      "publishedAt": "2025-09-17",
+      "featuredOrder": null
+    },
+    {
+      "id": "9ooOFEOGJBU",
+      "title": "Are Hybrid SIFs the Next Big Thing in Investing?",
+      "durationSec": 119,
+      "publishedAt": "2025-09-10",
+      "featuredOrder": null
+    },
+    {
+      "id": "dr8LxUHyVB8",
+      "title": "Equity SIFs Explained: The Smart Way to Beat the Market!",
+      "durationSec": 188,
+      "publishedAt": "2025-09-03",
+      "featuredOrder": null
+    },
+    {
+      "id": "A97xFnE4hew",
+      "title": "Want Alpha-Returns? Here’s why Smart Money will move to SIFs",
+      "durationSec": 278,
+      "publishedAt": "2025-09-01",
+      "featuredOrder": null
+    },
+    {
+      "id": "RGrMhi9cAVA",
+      "title": "New SEBI Investment Category— What are Specialised Investment Funds (SIFs)?",
+      "durationSec": 179,
+      "publishedAt": "2025-08-25",
       "featuredOrder": null
     }
   ],

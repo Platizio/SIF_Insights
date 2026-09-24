@@ -1,6 +1,1507 @@
 {
   "_comment": "Scheme documents by AMFI scheme code: { \"SIF-3\": [ { \"kind\": \"SID|KIM|SAI|ISID|factsheet|portfolio|addendum\", \"title\": \"...\", \"url\": \"https://...\", \"date\": \"2026-08-31\", \"publisher\": \"...\", \"verified\": true } ] }. Each entry is itself the source, so this file has no `sources` dict. Only verified entries with an https URL are shown. `amcs` is reserved for house-level documents, keyed by amcId.",
   "schemaVersion": 1,
-  "schemes": {},
+  "schemes": {
+    "SIF-3": [
+      {
+        "kind": "ISID",
+        "title": "ISID - qsif Equity Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Equity_Long_Short_Fund.pdf",
+        "date": "2025-08-06",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - qsif Equity Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/KIM_qsif_Equity_Long_Short_Fund.pdf",
+        "date": "2025-08-06",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - qsif",
+        "url": "https://www.qsif.com/Admin/SIDPdf/Statement_of_Additional_Information.pdf",
+        "date": "2026-07-30",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "qsif Factsheet - September 2026 issue (data as on 31 August 2026)",
+        "url": "https://www.qsif.com/Admin/Factsheet/qsif-Factsheet-September_2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly portfolio (fund-wise) as on 31 Jul 2026 - qsif Equity Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/disclouser/qsif_Equity_Long_Short_Fund_31_Jul_2026.xlsx",
+        "date": "2026-07-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 15/2026 - change in exit load (effective September 11, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/15_Notice_cum_Addendum_Change_in_Exit_Load.pdf",
+        "date": "2026-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 10/2026 - minimum additional purchase / SIP / SWP / STP amounts (effective June 25, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+        "date": "2026-06-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 04/2026 - change in fund managers (effective February 20, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/Notice_cum_Addendum_Change_in_KMP_and_Strategy_Responsibilities.pdf",
+        "date": "2026-02-19",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-25": [
+      {
+        "kind": "ISID",
+        "title": "ISID - qsif Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Equity_Ex-Top_100_Long-Short_Fund.pdf",
+        "date": "2025-08-14",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - qsif Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/KIM_qsif_Equity_Ex_top_100_Long_Short_Fund.pdf",
+        "date": "2025-08-14",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - qsif",
+        "url": "https://www.qsif.com/Admin/SIDPdf/Statement_of_Additional_Information.pdf",
+        "date": "2026-07-30",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "qsif Factsheet - September 2026 issue (data as on 31 August 2026)",
+        "url": "https://www.qsif.com/Admin/Factsheet/qsif-Factsheet-September_2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly portfolio (fund-wise) as on 31 Jul 2026 - qsif Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/disclouser/qsif_Equity_Ex_Top_100_Long-Short_Fund_31_Jul_2026.xlsx",
+        "date": "2026-07-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 15/2026 - change in exit load (effective September 11, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/15_Notice_cum_Addendum_Change_in_Exit_Load.pdf",
+        "date": "2026-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 10/2026 - minimum additional purchase / SIP / SWP / STP amounts (effective June 25, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+        "date": "2026-06-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 04/2026 - change in fund managers (effective February 20, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/Notice_cum_Addendum_Change_in_KMP_and_Strategy_Responsibilities.pdf",
+        "date": "2026-02-19",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-7": [
+      {
+        "kind": "ISID",
+        "title": "ISID - qsif Hybrid Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/ISID-qsif_Hybrid_Long-Short_Fund.pdf",
+        "date": "2025-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - qsif Hybrid Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/KIM-qsif-hybrid-Long-Short-Fund.pdf",
+        "date": "2025-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - qsif",
+        "url": "https://www.qsif.com/Admin/SIDPdf/Statement_of_Additional_Information.pdf",
+        "date": "2026-07-30",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "qsif Factsheet - September 2026 issue (data as on 31 August 2026)",
+        "url": "https://www.qsif.com/Admin/Factsheet/qsif-Factsheet-September_2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly portfolio (fund-wise) as on 31 Jul 2026 - qsif Hybrid Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/disclouser/qsif_Hybrid_Long-Short_Fund_31_Jul_2026.xlsx",
+        "date": "2026-07-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 15/2026 - change in exit load (effective September 11, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/15_Notice_cum_Addendum_Change_in_Exit_Load.pdf",
+        "date": "2026-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 10/2026 - minimum additional purchase / SIP / SWP / STP amounts (effective June 25, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+        "date": "2026-06-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 04/2026 - change in fund managers (effective February 20, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/Notice_cum_Addendum_Change_in_KMP_and_Strategy_Responsibilities.pdf",
+        "date": "2026-02-19",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-93": [
+      {
+        "kind": "ISID",
+        "title": "ISID - qsif Active Asset Allocator Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/ISID-qsif_Active_Asset_Allocator_Long-Short_Fund.pdf",
+        "date": "2026-03-27",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - qsif Active Asset Allocator Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/KIM-qsif_Active_Asset_Allocator_Long-Short_Fund.pdf",
+        "date": "2026-03-27",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - qsif",
+        "url": "https://www.qsif.com/Admin/SIDPdf/Statement_of_Additional_Information.pdf",
+        "date": "2026-07-30",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "qsif Factsheet - September 2026 issue (data as on 31 August 2026)",
+        "url": "https://www.qsif.com/Admin/Factsheet/qsif-Factsheet-September_2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly portfolio (fund-wise) as on 31 Jul 2026 - qsif Active Asset Allocator Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/disclouser/qsif_Active_Asset_Allocator_Long-Short_Fund_31_Jul_2026.xlsx",
+        "date": "2026-07-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 15/2026 - change in exit load (effective September 11, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/15_Notice_cum_Addendum_Change_in_Exit_Load.pdf",
+        "date": "2026-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 10/2026 - minimum additional purchase / SIP / SWP / STP amounts (effective June 25, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+        "date": "2026-06-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-117": [
+      {
+        "kind": "ISID",
+        "title": "ISID - qsif Sector Rotation Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/ISID_qsif_Sector_Rotation_Long-Short_Fund.pdf",
+        "date": "2026-04-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - qsif Sector Rotation Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/SIDPdf/KIM-qsif_Sector_Rotation_Long_Short_fund.pdf",
+        "date": "2026-04-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - qsif",
+        "url": "https://www.qsif.com/Admin/SIDPdf/Statement_of_Additional_Information.pdf",
+        "date": "2026-07-30",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "qsif Factsheet - September 2026 issue (data as on 31 August 2026)",
+        "url": "https://www.qsif.com/Admin/Factsheet/qsif-Factsheet-September_2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly portfolio (fund-wise) as on 31 Jul 2026 - qsif Sector Rotation Long-Short Fund",
+        "url": "https://www.qsif.com/Admin/disclouser/qsif_Sector_Rotation_Long-Short_Fund_31_Jul_2026.xlsx",
+        "date": "2026-07-31",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 15/2026 - change in exit load (effective September 11, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/15_Notice_cum_Addendum_Change_in_Exit_Load.pdf",
+        "date": "2026-09-10",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 10/2026 - minimum additional purchase / SIP / SWP / STP amounts (effective June 25, 2026)",
+        "url": "https://www.qsif.com/Admin/Addendum/10_Change_in_Additional_Purchase_Amount_SIP_STP_SWP_amount.pdf",
+        "date": "2026-06-22",
+        "publisher": "quant Money Managers Limited (qsif, offered by quant Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-21": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Diviniti Equity Long Short Fund",
+        "url": "https://sif.itiamc.com/Files/InvestmentStrategyFiles/ISID-%20Diviniti%20Equity%20Long%20and%20Short%20Fund-SIF.PDF",
+        "date": "2025-10-23",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Diviniti Equity Long Short Fund",
+        "url": "https://sif.itiamc.com/Files/KeyInformationMemorandumFiles/DIVINITI%20-SIF_KIM.pdf",
+        "date": "2025-10-23",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Diviniti SIF Fund Factsheet August 2026",
+        "url": "https://sif.itiamc.com/Files/ITI%20DIVINITI%20SIF-Factsheet.pdf",
+        "date": "2026-08-31",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Diviniti SIF Monthly Portfolio - August 2026",
+        "url": "https://sif.itiamc.com/Files/PortfolioDisclosureFiles/DIVINITI%20SIF_Monthly%20Portfolio_August%202026.xlsx",
+        "date": "2026-08-31",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 35/2026 - change of Fund Manager (Alok Ranjan from July 11, 2026)",
+        "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/Change%20of%20Fund%20Manager%20%26%20Key%20Personnel%20for%20Diviniti%20SIFITI%20Asset%20Management%20Limited.pdf",
+        "date": "2026-07-09",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 39/2026 - resignation of Fund Manager for Overseas Investments",
+        "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/Notice%20cum%20addendum%20dated%2007%20August%202026%20-%20Resignation%20of%20Fund%20Manager%20for%20Overseas%20Investments.pdf",
+        "date": "2026-08-07",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 09/2025 - change in asset allocation (effective January 01, 2026)",
+        "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/Notice%20cum%20addendum%20dated%2026th%20December%202025%20-%20Change%20in%20asset%20allocation%20of%20Diviniti%20Equity%20Long%20Short%20Fund.pdf",
+        "date": "2025-12-26",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 20/2026 - Base Expense Ratio limits (effective April 01, 2026)",
+        "url": "https://sif.itiamc.com/Files/NoticeAddendumFiles/TER%20change%20effective%2001.04.2026%20SIF-Notice%2020.pdf",
+        "date": "2026-03-31",
+        "publisher": "ITI Asset Management Limited (Diviniti SIF, offered by ITI Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-111": [
+      {
+        "kind": "ISID",
+        "title": "ISID - WSIF Equity Long-Short Fund",
+        "url": "https://www.wealthcompanyamc.in/uploads/ISID_wsif_Equity_Long_Short_Fund_20d41ea013.pdf",
+        "date": "2026-03-25",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM with application form - WSIF Equity Long-Short Fund",
+        "url": "https://www.wealthcompanyamc.in/uploads/KIM_with_application_form_WSIF_Equity_Long_Short_Fund_bb2f087a18.pdf",
+        "date": "2026-03-25",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "WSIF Equity Long-Short Fund - Portfolio as on 31-JUL-2026",
+        "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Long_Short_Fund_cab8cd6b74.xlsx",
+        "date": "2026-07-31",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum 01 (2026-27) - Expense ratio / BER limits (effective 6th May 2026)",
+        "url": "https://www.wealthcompanyamc.in/uploads/Addendum_Change_in_TER_final_34db5244db.pdf",
+        "date": "2026-05-05",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-105": [
+      {
+        "kind": "ISID",
+        "title": "ISID - WSIF Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.wealthcompanyamc.in/uploads/ISID_WSIF_Equity_Ex_Top_100_Long_Short_Fund_d47a426212.pdf",
+        "date": "2026-03-25",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM with application form - WSIF Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.wealthcompanyamc.in/uploads/KIM_with_application_form_WSIF_Equity_Ex_Top_100_Long_Short_Fund_8558c93c48.pdf",
+        "date": "2026-03-25",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "WSIF Equity Ex-Top 100 Long-Short Fund - Portfolio as on 31-JUL-2026",
+        "url": "https://www.wealthcompanyamc.in/uploads/Monthly_Portfolio_Ex_Top_100_Long_Short_Fund_4917ad3372.xlsx",
+        "date": "2026-07-31",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum 01 (2026-27) - Expense ratio / BER limits (effective 6th May 2026)",
+        "url": "https://www.wealthcompanyamc.in/uploads/Addendum_Change_in_TER_final_34db5244db.pdf",
+        "date": "2026-05-05",
+        "publisher": "Wealth Company Asset Management Holdings Pvt Ltd (WSIF, offered by The Wealth Company Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-34": [
+      {
+        "kind": "ISID",
+        "title": "ISID - iSIF Equity Ex-Top 100 Long-Short Fund (dated February 9, 2026)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Launch%20ISID%20-%20iSIF%20Equity%20Ex-Top%20100%20Long-Short%20Fund.pdf",
+        "date": "2026-02-09",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Application Form - iSIF Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form%20-%20iSIF%20Equity%20Ex-Top%20100%20Long-Short%20Fund.pdf",
+        "date": "2026-02-03",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - iSIF",
+        "url": "https://www.icicipruamc.com/blob/downloads/Statement%20of%20Additional%20Information%28SAI%29/sif/SAI.pdf",
+        "date": "2026-06-30",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "iSIF Factsheet August 2026",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/sif%20factsheets/iSIF%20Factsheet%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "iSIF Monthly Portfolio Disclosure August 2026 (zip)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/Monthly%20Portfolio%20Disclosures/2026/Aug/SIF/iSIF%20Monthly-Portfolio-Disclosure-August-2026.zip",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - change in exit load w.e.f. September 4, 2026",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICICI_001_Addendum%20-%20Change%20in%20Exit%20load_1%20Sept%202026.pdf",
+        "date": "2026-09-01",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-126": [
+      {
+        "kind": "ISID",
+        "title": "ISID - iSIF Equity Long-Short Fund (dated May 7, 2026)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Equity%20Long-Short%20Fund.pdf",
+        "date": "2026-05-07",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Application Form - iSIF Equity Long-Short Fund",
+        "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form_iSIF%20Equity%20Long-Short%20Fund.pdf",
+        "date": "2026-06-04",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - iSIF",
+        "url": "https://www.icicipruamc.com/blob/downloads/Statement%20of%20Additional%20Information%28SAI%29/sif/SAI.pdf",
+        "date": "2026-06-30",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "iSIF Factsheet August 2026",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/sif%20factsheets/iSIF%20Factsheet%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "iSIF Monthly Portfolio Disclosure August 2026 (zip)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/Monthly%20Portfolio%20Disclosures/2026/Aug/SIF/iSIF%20Monthly-Portfolio-Disclosure-August-2026.zip",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - change in exit load w.e.f. September 4, 2026",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICICI_001_Addendum%20-%20Change%20in%20Exit%20load_1%20Sept%202026.pdf",
+        "date": "2026-09-01",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-124": [
+      {
+        "kind": "ISID",
+        "title": "ISID - iSIF Active Asset Allocator Long-Short Fund (dated April 24, 2026)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Active%20Asset%20Allocator%20Long-Short%20Fund.pdf",
+        "date": "2026-04-24",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Application Form - iSIF Active Asset Allocator Long-Short Fund",
+        "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form_iSIF%20Active%20Allocator%20Long-Short%20Fund.pdf",
+        "date": "2026-06-09",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - iSIF",
+        "url": "https://www.icicipruamc.com/blob/downloads/Statement%20of%20Additional%20Information%28SAI%29/sif/SAI.pdf",
+        "date": "2026-06-30",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "iSIF Factsheet August 2026",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/sif%20factsheets/iSIF%20Factsheet%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "iSIF Monthly Portfolio Disclosure August 2026 (zip)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/Monthly%20Portfolio%20Disclosures/2026/Aug/SIF/iSIF%20Monthly-Portfolio-Disclosure-August-2026.zip",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - change in fund managers w.e.f. June 15, 2026",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICICI_013_Notice%20cum%20addendum_12%20June%202026.pdf",
+        "date": "2026-06-12",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - revised risk band (Risk Level 5 -> 2, portfolio as on June 30, 2026)",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICIC_006_SIF%20Riskometer%20Addendum_8%20July%202026.pdf",
+        "date": "2026-07-08",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - change in exit load w.e.f. September 4, 2026",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICICI_001_Addendum%20-%20Change%20in%20Exit%20load_1%20Sept%202026.pdf",
+        "date": "2026-09-01",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-35": [
+      {
+        "kind": "ISID",
+        "title": "ISID - iSIF Hybrid Long-Short Fund (dated February 9, 2026)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Scheme%20Information%20Document%28SID%29/sif/Hybrid%20Long-Short%20Fund.pdf",
+        "date": "2026-02-09",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Application Form - iSIF Hybrid Long-Short Fund",
+        "url": "https://www.icicipruamc.com/blob/downloads/Key%20Information%20Memorandum%28KIM%29/sif/KIM_N_App_Form_%20iSIF%20Hybrid%20Long-Short%20Fund.pdf",
+        "date": "2026-02-03",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - iSIF",
+        "url": "https://www.icicipruamc.com/blob/downloads/Statement%20of%20Additional%20Information%28SAI%29/sif/SAI.pdf",
+        "date": "2026-06-30",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "iSIF Factsheet August 2026",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/sif%20factsheets/iSIF%20Factsheet%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "iSIF Monthly Portfolio Disclosure August 2026 (zip)",
+        "url": "https://www.icicipruamc.com/blob/downloads/Files/Monthly%20Portfolio%20Disclosures/2026/Aug/SIF/iSIF%20Monthly-Portfolio-Disclosure-August-2026.zip",
+        "date": "2026-08-31",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - change in exit load w.e.f. September 4, 2026",
+        "url": "https://www.icicipruamc.com/blob/announcements/sif/ICICI_001_Addendum%20-%20Change%20in%20Exit%20load_1%20Sept%202026.pdf",
+        "date": "2026-09-01",
+        "publisher": "ICICI Prudential Asset Management Company Limited (iSIF, offered by ICICI Prudential Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-128": [
+      {
+        "kind": "ISID",
+        "title": "ISID - RedHex Hybrid Long-Short Fund (dated May 07, 2026)",
+        "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/f4623f22-f253-44dc-af59-93ee01a86084/redhex-hybrid-long-short-fund-isid.pdf",
+        "date": "2026-05-07",
+        "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Form - RedHex Hybrid Long-Short Fund (dated May 07, 2026)",
+        "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/b1fb12be-a157-4e52-b480-96e2c97aed00/sif-redhex-hybrid-long-short-fund-nfo-kim-form-editable.pdf",
+        "date": "2026-05-07",
+        "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "RedHex SIF Factsheet as on - August 2026",
+        "url": "https://www.assetmanagement.hsbc.co.in/assets/documents/redhex-sif/en/a594e539-3e76-4367-a6ab-7d2090b73beb/redhex-sif-factsheet-as-on-august-2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Portfolio Statement - RedHex Hybrid Long-Short Fund - 31 August 2026",
+        "url": "https://www.assetmanagement.hsbc.co.in/-/media/Files/attachments/india/redhex-sif/portfolios/redhex-hybrid-long-short-fund-31-aug-2026.xlsx",
+        "date": "2026-08-31",
+        "publisher": "HSBC Asset Management (India) Private Limited (RedHex SIF, offered by HSBC Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-55": [
+      {
+        "kind": "ISID",
+        "title": "ISID - DynaSIF Equity Long - Short Fund (dated February 27, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Equity_Long_Short_Fund_Invetsment_Strategy_Information_Document_42a1c56596.pdf",
+        "date": "2026-02-27",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM & Application Form - DynaSIF Equity Long Short Fund",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Equity_Long_Short_Fund_KIM_f1dae4e278.pdf",
+        "date": "2026-02-27",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information (SAI) - DynaSIF (dated June 30, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Statement_of_Additional_Information_SAI_Dyna_SIF_444cc5373e.pdf",
+        "date": "2026-06-30",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "DynaSIF Factsheet as on August 31, 2026",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Factsheet_as_on_August_31_2026_f2e1b89cd6.pdf",
+        "date": "2026-08-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Dyna Portfolio July 26 (Monthly Portfolio Statement as on July 31, 2026; latest posted)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_Portfolio_July_26_fa27d0716c.xls",
+        "date": "2026-07-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum No. 11/2026 - Change in Fund Manager (Aug 06, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Sif_Addendum_Change_in_Key_Personnel_55c9b3adfd.pdf",
+        "date": "2026-08-06",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      }
+    ],
+    "SIF-87": [
+      {
+        "kind": "ISID",
+        "title": "ISID - DynaSIF Active Asset Allocator Long-Short Fund (dated March 27, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISID_Dyna_SIF_Active_Asset_Allocator_Long_Short_Fund_33d50a7a20.pdf",
+        "date": "2026-03-27",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - DynaSIF Active Asset Allocator Long-Short Fund (dated March 30, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Active_Asset_Allocator_Long_Short_Fund_Key_Information_Memorandum_f80856de79.pdf",
+        "date": "2026-03-30",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information (SAI) - DynaSIF (dated June 30, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Statement_of_Additional_Information_SAI_Dyna_SIF_444cc5373e.pdf",
+        "date": "2026-06-30",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "DynaSIF Factsheet as on August 31, 2026",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Factsheet_as_on_August_31_2026_f2e1b89cd6.pdf",
+        "date": "2026-08-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Dyna Portfolio July 26 (Monthly Portfolio Statement as on July 31, 2026; latest posted)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_Portfolio_July_26_fa27d0716c.xls",
+        "date": "2026-07-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum No. 12/2026 - Change in Risk-Band (Level 3 to Level 2, portfolio as on July 31, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Addendum_Change_in_Risk_Band_of_Dyna_SIF_Active_Asset_Allocator_Long_Short_Fund_c6e7fa4800.pdf",
+        "date": "2026-08-10",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum No. 11/2026 - Change in Fund Manager (Aug 06, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Sif_Addendum_Change_in_Key_Personnel_55c9b3adfd.pdf",
+        "date": "2026-08-06",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      }
+    ],
+    "SIF-143": [
+      {
+        "kind": "ISID",
+        "title": "ISID - DynaSIF Equity Ex-Top 100 Long Short Fund (dated June 29, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/ISID_Dyna_SIF_Equity_Ex_Top_100_Long_Short_Fund_543e2ae233.pdf",
+        "date": "2026-06-29",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - DynaSIF Equity Ex-Top 100 Long Short Fund (dated June 29, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/KIM_Dyna_SIF_Equity_Ex_Top_100_Long_Short_Fund_e38a0b9363.pdf",
+        "date": "2026-06-29",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information (SAI) - DynaSIF (dated June 30, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Statement_of_Additional_Information_SAI_Dyna_SIF_444cc5373e.pdf",
+        "date": "2026-06-30",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "DynaSIF Factsheet as on August 31, 2026",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_SIF_Factsheet_as_on_August_31_2026_f2e1b89cd6.pdf",
+        "date": "2026-08-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Dyna Portfolio July 26 (Monthly Portfolio Statement as on July 31, 2026; latest posted)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Dyna_Portfolio_July_26_fa27d0716c.xls",
+        "date": "2026-07-31",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice-cum-Addendum No. 11/2026 - Change in Fund Manager (Aug 06, 2026)",
+        "url": "https://s3.ap-south-1.amazonaws.com/x-web-s3.360.one/Sif_Addendum_Change_in_Key_Personnel_55c9b3adfd.pdf",
+        "date": "2026-08-06",
+        "publisher": "360 ONE Asset Management Limited (DynaSIF)",
+        "verified": true
+      }
+    ],
+    "SIF-11": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Altiva Hybrid Long-Short Fund (dated September 18, 2025) - AMFI-hosted copy",
+        "url": "https://portal.amfiindia.com/spages/S-3.pdf",
+        "date": "2025-09-18",
+        "publisher": "AMFI (filed by Edelweiss Asset Management Limited)",
+        "verified": true
+      }
+    ],
+    "SIF-136": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Platinum Hybrid Long-Short Fund (dated April 28, 2026)",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/05/ISID-Platinum-Hybrid-Long-Short-Fund-1.pdf",
+        "date": "2026-04-28",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "SAI - Platinum SIF (dated August 31, 2026)",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/08/SAI-SIF_August-2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Platinum SIF Factsheet September 2026 (Monthly Factsheet as on 31st Aug 2026)",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/09/Platinum-SIF-Factsheet-September-2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolio - Platinum Hybrid Long-Short Fund 31st August, 2026",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/09/SIF_MAMF_Monthly_Portfolio_Report_31.08.2026.xlsx",
+        "date": "2026-08-31",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. SIF/05/2026 - Change in certain features (exit load 30 days etc.; effective July 01, 2026)",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/08/AD-No.-05-Change-in-certain-features-of-Platinum-Hybrid-Long-Short-Fund-2.pdf",
+        "date": "2026-06-29",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. SIF/08/2026 - Change in Risk Band (Level 2 to Level 1)",
+        "url": "https://miraeassetetf.co.in/wp-content/uploads/2026/07/SIF_AD-No.-8-Change-in-Risk-Band-of-Platinum-Hybrid-Long-Short-Fund-1.pdf",
+        "date": "2026-07-08",
+        "publisher": "Mirae Asset Investment Managers (India) Private Limited (Platinum SIF)",
+        "verified": true
+      }
+    ],
+    "SIF-80": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Hybrid Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Hybrid_Long_Short_Fund_aaedb51814.pdf",
+        "date": "2026-02-27",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Hybrid Long-Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-13.pdf",
+        "date": "2026-02-27",
+        "publisher": "AMFI",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Apex Hybrid Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/KIM_Apex_Hybrid_Long_Short_Fund_9dfab18093.pdf",
+        "date": "2026-02-27",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SID",
+        "title": "ISSD (Investment Strategy Summary Document) - Apex Hybrid Long Short Fund (zip)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/ISSD_Apex_Hybrid_Long_Short_Fund_100426_4cfcb60763.zip",
+        "date": "2026-04-10",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Apex SIF Factsheet - August 2026",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/SIF_Factsheet_August_2026_72ec3dd3e9.pdf",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolios as on August 31, 2026 (zip, xls)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Monthly_Portfolio_SIF_31082026_6418736d7e.zip",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum No. 02/2026 - BER change and addition of Mr. Rohit Karan as fund manager w.e.f. Apr 02, 2026",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/310326_Change_in_Base_Expense_ratio_and_Fund_Management_responsibilities_f62ce1ac3b.pdf",
+        "date": "2026-03-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum No. 03/2026 - Risk-band revised from Risk Level 2 to Risk Level 1",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/08042026_Change_in_the_Risk_band_85f433fc17.pdf",
+        "date": "2026-04-08",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - Apex SIF",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_SIF_SAI_310826_b21d32c416.pdf",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      }
+    ],
+    "SIF-154": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Equity Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Equity_Long_Short_Fund_e6e9fe2abd.pdf",
+        "date": "2026-07-22",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Equity Long-Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-31.pdf",
+        "date": "2026-07-22",
+        "publisher": "AMFI",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Apex Equity Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/KIM_Apex_Equity_Long_Short_Fund_545d98a2b4.pdf",
+        "date": "2026-07-22",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SID",
+        "title": "ISSD (Investment Strategy Summary Document) - Apex Equity Long-Short Fund (zip)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_Equity_Long_Short_Fund_160926_93e0ead456.zip",
+        "date": "2026-09-16",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolios as on August 31, 2026 (zip, xls)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Monthly_Portfolio_SIF_31082026_6418736d7e.zip",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum No. 15/2026 - Risk-band revised from Risk Level 5 to Risk Level 1 (portfolio as of Aug 31, 2026)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/090926_Change_in_the_Risk_band_SIF_1a3fe5aa26.pdf",
+        "date": "2026-09-09",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - Apex SIF",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_SIF_SAI_310826_b21d32c416.pdf",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      }
+    ],
+    "SIF-156": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/ISID_Apex_Equity_Ex_Top_100_Long_Short_Fund_49a4c84f37.pdf",
+        "date": "2026-07-22",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "ISID",
+        "title": "ISID - Apex Equity Ex-Top 100 Long-Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-32.pdf",
+        "date": "2026-07-22",
+        "publisher": "AMFI",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Apex Equity Ex-Top 100 Long-Short Fund",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/KIM_Apex_Equity_Ex_Top_100_Long_Short_Fund_4d12df2a7d.pdf",
+        "date": "2026-07-22",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SID",
+        "title": "ISSD (Investment Strategy Summary Document) - Apex Equity Ex-Top 100 Long-Short Fund (zip)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_Equity_Ex_Top_100_Long_Short_Fund_160926_223bed88a9.zip",
+        "date": "2026-09-16",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolios as on August 31, 2026 (zip, xls)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Monthly_Portfolio_SIF_31082026_6418736d7e.zip",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum No. 15/2026 - Risk-band revised from Risk Level 5 to Risk Level 1 (portfolio as of Aug 31, 2026)",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/090926_Change_in_the_Risk_band_SIF_1a3fe5aa26.pdf",
+        "date": "2026-09-09",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - Apex SIF",
+        "url": "https://apexsif.adityabirlacapital.com/uploads/Apex_SIF_SAI_310826_b21d32c416.pdf",
+        "date": "2026-08-31",
+        "publisher": "Aditya Birla Sun Life AMC Limited",
+        "verified": true
+      }
+    ],
+    "SIF-13": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Magnum Hybrid Long Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-4.pdf",
+        "date": "2025-09-23",
+        "publisher": "AMFI",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "SIF SBI MF Monthly Portfolio Report 31-Aug-2026",
+        "url": "https://www.sbimf.com/docs/default-source/sif-scheme-portfolios/sif-sbi-mf-monthly-portfolio-report-31-august-2026.xlsx?sfvrsn=82374501_4",
+        "date": "2026-08-31",
+        "publisher": "SBI Funds Management Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum addendum - changes in features (redemption Mon & Wed, min redemption Rs 10,000) w.e.f. Feb 09, 2026",
+        "url": "https://www.sbimf.com/docs/default-source/sif-forms/notice-cum-addendum-forchanges-in-the-features-of-magnum-hybrid-long-short-fund.pdf?sfvrsn=5281d739_0",
+        "date": "2026-02-06",
+        "publisher": "SBI Funds Management Limited",
+        "verified": true
+      }
+    ],
+    "SIF-157": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Magnum Equity Ex-Top 100 Long Short Fund",
+        "url": "https://www.sbimf.com/docs/default-source/sif-equity-ex-top-long-short-fund-documents/isid---magnum-equity-ex-top-100-long-short-fund.pdf",
+        "date": "2026-07-31",
+        "publisher": "SBI Funds Management Limited",
+        "verified": true
+      },
+      {
+        "kind": "ISID",
+        "title": "ISID - Magnum Equity Ex-Top 100 Long Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-33.pdf",
+        "date": "2026-07-31",
+        "publisher": "AMFI",
+        "verified": true
+      }
+    ],
+    "SIF-146": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Infinity Hybrid Long-Short Fund (AMFI SIF portal copy)",
+        "url": "https://portal.amfiindia.com/spages/S-29.pdf",
+        "date": "2026-05-26",
+        "publisher": "AMFI",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Infinity Hybrid Long-Short Fund Factsheet - August 2026",
+        "url": "https://vatseelabs-s3.kotakmf.com/Images/InfinityHybridLongShortFundFactsheetAug2026.pdf",
+        "date": "2026-08-31",
+        "publisher": "Kotak Mahindra Asset Management Company Limited",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Portfolio of Infinity Hybrid Long-Short Fund as on 31-Jul-2026 (xls)",
+        "url": "https://vatseelabs-s3.kotakmf.com/Images/IHLS.xls",
+        "date": "2026-07-31",
+        "publisher": "Kotak Mahindra Asset Management Company Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Revision in Risk-band - Risk Level 2 to Risk Level 1 (portfolio as on July 31, 2026)",
+        "url": "https://vatseelabs-s3.kotakmf.com/Images/Infinity_SIF_Revision_in_Risk_Band_July_2026.pdf",
+        "date": "2026-08-10",
+        "publisher": "Kotak Mahindra Asset Management Company Limited",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Change in base TER w.e.f. September 16, 2026 (Direct plan only)",
+        "url": "https://vatseelabs-s3.kotakmf.com/Images/ChangeinTER09092026SIF.pdf",
+        "date": "2026-09-09",
+        "publisher": "Kotak Mahindra Asset Management Company Limited",
+        "verified": true
+      }
+    ],
+    "SIF-114": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Arthaya Equity Long Short Fund",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/sid-sai-and-addendums/sid-addendums-and-notices/investment-strategy-information-document-(isid)/arthaya-equity-long-short-fund--final.pdf?sfvrsn=1cacd26e_3",
+        "date": "2026-04-17",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Arthaya Equity Long Short Fund",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/kim-application-forms-service-request-forms/kim-and-application-forms/arthaya-equity-long-short-fund.pdf?sfvrsn=504a29b7_3",
+        "date": "2026-04-17",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Arthaya SIF Factsheet - August 2026",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/factsheets-portfolios/factsheets/arthaya-sif-factsheet-august-2026.pdf?sfvrsn=eb9fe6b1_5",
+        "date": "2026-08-31",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolio Report Arthaya Equity Long Short Fund 31-07-2026",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/funddetail-downloads/fund-portfolio/july-2026/monthly-portfolio-report-arthaya-equity-long-short-fund-31-07-2026.xlsx?sfvrsn=803ae7a8_5",
+        "date": "2026-07-31",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum to the ISID of Arthaya SIF (IDCW disclosure link)",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/sid-sai-and-addendums/sid-addendums-and-notices/addendums/august-12-2026--notice-cum-addendum-of-isid---sif.pdf?sfvrsn=432585cf_3",
+        "date": "2026-08-12",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice - Change in Base Expense Ratio (Direct Plan) w.e.f. September 11, 2026",
+        "url": "https://www.unionmf.com/docs/arthayasiflibraries/downloads/mandatory-disclosures/notice-for-change-in-expense-ratio/september-03-2026-notice-for-change-in-base-expense-ratio-direct-plan.pdf?sfvrsn=d9cf8bd4_3",
+        "date": "2026-09-03",
+        "publisher": "Union Asset Management Company Pvt. Ltd. (Arthaya SIF, offered by Union Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-96": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Sapphire Equity Long-Short SIF",
+        "url": "https://www.franklintempletonindia.com/download/en-in/sif-open-end-dvsfd-equity-schemes/b9eedd77-12d7-44f1-84e4-13e56dfb58f9/Sapphire%20Equity%20Long-Short%20SIF_ISID.pdf",
+        "date": "2026-03-26",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Sapphire Equity Long-Short SIF",
+        "url": "https://www.franklintempletonindia.com/download/en-in/sif-open-end-dvsfd-equity-schemes/3ccdfa21-b19b-4a1c-9f19-eb2989a4ca17/Sapphire%20Equity%20Long-Short%20SIF%20_KIM.pdf",
+        "date": "2026-03-26",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "SAI",
+        "title": "Statement of Additional Information - Sapphire SIF",
+        "url": "https://franklintempletonprod.widen.net/content/p11d4yrriv/original/Statement-of-Additional-Information-Sapphire-SIF.pdf?u=pl55mb&download=true",
+        "date": "2026-04-08",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Sapphire SIF Factsheet as on August 31, 2026",
+        "url": "https://franklintempletonprod.widen.net/content/eci8iba796/original/Sapphire-SIF-Factsheet-as-on-August-31-2026.pdf?u=pl55mb&download=true",
+        "date": "2026-08-31",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolio - Sapphire Equity Long-Short SIF as on July 31, 2026",
+        "url": "https://franklintempletonprod.widen.net/content/pa9rjancyo/original/Jul-26-Sapphire-Equity-Long-Short-SIF.xls?u=pl55mb&download=true",
+        "date": "2026-07-31",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice of change in BER (Direct Plan) effective September 29, 2026",
+        "url": "https://franklintempletonprod.widen.net/content/ncz6vtrmxi/original/Change-in-Base-Expense-Ratio-BER-of-Schemes-of-Franklin-Templeton-Mutual-Fund--Sept-29-2026--SIF.pdf?u=pl55mb&download=true",
+        "date": "2026-09-22",
+        "publisher": "Franklin Templeton Asset Management (India) Pvt. Ltd. (Sapphire SIF, offered by Franklin Templeton Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-150": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Summit Equity Long-Short Fund",
+        "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/scheme-information-document-(sid)/summit-sif---isid---summit-equity-long-short-fund-(1).pdf?sfvrsn=511541cd_1",
+        "date": "2026-06-15",
+        "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM cum Application Form - Summit Equity Long-Short Fund",
+        "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/application-forms/sif-kim-cum-form--summit-equity-long-short-fund-july-2026.pdf?sfvrsn=b6ae9ec2_2",
+        "date": "2026-06-15",
+        "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Summit SIF Factsheet - August 2026",
+        "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/factsheet/summit-sif---factsheet-aug-2026.pdf?sfvrsn=33e540cd_1",
+        "date": "2026-08-31",
+        "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolio Statement as on August 31, 2026",
+        "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/sif-monthly-holdings/sif_portfolio.xls?sfvrsn=41ed40cd_1",
+        "date": "2026-08-31",
+        "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Change in Risk-band of Investment Strategy (September 8, 2026)",
+        "url": "https://summitsif.invescomutualfund.com/docs/siflibraries/literature---forms/notices/8---change-in-risk-band-(sif)---sep-8-26.pdf?sfvrsn=33e940cd_1",
+        "date": "2026-09-08",
+        "publisher": "Invesco Asset Management (India) Pvt. Ltd. (Summit SIF, offered by Invesco Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-102": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Titanium Equity Long-Short Fund",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-04/Titanium%20Equity%20Long-Short%20Fund-ISID.pdf",
+        "date": "2026-04-09",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Titanium Equity Long-Short Fund",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-04/Titanium%20Equity%20Long-Short%20Fund-KIM.pdf",
+        "date": "2026-04-09",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Titanium SIF Factsheet as on 31 August 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-09/TitaniumSIF%20Factsheet%20as%20on%2031%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Portfolio - Titanium SIF - 31st July 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-08/Portfolio%20-%20Titanium%20SIF%20-%2031st%20July%20-%20Updated.xlsx",
+        "date": "2026-07-31",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - Reallocation of Fund Management Responsibilities (effective 01 June 2026)",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-05/Addendum_Reallocation_of_Fund_Management_Responsibilities_June2026-SIF.pdf",
+        "date": "2026-05-29",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum - Annual Scheme Recurring Expenses under MF Regulations 2026 (effective April 1, 2026)",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-04/Addendum_Change_in_Annual_Scheme_Recurring_Expenses-SIF%20%281%29.pdf",
+        "date": "2026-03-30",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-29": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Titanium Hybrid Long-Short Fund",
+        "url": "https://betacms.tatamutualfund.com/system/files/2025-11/Titanium%20Hybrid%20Long-Short%20Fund%20-%20ISID.pdf",
+        "date": "2025-11-07",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM and Application Forms - Titanium Hybrid Long-Short Fund",
+        "url": "https://betacms.tatamutualfund.com/system/files/2025-11/Titanium%20Hybrid%20Long-Short%20Fund-KIM.pdf",
+        "date": "2025-11-07",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Titanium SIF Factsheet as on 31 August 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-09/TitaniumSIF%20Factsheet%20as%20on%2031%20August%202026.pdf",
+        "date": "2026-08-31",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Portfolio - Titanium SIF - 31st July 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-08/Portfolio%20-%20Titanium%20SIF%20-%2031st%20July%20-%20Updated.xlsx",
+        "date": "2026-07-31",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - Redemption Frequency (weekly, every Wednesday) effective September 02, 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-08/Addendum%20for%20Redemption%20Frequency%20in%20Titanium%20Hybrid%20Long-Short%20Fund%20%281%29.pdf",
+        "date": "2026-08-24",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - Change of Exit Load (1 month) effective 02 February 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-01/Addendum_Change_of_Exit%20Load_Titanium_Hybrid_Long-Short_Fund_0.pdf",
+        "date": "2026-01-30",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - Reclassification of REITs (asset allocation) effective 01 January 2026",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-01/Addendum_Reclassification_of_REITs_TitaniumSIF.pdf",
+        "date": "2025-12-31",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Addendum - Reallocation of Fund Management Responsibilities (effective 01 June 2026)",
+        "url": "https://betacms.tatamutualfund.com/system/files/2026-05/Addendum_Reallocation_of_Fund_Management_Responsibilities_June2026-SIF.pdf",
+        "date": "2026-05-29",
+        "publisher": "Tata Asset Management Pvt. Ltd. (Titanium SIF, offered by Tata Mutual Fund)",
+        "verified": true
+      }
+    ],
+    "SIF-138": [
+      {
+        "kind": "ISID",
+        "title": "ISID - Prism Hybrid Long-Short Fund",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/prismhybri-mpux9p1k-0b71aa.pdf",
+        "date": "2026-05-15",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "KIM",
+        "title": "KIM - Prism Hybrid Long-Short Fund",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/prismhybri-mpux8hz1-faf798.pdf",
+        "date": "2026-05-15",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "factsheet",
+        "title": "Prism SIF Factsheet - August 2026",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/siffactshe-mu5f5ved-ebdfd2.pdf",
+        "date": "2026-08-31",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "portfolio",
+        "title": "Monthly Portfolio Statement as on August 31, 2026",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/prismhybri-mttw97f5-c8301c.xlsx",
+        "date": "2026-08-31",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 03/2026-27 - Manish Kalani appointed Fund Manager (July 28, 2026)",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/03noticecu-ms4ijk23-86349d.pdf",
+        "date": "2026-07-28",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      },
+      {
+        "kind": "addendum",
+        "title": "Notice cum Addendum No. 06/2026-27 - Change in Risk-band (Level 2 -> Level 1)",
+        "url": "https://cdnstorage-ddh3hqhvg3gyedd9.a02.azurefd.net/brcms/06noticecu-msisuiu0-66edba.pdf",
+        "date": "2026-08-07",
+        "publisher": "Jio BlackRock Asset Management Pvt. Ltd. (Prism SIF, offered by Jio BlackRock Mutual Fund)",
+        "verified": true
+      }
+    ]
+  },
   "amcs": {}
 }

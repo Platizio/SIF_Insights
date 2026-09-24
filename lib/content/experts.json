@@ -1,1 +1,31 @@
-[]
+[
+  {
+    "id": "rakesh-kumar",
+    "name": "Rakesh Kumar",
+    "organisation": "The Wealth Company",
+    "role": "Managing Partner",
+    "topic": "Bharat Bhoomi Fund (Bharat Value Fund Series V), a SEBI-registered Category II AIF focused on real estate / plotted developments",
+    "videoId": "RD1kMFbMpHo",
+    "date": "2026-07-22",
+    "approved": true
+  },
+  {
+    "id": "nishad-khanolkar",
+    "name": "Nishad Khanolkar",
+    "organisation": "The Wealth Company",
+    "role": "Fund Manager – AIF",
+    "topic": "Category II AIFs and the strategy behind Bharat Value Fund 6; outlook for Indian capital markets",
+    "videoId": "zPxAMLZ2yro",
+    "date": "2026-07-01",
+    "approved": true
+  },
+  {
+    "id": "gaurik-shah",
+    "name": "Gaurik Shah",
+    "organisation": "Mirae Asset (Platinum SIF)",
+    "topic": "Structure, strategy, risk profile and investor suitability of Mirae Asset's Platinum SIF Hybrid Long Short Fund",
+    "videoId": "nyXfNVSUJwE",
+    "date": "2026-05-29",
+    "approved": true
+  }
+]

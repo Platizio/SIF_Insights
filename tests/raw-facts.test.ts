@@ -188,7 +188,12 @@ describe("ter.json", () => {
       for (const r of rows) {
         const where = `${code} ${r.asOf}`;
         expect(r.asOf, where).toMatch(ISO_DATE);
-        expect(r.terPct >= 0 && r.terPct < 5, where).toBe(true);
+        /* A sanity bound against unit slips (basis points or 225 for 2.25),
+           not a policy limit. Since April 2026 the charged TER is the base
+           expense ratio PLUS brokerage, transaction cost and statutory levies,
+           and a new scheme's first month can carry ~2.5% of levies alone —
+           SIF-157 is 5.28% on 22 Sep 2026 per SBI's TER file. */
+        expect(r.terPct >= 0 && r.terPct < 10, where).toBe(true);
         expect(r.verified, where).toBe(true);
         expect(r.src in rawTerFile.sources, `${where} → ${r.src}`).toBe(true);
       }
