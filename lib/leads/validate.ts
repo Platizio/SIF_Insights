@@ -37,16 +37,14 @@ export const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
 
 /** C0 controls, DEL, and the two Unicode line separators — nothing a
     single-line value (a name, an address) needs. */
-// eslint-disable-next-line no-control-regex
-export const CONTROL_IN_LINE = /[\u0000-\u001F\u007F  ]/;
+export const CONTROL_IN_LINE = /[\u0000-\u001F\u007F\u2028\u2029]/;
 
 /** The same set minus tab, LF and CR, for textarea content. */
-// eslint-disable-next-line no-control-regex
 export const CONTROL_IN_TEXT = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 
 /** Characters that render as nothing. Discounted when judging whether a
     name has substance — never stripped, never rejected. */
-const ZERO_WIDTH = /[​-‏‪-‮⁠﻿]/gu;
+const ZERO_WIDTH = /[\u200B-\u200F\u202A-\u202E\u2060\uFEFF]/gu;
 const WHITESPACE = /\s/u;
 
 /**

@@ -6,88 +6,63 @@ import { Rise, Rule } from "@/components/motion/Reveal";
 import { PageHeader } from "@/components/PageHeader";
 import { Card, Eyebrow, Section, Shell } from "@/components/primitives";
 import { cn } from "@/lib/cn";
+import { CONSENT_COPY, LEAD_SENT_KEY, POPUP_SHOWN_KEY } from "@/lib/leads/schema";
+import { SITE, mailtoHref, telHref } from "@/lib/site";
 
 /**
  * /privacy
  *
- * This page exists because two other files were blocked on it. `ContactForm`
- * carried a COMPLIANCE block saying a published privacy policy is required
- * before the form collects personal data live, and `SiteFooter` rendered
- * "Privacy Policy" as inert text rather than as a link to `#`, for exactly
- * that reason. Both are now satisfied by this file — not overridden by it.
+ * EVERY SENTENCE BELOW IS CHECKABLE AGAINST THE CODE. Keep it that way:
  *
- * EVERY SENTENCE BELOW IS CHECKABLE AGAINST THE CODE. That is the whole
- * discipline of the page, and the reason it is not a template. What was
- * verified, and how, before a word of it was written:
+ *   the forms         lib/leads/validate.ts decides which fields exist
+ *                     (popup: name, mobile, optional email + message;
+ *                     consultation: + optional preferred time and range).
+ *   delivery          lib/leads/deliver.ts sends one plain-text email per
+ *                     lead through Resend to SITE.email (or LEAD_TO_EMAIL),
+ *                     and logs status codes only. Nothing is stored in a
+ *                     database. When Resend is not configured the form says
+ *                     nothing was sent — this page describes the configured
+ *                     path, which is the one that handles personal data.
+ *   rate limit        lib/leads/rate-limit.ts: in-memory timestamps keyed
+ *                     by IP, normalised mobile and lower-cased email.
+ *   browser storage   the two sessionStorage keys come from lib/leads/schema
+ *                     and are imported here, so the names cannot drift.
+ *   video             components/video/VideoDialog.tsx loads the player from
+ *                     youtube-nocookie.com only after a click; the stills
+ *                     come from img.youtube.com (next.config.ts img-src).
+ *   no cookies        nothing in app/ or components/ sets a cookie; there is
+ *                     no analytics SDK, tag manager or pixel.
  *
- *   no cookies        grep for cookie/localStorage/sessionStorage across
- *                     app/ and components/ returns nothing, and a Playwright
- *                     context that loaded /, /media and /contact finished
- *                     with zero cookies, an empty document.cookie and zero
- *                     localStorage keys.
- *   no analytics      no gtag, no dataLayer, no googletagmanager, no pixel
- *                     and no analytics SDK in package.json or anywhere in
- *                     the source. There is no next/script usage at all.
- *   no iframes        one match for "iframe" in the whole tree, and it is a
- *                     comment in app/media/page.tsx explaining why there
- *                     isn't one. next.config.ts sends frame-src 'none'.
- *   self-hosted fonts next/font/google downloads the woff2 at build time;
- *                     next.config.ts's font-src 'self' is sufficient, which
- *                     is the proof nothing is fetched from Google Fonts.
- *   one third party   img-src allows exactly one remote origin,
- *                     https://img.youtube.com, for the five /media stills.
- *   the referrer      MEASURED, not assumed. The five thumbnail requests
- *                     carry a Referer of the site's ORIGIN and not the
- *                     /media path, because next.config.ts sends
- *                     Referrer-Policy: strict-origin-when-cross-origin.
- *                     So the copy below claims the origin is disclosed and
- *                     stops there, rather than the stronger and false claim
- *                     that the page URL goes to Google.
- *   the form          app/contact/actions.ts: deliverEnquiry returns
- *                     "unconfigured", nothing is persisted, and the two
- *                     console lines it writes carry no personal data.
- *
- * WHAT THIS PAGE DELIBERATELY DOES NOT SAY: a retention period, a named
- * Data Protection Officer, a grievance-redressal window, or a lawful-basis
- * taxonomy. None of those has been decided by the operator, and a notice
- * that invents them is worse than one that says which questions are open —
- * it is a promise with nobody behind it. Section four names the gaps
- * instead. Fill them in here the day they are actually settled.
- *
- * KEEP THIS PAGE OUT OF THE MAIN NAV. It belongs in the footer sign-off
- * where a policy link belongs; SiteHeader's NAV_LINKS is unchanged.
+ * The retention period and grievance route below are the operator's stated
+ * policy. Change them here the day they change, and bump UPDATED.
  */
 
 export const metadata: Metadata = {
-  title: "Privacy",
+  title: "Privacy Policy",
   description:
-    "What SIF Insight collects and what it does not. No cookies, no analytics, no embeds, and an enquiry form that neither delivers nor stores what you type.",
+    "What SIF Insight collects when you ask for a call-back, why, who processes it, how long it is kept and how to exercise your rights under the DPDP Act 2023.",
   alternates: { canonical: "/privacy" },
   openGraph: {
-    title: "What this site collects, and what it does not",
+    title: "Privacy Policy — SIF Insight",
     description:
-      "No cookies, no analytics, no embeds, and an enquiry form that neither delivers nor stores what you type.",
+      "What SIF Insight collects when you ask for a call-back, who processes it, how long it is kept and your rights under the DPDP Act 2023.",
     url: "/privacy",
-    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
-       file convention contributes, which silently downgrades the card to
-       twitter:card=summary. Restated, not inherited. */
+    /* Declaring `openGraph` drops the root opengraph-image; restated. */
     images: "/opengraph-image.png",
-    siteName: "SIF Insight",
+    siteName: SITE.name,
     locale: "en_IN",
     type: "website",
   },
 };
 
 /**
- * When the SUBSTANCE of this notice last changed — not when the file was
- * last touched. Bump both fields together, and only for a change a reader
- * would care about.
- *
- * `label` is written out rather than derived from `iso`, for the same reason
- * the media page writes its dates out: `new Date("2026-09-09")` is UTC
- * midnight and would render as the 8th on any server west of Greenwich.
+ * When the SUBSTANCE of this notice last changed. `label` is written out
+ * rather than derived from `iso`: `new Date("2026-09-23")` is UTC midnight
+ * and would render as the 22nd on any server west of Greenwich.
  */
-const UPDATED = { iso: "2026-09-09", label: "9 September 2026" } as const;
+const UPDATED = { iso: "2026-09-23", label: "23 September 2026" } as const;
+
+const RETENTION_MONTHS = 24;
 
 const INLINE_LINK =
   "text-ink underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent";
@@ -96,48 +71,39 @@ export default function PrivacyPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Privacy"
-        lines={["What this site collects,", "and what it does not."]}
+        eyebrow="Privacy Policy"
+        lines={["What we collect,", "and what we do with it."]}
         standfirst={
           <>
-            SIF Insight is a reading site. It sets no cookies, runs no
-            analytics and embeds nothing. The one form on it — the enquiry
-            form on the contact page — is not connected to a mail service yet,
-            so today it checks what you typed, tells you plainly that nothing
-            was sent, and keeps none of it. This notice says exactly that, and
-            says what will change on the day it stops being true.
+            SIF Insight collects personal data in one situation only: when you
+            ask us to call you back, through the short form on the home page
+            or the consultation form on the contact page. This notice says
+            what those forms take, why, who handles it on our behalf, how long
+            we keep it and how to ask us to change or delete it. We set no
+            cookies and run no analytics.
           </>
         }
-        /* Plain strings, not fragments. PageHeader maps this array, and a
-           bare JSX element in an array literal trips jsx-key — the same
-           note the contact page carries. The machine-readable <time> for
-           this date lives in the sign-off at the foot of the page. */
-        meta={[
-          "Platizio Services LLP",
-          `Updated ${UPDATED.label}`,
-          "No cookies · No analytics",
-        ]}
+        meta={[SITE.legalEntity, `Updated ${UPDATED.label}`, "No cookies · No analytics"]}
         aside={
           <Card className="p-8">
             <p className="text-[14px] leading-[20px] text-muted">
-              Questions about this notice
+              Questions and grievances
             </p>
             <p className="mt-4 text-[17px] leading-[30px] text-body">
-              These two channels are the whole of how to reach us, and they
-              are the two printed in the footer of every page.
+              Write or call — both reach the team that handles your enquiry.
             </p>
             <div className="mt-6 flex flex-col gap-2">
               <a
-                href="mailto:info@sifinsight.com"
-                className="text-[17px] leading-[26px] text-accent transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent-dim"
+                href={mailtoHref}
+                className="[overflow-wrap:anywhere] text-[17px] leading-[26px] text-accent transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent-dim"
               >
-                info@sifinsight.com
+                {SITE.email}
               </a>
               <a
-                href="tel:+919205523100"
+                href={telHref}
                 className="tabular text-[17px] leading-[26px] text-accent transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent-dim"
               >
-                +91 92055 23100
+                {SITE.phoneDisplay}
               </a>
             </div>
           </Card>
@@ -146,7 +112,8 @@ export default function PrivacyPage() {
 
       <Operator />
       <Collection />
-      <ThirdParties />
+      <Processing />
+      <Browser />
       <Rights />
     </>
   );
@@ -167,27 +134,25 @@ function Operator() {
         />
 
         <ol className="mt-16 list-none border-b border-hairline">
-          <Clause index={0} heading="Platizio Services LLP">
+          <Clause index={0} heading={SITE.legalEntity}>
             <P>
-              SIF Insight is operated by Platizio Services LLP. Platizio is a
-              distributor of Mutual Funds and Specialised Investment Funds —
-              not an asset manager, and not an investment adviser — and this
-              site is its published record of the SIF category.
+              SIF Insight is operated by {SITE.legalEntity}, an {SITE.arnLine}.
+              We are a distributor of Mutual Funds and Specialised Investment
+              Funds — not an asset manager and not an investment adviser. For
+              the personal data described here we are the Data Fiduciary under
+              India&rsquo;s Digital Personal Data Protection Act, 2023.
             </P>
             <P>
               Write to{" "}
-              <a href="mailto:info@sifinsight.com" className={INLINE_LINK}>
-                info@sifinsight.com
-              </a>{" "}
-              or call{" "}
-              <a
-                href="tel:+919205523100"
-                className={cn(INLINE_LINK, "tabular")}
-              >
-                +91 92055 23100
+              <a href={mailtoHref} className={INLINE_LINK}>
+                {SITE.email}
               </a>
-              . Wherever this notice says to write to us, it means that
-              address.
+              , call{" "}
+              <a href={telHref} className={cn(INLINE_LINK, "tabular")}>
+                {SITE.phoneDisplay}
+              </a>{" "}
+              or write to us at {SITE.address.lines.join(", ")}. Wherever this
+              notice says to contact us, it means these.
             </P>
           </Clause>
         </ol>
@@ -197,7 +162,7 @@ function Operator() {
 }
 
 /* ============================================================
-   2 — What is collected
+   2 — What is collected, and why
    ============================================================ */
 
 function Collection() {
@@ -206,118 +171,61 @@ function Collection() {
       <Shell>
         <SectionHead
           eyebrow="What we collect"
-          lines={["One form,", "and nothing else."]}
-          intro="There is exactly one place on this site where you can type something and send it: the enquiry form on the contact page. Everything below is about that form, or about the controls sitting in front of it."
+          lines={["Two short forms,", "and nothing else."]}
+          intro="There are two places on this site where you can type something and send it. Both ask for the least we need to call you back."
         />
 
         <ol className="mt-16 list-none border-b border-hairline">
-          <Clause index={0} heading="What the form asks for">
+          <Clause index={0} heading="The call-back form">
             <P>
-              Your name, an email address, an Indian mobile number, and which
-              of four investment ranges you are considering. A message is
-              optional, up to 1200 characters. Those five fields are the whole
-              of it: the form asks nothing about your holdings, your PAN, your
-              income or your date of birth, and there is no account to create
-              and no password to set.
-            </P>
-            <P>
-              Two hidden inputs travel with a submission and are no part of
-              your enquiry. One is a decoy field that a person never sees and
-              only an automated form-filler completes; the other is a number
-              your browser works out for how long the form was open. Both
-              exist to tell a script apart from a person, both are read once,
-              and neither is stored, echoed back, or shown to anyone.
-            </P>
-            <P>
-              Nothing here is aimed at children, and the form does not ask
-              your age — which also means we cannot tell, and do not try to.
+              A short form may appear on the home page after you have been
+              there for a while, once per browser session. It asks for your
+              name and an Indian mobile number. An email address and a note on
+              what you are looking for (up to 600 characters) are optional.
             </P>
           </Clause>
 
-          <Clause index={1} heading="Where an enquiry goes today: nowhere">
+          <Clause index={1} heading="The consultation form">
             <P>
-              The form is not connected to a mail service. The one function
-              that would deliver an enquiry reports back that delivery is
-              unconfigured — no provider call is written and no key is set —
-              so a valid submission is received, checked, found valid, and
-              then ends with the request that carried it. Nothing is written
-              to a database, to a file, or to a mailbox, because there is no
-              database, no file and no mailbox wired to it.
+              The{" "}
+              <Link href="/contact" className={INLINE_LINK}>
+                Book a Consultation
+              </Link>{" "}
+              page asks for the same name and mobile number, and optionally an
+              email address, a preferred time for the call (morning, afternoon
+              or evening), the investment range you are considering and a
+              message of up to 1,200 characters.
             </P>
             <P>
-              The form says so on screen rather than showing a thank-you:{" "}
-              <em>
-                this form is not yet connected to a mail service, so nothing
-                was delivered and nothing was stored
-              </em>
-              . We would rather tell you that than let you believe a message
-              arrived somewhere.
-            </P>
-            <P>
-              The code behind it also declines to log what you typed. When a
-              delivery attempt fails it records that it failed; when the limit
-              described below trips it records that it tripped. Neither line
-              carries your name, your address, your number or your message.
+              Neither form asks for your PAN, holdings, income, date of birth
+              or any document, and there is no account to create. Nothing here
+              is aimed at children.
             </P>
           </Clause>
 
-          <Clause index={2} heading="What changes when delivery is wired">
+          <Clause index={2} heading="What travels with a submission">
             <P>
-              Once a mail provider is connected, a submitted enquiry becomes
-              an email to{" "}
-              <a href="mailto:info@sifinsight.com" className={INLINE_LINK}>
-                info@sifinsight.com
-              </a>{" "}
-              and lives in that mailbox. That
-              is a real change to what this page describes, so it is a change
-              to this page too: the notice must be updated in the same change
-              that switches delivery on, before the first enquiry is sent.
-              Until that happens, the clause above is the accurate one.
-            </P>
-            <P>
-              We have not fixed how long an enquiry will then be kept, and
-              this page will not pretend otherwise. A retention period printed
-              here before anybody has decided it would be a promise with
-              nobody behind it.
+              Along with what you typed, we record the time you submitted, the
+              page you submitted from and the consent sentence you ticked. Two
+              hidden inputs — a decoy field only an automated form-filler
+              completes, and how long the form was open — are used once to
+              tell a script from a person and are not kept.
             </P>
           </Clause>
 
-          <Clause index={3} heading="The limit that sits in front of it">
+          <Clause index={3} heading="Why, and on what basis">
             <P>
-              A form that becomes email is a form worth flooding, so checks
-              sit between a submission and delivery. Two of them — the decoy
-              field and the fill-time number — are described above and keep
-              nothing at all.
+              We use these details for one purpose: to contact you by call,
+              WhatsApp or email about the enquiry you made, and to keep a
+              record of that conversation. We do not sell them, share them for
+              marketing, or add you to a mailing list.
             </P>
             <P>
-              The third keeps a short-lived record, and that record is
-              personal data, so here it is in full. For each submission that
-              passes validation, the server stores one timestamp against two
-              keys: your IP address as the host in front of it reports that
-              address, and your email address in lower case. Timestamps only —
-              no name, no number, no message. The allowances are five
-              submissions from one IP address and three from one email address
-              in any ten-minute window.
-            </P>
-            <P>
-              That record lives in the memory of the running server process.
-              It is never written to disk, it is dropped once it is ten
-              minutes old, and it is lost entirely whenever the process
-              restarts. It is used to count recent submissions and for nothing
-              else — not to profile you, and not to recognise you on a later
-              visit.
-            </P>
-          </Clause>
-
-          <Clause index={4} heading="Server logs">
-            <P>
-              Nothing in this application writes a request log. What the
-              server underneath it records — the ordinary web-server access
-              lines, which everywhere include an IP address and a browser
-              user-agent — is infrastructure this codebase does not configure,
-              so this notice cannot describe it by reading the code, and will
-              not guess at it. If that matters to you, write to us and we will
-              tell you what we know.
+              The lawful basis is your consent under section 6 of the DPDP Act
+              2023. Neither form can be sent unless you tick the consent box,
+              which reads: &ldquo;{CONSENT_COPY}&rdquo; You can withdraw
+              consent at any time by contacting us; we will then stop
+              contacting you and delete your enquiry, as described below.
             </P>
           </Clause>
         </ol>
@@ -327,77 +235,116 @@ function Collection() {
 }
 
 /* ============================================================
-   3 — Third parties
+   3 — Who processes it, and for how long
    ============================================================ */
 
-function ThirdParties() {
+function Processing() {
   return (
-    <Section id="third-parties">
+    <Section id="processors">
       <Shell>
         <SectionHead
-          eyebrow="Third parties"
-          lines={["No cookies, no trackers,", "and one exception."]}
-          intro="This is the vague section on most sites. It is a short section here because there is genuinely almost nothing in it — and the one thing that is in it gets named."
+          eyebrow="Processors and retention"
+          lines={["Who handles it,", "and for how long."]}
+          intro="Two services touch an enquiry after you press submit. Both are named here."
         />
 
         <ol className="mt-16 list-none border-b border-hairline">
-          <Clause index={0} heading="No cookies">
+          <Clause index={0} heading="Resend — email delivery">
             <P>
-              This site sets no cookies. Not advertising cookies, not
-              analytics cookies, not preference cookies — none, which is why
-              there is no consent banner to dismiss: there is nothing to
-              consent to. Nothing is written to your browser&rsquo;s local or
-              session storage either.
+              Your enquiry is sent to us as a single plain-text email through
+              Resend, an email-delivery service based in the United States.
+              Resend processes the message only to deliver it. Because Resend
+              operates outside India, your enquiry is transferred abroad for
+              that purpose.
             </P>
           </Clause>
 
-          <Clause index={1} heading="No analytics, no tag manager, no pixel">
+          <Clause index={1} heading="Gmail — our inbox">
             <P>
-              There is no Google Analytics, no Google Tag Manager, no
-              advertising or social pixel, and no product-analytics SDK
-              anywhere in this site&rsquo;s code. No page here reports your
-              visit to anybody.
-            </P>
-            <P>
-              The typefaces are downloaded when the site is built and served
-              from this domain, so even loading a page makes no request to
-              Google Fonts.
+              The email arrives in our Gmail inbox at{" "}
+              <a href={mailtoHref} className={INLINE_LINK}>
+                {SITE.email}
+              </a>
+              , where the team reads it and calls you back. We do not copy it
+              into a separate database. The site itself does not log what you
+              typed — when a delivery fails, it records only that it failed.
             </P>
           </Clause>
 
-          <Clause index={2} heading="No embeds">
+          <Clause index={2} heading="How long we keep it">
             <P>
-              Nothing on this site is an iframe. The videos on the{" "}
-              <Link href="/media" className={INLINE_LINK}>
-                media page
+              We keep an enquiry for {RETENTION_MONTHS} months from the day you
+              send it, so that we can follow up and answer questions about our
+              conversation, and then delete it. If you ask us to delete it
+              sooner, we will.
+            </P>
+          </Clause>
+
+          <Clause index={3} heading="The limit in front of the forms">
+            <P>
+              To stop the forms being flooded, the server keeps a short-lived
+              count of recent submissions against your IP address, your mobile
+              number and, if you gave one, your email address. It keeps
+              timestamps only, in the memory of the running server — never on
+              disk — and drops each one after ten minutes or when the server
+              restarts.
+            </P>
+          </Clause>
+        </ol>
+      </Shell>
+    </Section>
+  );
+}
+
+/* ============================================================
+   4 — Your browser
+   ============================================================ */
+
+function Browser() {
+  return (
+    <Section id="browser">
+      <Shell>
+        <SectionHead
+          eyebrow="Your browser"
+          lines={["No cookies, no trackers,", "two small notes."]}
+          intro="What this site stores in your browser, and the one third party that can, once you ask it to."
+        />
+
+        <ol className="mt-16 list-none border-b border-hairline">
+          <Clause index={0} heading="No cookies, no analytics">
+            <P>
+              We set no cookies — no advertising, analytics or preference
+              cookies — and there is no Google Analytics, tag manager,
+              advertising pixel or product-analytics SDK on this site. The
+              typefaces are served from this domain, so loading a page makes
+              no request to Google Fonts.
+            </P>
+          </Clause>
+
+          <Clause index={1} heading="Two session-storage notes">
+            <P>
+              The site writes two small entries to your browser&rsquo;s
+              session storage, which is cleared when you close the tab:{" "}
+              <code className="tabular text-[15px] text-ink">{POPUP_SHOWN_KEY}</code>{" "}
+              records that the call-back form has been shown, so it does not
+              appear again in the same session, and{" "}
+              <code className="tabular text-[15px] text-ink">{LEAD_SENT_KEY}</code>{" "}
+              records that you have already sent an enquiry. Neither contains
+              your details, and neither is sent to us.
+            </P>
+          </Clause>
+
+          <Clause index={2} heading="Videos">
+            <P>
+              The video library on the{" "}
+              <Link href="/learn#videos" className={INLINE_LINK}>
+                Learn page
               </Link>{" "}
-              are links out to YouTube rather than players, and the security
-              policy sent with every page forbids frames outright — so a
-              tracking iframe cannot be added to this site by accident.
-            </P>
-          </Clause>
-
-          <Clause
-            index={3}
-            heading="The exception: video stills on the media page"
-          >
-            <P>
-              The media page shows a still image for each of five videos.
-              Those stills are served by Google from img.youtube.com, and your
-              browser requests them as the page loads — before you click
-              anything, and whether or not you ever watch a video. Google
-              therefore sees your IP address, your browser&rsquo;s user-agent
-              string, and this site&rsquo;s address as the referring page.
-            </P>
-            <P>
-              It does not see which page you were on: this site sends only its
-              own address as the referrer, never the path. And because no
-              YouTube player is embedded, visiting that page sets no YouTube
-              cookie.
-            </P>
-            <P>
-              If you follow one of those links through to YouTube, that is a
-              visit to Google&rsquo;s own site, and{" "}
+              shows still images served by Google from img.youtube.com, so
+              Google sees your IP address and browser when those pages load.
+              A player loads only when you click a video, and then from
+              youtube-nocookie.com. Once a video plays, YouTube may set its
+              own storage in your browser under{" "}
               <a
                 href="https://policies.google.com/privacy"
                 target="_blank"
@@ -406,18 +353,18 @@ function ThirdParties() {
               >
                 Google&rsquo;s privacy policy
                 <span className="sr-only"> (opens in a new tab)</span>
-              </a>{" "}
-              governs it from there.
+              </a>
+              .
             </P>
           </Clause>
 
-          <Clause index={4} heading="Links off this site">
+          <Clause index={3} heading="Links off this site">
             <P>
-              The other outbound links here go to SEBI, to AMFI, and to the
-              asset managers whose schemes we track. Following one takes you
-              to somebody else&rsquo;s site under somebody else&rsquo;s terms.
-              We have no control over what they collect, and this notice does
-              not extend to them.
+              Links to SEBI, AMFI, the asset managers we track and WhatsApp
+              take you to somebody else&rsquo;s service under their own terms.
+              This notice does not extend to them. If you message us on
+              WhatsApp, that conversation is handled under WhatsApp&rsquo;s
+              terms and kept in our WhatsApp account.
             </P>
           </Clause>
         </ol>
@@ -427,7 +374,7 @@ function ThirdParties() {
 }
 
 /* ============================================================
-   4 — Rights, and the open questions
+   5 — Rights and grievances
    ============================================================ */
 
 function Rights() {
@@ -436,59 +383,42 @@ function Rights() {
       <Shell>
         <SectionHead
           eyebrow="Your rights"
-          lines={["What you can ask for,", "and what is not settled."]}
-          intro="The second half of this section is the part most notices leave out. It is here because the alternative is inventing policy that nobody has agreed to."
+          lines={["What you can ask for,", "and how."]}
+          intro="The DPDP Act 2023 gives you rights over the personal data we hold about you. Exercising them costs nothing."
         />
 
         <ol className="mt-16 list-none border-b border-hairline">
-          <Clause index={0} heading="Your rights over your data">
+          <Clause index={0} heading="Access, correction, erasure">
             <P>
-              India&rsquo;s Digital Personal Data Protection Act, 2023 gives
-              you rights over personal data held about you — to know what is
-              held, to have it corrected, and to have it erased. The honest
-              position today is that this site holds almost nothing to
-              exercise them against: an enquiry submitted through the form is
-              neither delivered nor stored, and the rate-limit record is a
-              handful of timestamps that expire within ten minutes and do not
-              survive a restart.
-            </P>
-            <P>
-              If you have emailed or called us directly, that message sits in
-              our mailbox or our call log as ordinary correspondence. Ask us
-              to delete it and we will.
+              You can ask us what personal data we hold about you and how we
+              have used it, ask us to correct or complete it, and ask us to
+              erase it. You can also withdraw your consent, and nominate
+              another person to exercise these rights on your behalf.
             </P>
           </Clause>
 
-          <Clause index={1} heading="What we have not settled">
+          <Clause index={1} heading="Grievances">
             <P>
-              Two things a fuller notice would carry are missing here, because
-              they have not been decided and stating them anyway would be
-              worse than their absence: a named data-protection contact with a
-              route to reach them, and a written grievance procedure with a
-              response time.
-            </P>
-            <P>
-              The day the enquiry form starts delivering, both become
-              necessary and both belong on this page. Until then, the email
-              address and phone number above are the whole of how to reach us,
-              and they are answered by people rather than by a process.
+              Send a request or a grievance to{" "}
+              <a href={mailtoHref} className={INLINE_LINK}>
+                {SITE.email}
+              </a>
+              , call{" "}
+              <a href={telHref} className={cn(INLINE_LINK, "tabular")}>
+                {SITE.phoneDisplay}
+              </a>
+              , or write to {SITE.legalEntity}, {SITE.address.lines.join(", ")}.
+              Tell us the mobile number you used so we can find your enquiry.
+              If you are not satisfied with our response, you may complain to
+              the Data Protection Board of India.
             </P>
           </Clause>
 
           <Clause index={2} heading="Changes to this notice">
             <P>
-              This page ships with the site&rsquo;s code, so a change to it is
-              a change in the repository with a date against it. The date at
-              the top of this page is when the substance last changed — not
-              when the file was last touched.
-            </P>
-            <P>
-              The change that matters most is already named above: the day the{" "}
-              <Link href="/contact" className={INLINE_LINK}>
-                enquiry form
-              </Link>{" "}
-              starts delivering, this page changes with it, in the same
-              commit.
+              If we change what we collect, who processes it or how long we
+              keep it, we update this page and the date below. The date is
+              when the substance last changed, not when the file was touched.
             </P>
           </Clause>
         </ol>
@@ -500,10 +430,9 @@ function Rights() {
             <time dateTime={UPDATED.iso} className="tabular">
               {UPDATED.label}
             </time>
-            . SIF Insight is operated by Platizio Services LLP, a distributor
-            of Mutual Funds and Specialised Investment Funds. Nothing on this
-            site is investment advice or a recommendation to buy or sell any
-            scheme.
+            . SIF Insight is operated by {SITE.legalEntity}, a distributor of
+            Mutual Funds and Specialised Investment Funds. Nothing on this site
+            is investment advice or a recommendation to buy or sell any scheme.
           </p>
         </Rise>
       </Shell>
@@ -547,13 +476,7 @@ function SectionHead({
   );
 }
 
-/**
- * One clause of the notice: heading in the left column, prose in the right.
- *
- * Hairline-ruled rows, the same rhythm the media list and the about page's
- * numbered list use — the policy laid out as the site's own material rather
- * than as a wall of legal text.
- */
+/** One clause: heading in the left column, prose in the right. */
 function Clause({
   heading,
   index,
@@ -578,8 +501,7 @@ function Clause({
   );
 }
 
-/** Body copy inside a clause. `first:mt-0` so the opening paragraph aligns
-    with its heading and the rest keep the gap between them. */
+/** Body copy inside a clause. */
 function P({ children }: { children: ReactNode }) {
   return (
     <p className="mt-5 text-[17px] leading-[30px] text-body first:mt-0">
