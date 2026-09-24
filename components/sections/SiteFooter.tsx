@@ -15,6 +15,7 @@ import {
 } from "@/components/icons";
 import { Group, GroupItem, Rule } from "@/components/motion/Reveal";
 import { Shell } from "@/components/primitives";
+import { FOOTER_DISCLAIMER_SHORT } from "@/lib/compliance";
 import { FOOTER_QUICK_LINKS, LEGAL_LINKS } from "@/lib/nav";
 import {
   SITE,
@@ -259,7 +260,7 @@ export function SiteFooter() {
 
             <p className="max-w-[900px] text-[14px] leading-[24px] text-muted">
               <strong className="font-medium text-body">Disclaimer:</strong>{" "}
-              {SITE.disclaimerShort}{" "}
+              {FOOTER_DISCLAIMER_SHORT}{" "}
               {/* Underlined at rest, unlike the list links: it sits inside a
                   paragraph of the same colour, and a link in running text
                   must be told apart by more than colour (WCAG 1.4.1). */}

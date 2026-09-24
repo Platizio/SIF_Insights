@@ -79,18 +79,6 @@ export const SITE = {
   sebiSifCircularUrl:
     "https://www.sebi.gov.in/legal/circulars/feb-2025/regulatory-framework-for-specialized-investment-funds-sif-_92299.html",
   amfiSifUrl: "https://www.amfiindia.com/sif",
-
-  /* PRD p.20, verbatim. Final wording is for compliance to approve; the
-     complete disclaimer lives on /disclaimer and the footer links to it.
-
-     A TEMPORARY MIRROR, and it must not outlive integration. The owner of
-     this sentence is `FOOTER_DISCLAIMER_SHORT` in lib/compliance.ts (F1),
-     which is where compliance will edit it; that file is not on this
-     branch yet, so the footer cannot import it here. At merge: delete this
-     field, have SiteFooter import the compliance constant, and pin the two
-     together with a test. Byte-identical to it today. */
-  disclaimerShort:
-    "Investments in SIFs are subject to market risks. Please read all applicable scheme-related documents carefully before investing. Past performance may or may not be sustained in the future. SIF Insight does not guarantee investment returns or future performance.",
 } as const;
 
 export type SocialNetwork = keyof typeof SITE.socials;
