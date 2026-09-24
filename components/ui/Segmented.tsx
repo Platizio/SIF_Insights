@@ -94,12 +94,18 @@ export function Segmented<T extends string>({
               />
               <span>{option.label}</span>
               {option.count !== undefined ? (
-                /* accent-dim on the selected tint, as the tracker's filter
-                   pills do: muted grey loses contrast against the aqua lens. */
+                /* Ink on the selected lens. Sampled off a canvas in
+                   Chromium, the glass-active tint behind the digits is
+                   rgb(144,194,195) at mid-height: accent-dim measured
+                   3.9–4.0:1 through the body of the glyphs (only the gloss
+                   band at the top nears 5), under the 4.5 floor. Ink
+                   measured 9.3:1 or better, and the mono face still sets
+                   the count apart from the label. Muted stays on unselected
+                   chips: 5.25:1 on glass-ghost. */
                 <span
                   className={cn(
                     "tabular text-[12px]",
-                    checked ? "text-accent-dim" : "text-muted",
+                    checked ? "text-ink" : "text-muted",
                   )}
                 >
                   {option.count}

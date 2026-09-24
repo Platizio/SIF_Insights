@@ -45,6 +45,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [grounded, setGrounded] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   /* Escape hands focus back to the toggle. Without that, Escape pressed on
      a link or an accordion chevron inside the panel hides the element that
@@ -79,6 +80,42 @@ export function SiteHeader() {
     return lockPageScroll();
   }, [open]);
 
+  /* Two ways out of the panel that are not the toggle, and both close it.
+
+     The breakpoint. At 992px CSS hides the panel and the hamburger, but
+     `open` would stay true — and with it the lock above, with no control
+     left on screen to release it. Measured: open at 390px, resize to 1200,
+     and an 800px wheel left scrollY at 0. A tablet rotating from portrait
+     to landscape does exactly this.
+
+     Focus leaving the header. The panel covers the page below it, so Tab
+     past its last link would move focus onto links the panel hides (WCAG
+     2.4.11). Same rule as DisclosureNav: a null relatedTarget is focus
+     leaving the window, which keeps the panel; so does focus moving into
+     a modal dialog opened over it.
+
+     setOpen runs in the listeners, never in the effect body. */
+  useEffect(() => {
+    if (!open) return;
+    const header = headerRef.current;
+    const wide = window.matchMedia("(min-width: 992px)");
+    const onBreakpoint = (event: MediaQueryListEvent) => {
+      if (event.matches) setOpen(false);
+    };
+    const onFocusOut = (event: FocusEvent) => {
+      const next = event.relatedTarget;
+      if (!(next instanceof Node) || header?.contains(next)) return;
+      if (next instanceof Element && next.closest('[aria-modal="true"]')) return;
+      setOpen(false);
+    };
+    wide.addEventListener("change", onBreakpoint);
+    header?.addEventListener("focusout", onFocusOut);
+    return () => {
+      wide.removeEventListener("change", onBreakpoint);
+      header?.removeEventListener("focusout", onFocusOut);
+    };
+  }, [open]);
+
   useEffect(() => {
     // Lenis scrolls the window for real, so the native event is authoritative.
     const onScroll = () => setGrounded(window.scrollY > GROUND_AT);
@@ -94,6 +131,7 @@ export function SiteHeader() {
 
   return (
     <motion.header
+      ref={headerRef}
       /* data-reveal is load-bearing: Motion serialises `initial` into the
          server render, so without it the header ships as opacity:0 when
          scripting is off. The noscript rule in layout.tsx keys off this. */

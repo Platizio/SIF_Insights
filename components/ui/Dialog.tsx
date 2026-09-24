@@ -42,12 +42,26 @@ import { useIsClient } from "@/lib/use-is-client";
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),iframe,[tabindex]:not([tabindex="-1"])';
 
-/* Literal classes per size — Tailwind scans source text. */
+/* Literal classes per size — Tailwind scans source text.
+
+   `media` is capped by HEIGHT as well as width. A full-width 16:9 player
+   is taller than the scroll area on ordinary laptops (at 1366x657 its
+   bottom 138px, where YouTube draws play, seek and fullscreen, sat below
+   the fold of the dialog, and wheel input does not leave a cross-origin
+   frame to scroll it). So the width is the smaller of 1180px and the width
+   at which frame + chrome fit the panel's 92dvh (keep the two in step):
+     header  2.5rem padding + 44px (the close button, taller than one
+             title line) + 1px rule
+     footer  2rem padding + 20px (one caption row, VideoDialog)
+     panel   2px border
+   The title is clamped to two lines at this size, and a second line
+   (+16px) fits inside the footer's share. The frame itself then always
+   fits, and a wrapped footer at worst scrolls. */
 const SIZES = {
   sm: "max-w-[520px]",
   md: "max-w-[720px]",
   lg: "max-w-[1100px]",
-  media: "max-w-[1180px]",
+  media: "max-w-[min(1180px,calc((92dvh_-_4.5rem_-_67px)_*_16_/_9))]",
 } as const;
 
 export function Dialog({
@@ -194,9 +208,14 @@ export function Dialog({
           >
             <div className="flex items-start justify-between gap-6 border-b border-hairline px-6 py-5 sm:px-8">
               <div className="min-w-0">
+                {/* line-clamp is visual only: the accessible name (and so
+                    what a screen reader announces) is still the whole title. */}
                 <h2
                   id={titleId}
-                  className="text-[22px] font-medium leading-[30px] text-ink"
+                  className={cn(
+                    "text-[22px] font-medium leading-[30px] text-ink",
+                    size === "media" && "line-clamp-2",
+                  )}
                 >
                   {title}
                 </h2>

@@ -81,7 +81,19 @@
   --color-risk-3: oklch(0.665 0.145 85);
   --color-risk-4: oklch(0.61 0.165 50);
   --color-risk-5: oklch(0.545 0.195 28);
+}
 
+/* `static`: every variable in this block ships, whether or not a source
+   file names it. Tailwind v4 emits a theme variable only when it finds its
+   full name written somewhere it scans, and these are the tokens consumers
+   are most likely to index — `var(--color-heat-pos-${grade})` for a heat
+   cell, `var(--color-series-${n})` for a chart line, getComputedStyle for
+   a canvas or legend swatch. Before this, series-2 and heat grades 2–4
+   were absent from the built CSS and would have painted nothing. Utility
+   CLASSES (`bg-heat-pos-3`) are still generated only when written out in
+   full, so class names stay literal; the variables are what is safe to
+   compose. */
+@theme static {
   /* --- Performance heat ramp (grade 1 faint → 4 strong) -------
      Hues match --color-gain (152) and --color-loss (26), so a heat cell
      and a <Delta> read as the same system. Colour is NEVER the only
@@ -132,7 +144,9 @@
   --color-series-2: var(--color-ink);
   --color-series-3: oklch(0.5 0.16 300);
   --color-series-4: oklch(0.6 0.12 70);
+}
 
+@theme {
   /* --- Type --------------------------------------------------- */
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;

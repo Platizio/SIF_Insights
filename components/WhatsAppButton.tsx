@@ -32,8 +32,10 @@ export function WhatsAppButton() {
       href={whatsappHref()}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Chat with SIF Insight on WhatsApp"
-      title="Chat with SIF Insight on WhatsApp"
+      /* The new tab is announced, as on every other target="_blank" link
+         on the site (the footer's WhatsApp link included). */
+      aria-label="Chat with SIF Insight on WhatsApp (opens in a new tab)"
+      title="Chat with SIF Insight on WhatsApp (opens in a new tab)"
       className="glass glass-inverse fixed bottom-[calc(var(--float-offset,1.25rem)_+_env(safe-area-inset-bottom,0px))] right-[calc(1.25rem_+_env(safe-area-inset-right,0px))] z-[150] inline-flex h-[56px] w-[56px] items-center justify-center rounded-full text-ground print:hidden"
     >
       <WhatsAppIcon size={26} />

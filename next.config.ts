@@ -1,5 +1,6 @@
 import path from "node:path";
 import type { NextConfig } from "next";
+import schemesFile from "./lib/data/raw/schemes.json";
 
 /* ============================================================
    Content-Security-Policy.
@@ -98,6 +99,13 @@ const SECURITY_HEADERS = [
      max-age (300 → 86400 → 63072000) before adding `preload`. */
 ];
 
+/** Every scheme id, regex-escaped and |-joined, for the deep-link redirect.
+    Ids are slugs today; the escape is there so one that is not can never
+    widen the pattern. */
+const SCHEME_ID_PATTERN = schemesFile.schemes
+  .map((scheme) => scheme.id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+  .join("|");
+
 const nextConfig: NextConfig = {
   // A stray lockfile in the user's home directory makes Turbopack infer the
   // wrong workspace root. Pin it to this project.
@@ -123,13 +131,19 @@ const nextConfig: NextConfig = {
      which would otherwise swallow it and drop the reader on the tracker
      instead of the fund they were sent.
 
-     The scheme id pattern is anchored by Next (`^…$`) and matches the
-     slug shape strategy ids use. Anything else — an AMFI code, a typo —
-     falls through to the bare rule, which lands on the NAV table rather
-     than on a /sif/ 404.
+     The `has` value is an alternation of the scheme ids that exist, read
+     from schemes.json at build time, and Next anchors it (`^…$`). A shape
+     match (`[a-z0-9-]+`) was not enough: /sif/[id] prerenders known ids
+     only, so a typo or a retired id got a PERMANENT redirect to a 404 —
+     cached by the browser for good — where the old page showed its
+     default chart. Now anything that is not a live id (a typo, an id a
+     roster change renamed, an AMFI code) falls through to the bare rule
+     and lands on the NAV table. The nightly NAV commit redeploys, so a
+     scheme the roster adds is in the list by its next build.
 
      Measured against `next start` (curl -sI), Location headers exactly:
        /nav-tracker?scheme=icici-equity → /sif/icici-equity?scheme=icici-equity
+       /nav-tracker?scheme=icici-equty  → /sif-tracker?scheme=icici-equty#latest-navs
        /nav-tracker                     → /sif-tracker#latest-navs
        /nav-tracker?scheme=SIF-3        → /sif-tracker?scheme=SIF-3#latest-navs
        /media                           → /learn#videos
@@ -145,7 +159,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/nav-tracker",
-        has: [{ type: "query", key: "scheme", value: "(?<scheme>[a-z0-9-]+)" }],
+        has: [{ type: "query", key: "scheme", value: `(?<scheme>${SCHEME_ID_PATTERN})` }],
         destination: "/sif/:scheme",
         permanent: true,
       },

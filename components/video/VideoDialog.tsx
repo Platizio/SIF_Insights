@@ -23,6 +23,11 @@ import { Dialog } from "@/components/ui/Dialog";
  * the player (it leaves fullscreen) and not this dialog. Tab still walks out
  * of the frame onto the close button or the link below it, and Escape works
  * again from there — measured, the trap holds across the frame boundary.
+ *
+ * The caption row under the player is budgeted in Dialog's `media` size,
+ * which narrows the panel until the whole frame fits the viewport height.
+ * Add a row here and that budget has to grow with it, or the player's
+ * control bar drops out of view again on a laptop screen.
  */
 export function VideoDialog({
   id,
