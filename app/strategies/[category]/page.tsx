@@ -793,7 +793,12 @@ function StrategyDetail({ strategy }: { strategy: Strategy }) {
           </div>
 
           <h3 className="mt-8 text-[clamp(22px,2.2vw,28px)] font-medium leading-[1.24] text-ink">
-            {strategy.name}
+            <Link
+              href={`/sif/${strategy.id}`}
+              className="underline decoration-hairline underline-offset-[6px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent hover:decoration-current"
+            >
+              {strategy.name}
+            </Link>
           </h3>
           <p className="mt-2 text-[13px] leading-[20px] text-muted">
             {strategy.type}

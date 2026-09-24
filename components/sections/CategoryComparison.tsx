@@ -138,7 +138,16 @@ function CellBody({ cell }: { cell: Cell }) {
   return <>{cell.text}</>;
 }
 
-export function CategoryComparison() {
+/**
+ * `cta` points at a real page by default. It was `#strategies`, which only
+ * resolved on pages that happened to carry a section with that id — a
+ * fragile contract between two files that did not know about each other.
+ */
+export function CategoryComparison({
+  cta = { label: "See the strategies", href: "/strategies" },
+}: {
+  cta?: { label: string; href: string };
+} = {}) {
   // No section background here — the <GlassField> behind the CTA gives that
   // one button its backdrop without texturing the whole section.
   return (
@@ -192,8 +201,8 @@ export function CategoryComparison() {
 
             <Rise delay={0.24} className="relative isolate mt-10 inline-block">
               <GlassField />
-              <Button href="#strategies" variant="ghost">
-                See the strategies
+              <Button href={cta.href} variant="ghost">
+                {cta.label}
               </Button>
             </Rise>
           </div>

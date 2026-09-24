@@ -153,19 +153,20 @@ export default function WhatIsSifPage() {
       <Definition />
       <DefiningFeatures />
 
-      {/* The SIF vs MF vs PMS vs AIF table. It belongs here more than
-          anywhere, and its "See the strategies" button resolves to the
-          #strategies section below. */}
-      <CategoryComparison />
+      {/* "Where SIFs sit": the SIF vs MF vs PMS vs AIF table. It belongs here
+          more than anywhere; its button jumps to the strategy types below. */}
+      <CategoryComparison
+        cta={{ label: "See the strategy types", href: "#strategies" }}
+      />
 
       <WhoShouldInvest />
       <StrategyTypes />
 
-      {/* Five questions, and a "Talk to us" button that resolves to #consult. */}
+      {/* The approved questions — the same set /learn#faqs carries. Its
+          "Talk to us" button goes to /contact. */}
       <Faq />
 
-      {/* id="consult": the imported <Faq /> links to #consult. */}
-      <ConsultCta id="consult" lines={["Consult before", "you commit."]} />
+      <ConsultCta lines={["Consult before", "you commit."]} />
     </>
   );
 }

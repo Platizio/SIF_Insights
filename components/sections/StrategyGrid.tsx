@@ -40,6 +40,7 @@ export function StrategyGrid({ embedded = false }: { embedded?: boolean }) {
         hybrid: stats.hybridCount,
         debt: stats.debtCount,
         disclosed: stats.disclosedCount,
+        amc: stats.amcCount,
       }}
     />
   );
