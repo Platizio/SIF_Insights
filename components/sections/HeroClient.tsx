@@ -299,9 +299,11 @@ function TrustLine() {
       className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[14px] leading-[20px]"
     >
       {SITE.trustLine.map((label, i) => (
-        <li key={label} className="flex items-center gap-5">
+        <li key={label} className="flex shrink-0 items-center gap-5">
           {i > 0 ? (
-            <span aria-hidden="true" className="h-3.5 w-px bg-hairline" />
+            /* Hidden on phones: when the row wraps, a hairline would lead the
+               new line and read as an indent. */
+            <span aria-hidden="true" className="hidden h-3.5 w-px bg-hairline sm:block" />
           ) : null}
           <strong className="font-semibold text-ink">{label}</strong>
         </li>

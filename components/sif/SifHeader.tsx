@@ -142,7 +142,7 @@ export function SifHeader({ detail }: { detail: SifDetail }) {
                     </span>
                     {strategy.expenseRatioIsCap ? (
                       <span className="mt-1 block text-[13px] leading-[20px] text-muted">
-                        Maximum permitted. <a href="#costs" className="underline decoration-hairline underline-offset-4 hover:text-ink">Charged TER below</a>
+                        Cap on the base expense ratio. <a href="#costs" className="underline decoration-hairline underline-offset-4 hover:text-ink">Charged TER below</a>
                       </span>
                     ) : null}
                   </>

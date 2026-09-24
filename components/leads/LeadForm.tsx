@@ -313,7 +313,16 @@ export function LeadForm({
             </div>
           </div>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          {/* In the popup the actions stay pinned to the bottom of the dialog's
+              scroll area: on a short laptop screen the form is taller than the
+              panel, and a lead form whose submit button starts below the fold
+              reads as a form with no way to send it. */}
+          <div
+            className={cn(
+              "mt-7 flex flex-wrap items-center gap-3",
+              popup && "sticky bottom-0 z-10 border-t border-hairline bg-surface py-4",
+            )}
+          >
             <SubmitButton label={popup ? "Request a call-back" : "Book a consultation"} />
             {dismiss ? (
               <ActionButton variant="ghost" onClick={dismiss.onClick}>

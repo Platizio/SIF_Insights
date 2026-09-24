@@ -181,7 +181,7 @@ export function SifCosts({ detail }: { detail: SifDetail }) {
           </FactRow>
 
           <FactRow
-            label="Maximum permitted expense ratio"
+            label="Maximum permitted base expense ratio"
             tabular
             note={"v" in row.terMax ? "The ceiling stated in the scheme document." : undefined}
           >

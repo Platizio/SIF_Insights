@@ -333,7 +333,7 @@ export function CompareView({ rows }: { rows: SifRow[] }) {
       cell: (_, r) => terCell(r),
     }),
     registryRow("termax", rows, {
-      label: "Maximum permitted expense ratio",
+      label: "Maximum permitted base expense ratio",
       hint: "The cap in the scheme document — not the ratio charged",
       cell: (_, r) => terMaxCell(r),
     }),
