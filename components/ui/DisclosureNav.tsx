@@ -48,7 +48,13 @@ import { useIsClient } from "@/lib/use-is-client";
    stacking context above all page content, so in place is also enough.
 
    `variant="accordion"` is the same item inside the mobile panel: the
-   children expand inline under the row instead of floating.
+   children expand inline under the row instead of floating. It is NOT an
+   overlay, so it is server-rendered and toggled with `hidden`, exactly
+   like the #site-nav-panel it sits in. That is load-bearing: these child
+   links (/what-is-sif, /strategies, /downloads and the hub anchors) are
+   linked from nowhere else in the header or footer, and the bar's panel
+   only exists after a click — so without the accordion in the HTML, no
+   page would carry a site-wide link to them for a crawler to follow.
    ============================================================ */
 
 const LINK_CLASS =
@@ -114,6 +120,36 @@ export function DisclosureNav({
     onNavigate?.();
   };
 
+  const links = children.map((child) => {
+    /* Two different claims, kept apart the way NavLink keeps them:
+       section-aware for the ink colour (on /strategies/equity the
+       "SIF Strategies" row still reads as where you are), but
+       aria-current="page" only on an exact match — announcing "current
+       page" on a link to a different URL would be false. Hash children
+       never light: they are places on a page, not pages. */
+    const inSection = !child.href.includes("#") && isPathActive(pathname, child.href);
+    return (
+      <li key={child.href}>
+        <Link
+          href={child.href}
+          aria-current={pathname === child.href ? "page" : undefined}
+          className={cn(
+            "block text-[15px] leading-[22px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink",
+            inSection ? "text-ink" : "text-body",
+            accordion ? "py-3" : "whitespace-nowrap px-5 py-2.5 hover:bg-accent-wash",
+          )}
+        >
+          {child.label}
+          {child.description ? (
+            <span className="mt-0.5 block text-[13px] leading-[20px] text-muted">
+              {child.description}
+            </span>
+          ) : null}
+        </Link>
+      </li>
+    );
+  });
+
   return (
     <li
       ref={rootRef}
@@ -153,7 +189,9 @@ export function DisclosureNav({
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          aria-controls={open ? panelId : undefined}
+          /* The accordion list is always in the document; the bar's panel
+             only while open. */
+          aria-controls={accordion || open ? panelId : undefined}
           aria-label={`${item.label} sections`}
           /* 24px on the bar (WCAG 2.5.8 minimum, and all the row can spare
              between two labels), 44px in the accordion, where it is the only
@@ -177,7 +215,11 @@ export function DisclosureNav({
         </button>
       </div>
 
-      {isClient ? (
+      {accordion ? (
+        <ul id={panelId} hidden={!open} className="flex flex-col pb-3 pl-4">
+          {links}
+        </ul>
+      ) : isClient ? (
         <AnimatePresence>
           {open ? (
             <motion.ul
@@ -188,38 +230,9 @@ export function DisclosureNav({
               animate="show"
               exit="exit"
               style={{ transformOrigin: "top left" }}
-              className={
-                accordion
-                  ? "flex flex-col pb-3 pl-4"
-                  : "absolute left-0 top-full z-10 mt-4 min-w-[240px] border border-hairline bg-surface py-2"
-              }
+              className="absolute left-0 top-full z-10 mt-4 min-w-[240px] border border-hairline bg-surface py-2"
             >
-              {children.map((child) => {
-                const current =
-                  !child.href.includes("#") && isPathActive(pathname, child.href);
-                return (
-                  <li key={child.href}>
-                    <Link
-                      href={child.href}
-                      aria-current={current ? "page" : undefined}
-                      className={cn(
-                        "block text-[15px] leading-[22px] transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-ink",
-                        current ? "text-ink" : "text-body",
-                        accordion
-                          ? "py-3"
-                          : "whitespace-nowrap px-5 py-2.5 hover:bg-accent-wash",
-                      )}
-                    >
-                      {child.label}
-                      {child.description ? (
-                        <span className="mt-0.5 block text-[13px] leading-[20px] text-muted">
-                          {child.description}
-                        </span>
-                      ) : null}
-                    </Link>
-                  </li>
-                );
-              })}
+              {links}
             </motion.ul>
           ) : null}
         </AnimatePresence>
