@@ -6,31 +6,36 @@ import { Rise, Rule } from "@/components/motion/Reveal";
 import { GlassField } from "@/components/motion/GlassField";
 import { Button, Section, Shell } from "@/components/primitives";
 
+import { WhatsAppIcon } from "@/components/icons";
+import { PRIMARY_CTA } from "@/lib/nav";
+import { SITE, mailtoHref, telHref, whatsappHref } from "@/lib/site";
+
 /**
- * The loop-closer.
+ * The homepage's final consultation CTA (PRD p.16).
  *
- * The hero's headline returns verbatim — the repetition is what makes the
- * page read as authored rather than assembled, and it is the SECOND AND
- * FINAL appearance of the serif-italic swap. It must appear nowhere else.
+ * It carries the SECOND AND FINAL serif-italic swap on the site (the first
+ * is the hero H1). It must appear nowhere else — interior pages close on
+ * <ConsultCta>, never on this.
  *
- * Copy is distributor-safe throughout: discover, map, show the disclosures.
- * No advice, no return promise, no urgency device.
+ * Distributor voice throughout: a conversation about the options, no
+ * advice, no return promise, no urgency device. The consultation goes to
+ * the /contact booking form; WhatsApp and email are the direct routes.
  */
 
-/* Hand-split so the break lands before "in full view" — the serif word must
-   sit at the head of its own line, exactly as it does in the hero. */
+/* Hand-split so the serif word opens its own line, as it does in the hero. */
 const HEADLINE = [
-  // Typographic apostrophe, matching the hero exactly — the repetition is
-  // the point, so the two strings must be identical character for character.
-  <Fragment key="l1">India’s SIF market,</Fragment>,
+  <Fragment key="l1">Have questions about SIFs?</Fragment>,
   <Fragment key="l2">
-    in <em className="swap">full</em> view.
+    <em className="swap">Speak</em> with our team.
   </Fragment>,
 ];
 
+const LINK =
+  "text-body underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent";
+
 export function ClosingCta() {
   return (
-    <Section id="consult">
+    <Section id="consultation">
       <Shell>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
           {/* The tinted plate is the ground, so it does not itself animate —
@@ -39,43 +44,50 @@ export function ClosingCta() {
             <LineReveal
               as="h2"
               lines={HEADLINE}
-              className="text-[clamp(32px,3.9vw,48px)] font-medium leading-[1.24] text-ink"
+              className="text-[clamp(30px,3.9vw,48px)] font-medium leading-[1.24] text-ink"
             />
 
             <Rise delay={0.14}>
               <p className="mt-6 max-w-[520px] text-[17px] leading-[30px] text-body">
-                Tell us your goals and risk comfort. We will map them to the
-                SIFs that fit — and show you the disclosures behind each one.
+                Talk to us about how SIFs work, the strategies on offer and the
+                scheme documents behind each one — so you can explore the options
+                that suit your investment needs.
               </p>
             </Rise>
 
             <Rule className="mt-10" delay={0.24} />
 
-            <Rise delay={0.3} className="relative isolate mt-10 inline-block">
+            <Rise delay={0.3} className="relative isolate mt-10 w-fit max-w-full">
               <GlassField />
-              {/* inline-block so the magnetic shell wraps the pill exactly. */}
-              <Magnetic className="inline-block">
-                <Button href="mailto:info@sifinsight.com" variant="primary">
-                  Book a consultation
-                </Button>
-              </Magnetic>
+              <div className="flex flex-wrap items-center gap-3">
+                {/* inline-block so the magnetic shell wraps the pill exactly. */}
+                <Magnetic className="inline-block">
+                  <Button href={PRIMARY_CTA.href} variant="primary">
+                    {PRIMARY_CTA.label}
+                  </Button>
+                </Magnetic>
+                <a
+                  href={whatsappHref()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-hairline px-6 py-3.5 text-[15px] font-medium text-ink transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-accent-dim hover:text-accent-dim"
+                >
+                  <WhatsAppIcon size={16} />
+                  Chat on WhatsApp
+                  <span className="sr-only">(opens in a new tab)</span>
+                </a>
+              </div>
             </Rise>
 
             <Rise delay={0.38}>
-              <p className="mt-6 text-[14px] leading-[20px] text-muted">
-                Or reach us directly —{" "}
-                <a
-                  href="mailto:info@sifinsight.com"
-                  className="text-body underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent"
-                >
-                  info@sifinsight.com
+              <p className="mt-6 text-[15px] leading-[22px] text-muted">
+                Or write to us at{" "}
+                <a href={mailtoHref} className={LINK}>
+                  {SITE.email}
                 </a>{" "}
-                ·{" "}
-                <a
-                  href="tel:+919205523100"
-                  className="tabular text-body underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent"
-                >
-                  +91 92055 23100
+                · call{" "}
+                <a href={telHref} className={`tabular ${LINK}`}>
+                  {SITE.phoneDisplay}
                 </a>
               </p>
             </Rise>
