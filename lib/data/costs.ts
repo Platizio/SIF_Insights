@@ -187,7 +187,15 @@ export function liquidityBucket(text: string | null): LiquidityBucket | null {
    Charged TER
    ============================================================ */
 
-type RawTer = { asOf: string; terPct: number; src: string; locator: string; verified?: boolean };
+type RawTer = {
+  asOf: string;
+  terPct: number;
+  /** Base expense ratio from the same dated row, when the source states it. */
+  berPct?: number;
+  src: string;
+  locator: string;
+  verified?: boolean;
+};
 
 const terFile = terRaw as {
   sources: Record<string, RawSource>;
@@ -198,11 +206,18 @@ const terFile = terRaw as {
  * The TER the Regular plan actually CHARGES, as last disclosed — never the
  * ISID cap, which stays in `Strategy.expenseRatio` and is shown separately.
  * Null when nothing verified is on file.
+ *
+ * Since 1 April 2026 SEBI's cap applies to the BASE expense ratio only;
+ * brokerage, transaction costs and statutory levies are charged on top. So
+ * `pct` (the total) routinely exceeds the ISID cap, and `berPct` — the base
+ * ratio from the same dated row, when the AMC's file states it — is the
+ * figure the cap actually limits. The two are shown side by side, never
+ * substituted for each other.
  */
 export function currentTer(
   code: string,
-): { pct: number; asOf: string; source: SourceRef } | null {
-  let best: { pct: number; asOf: string; source: SourceRef } | null = null;
+): { pct: number; berPct: number | null; asOf: string; source: SourceRef } | null {
+  let best: { pct: number; berPct: number | null; asOf: string; source: SourceRef } | null = null;
   for (const t of terFile.schemes[code.toUpperCase()] ?? []) {
     if (t.verified !== true || typeof t.terPct !== "number" || !Number.isFinite(t.terPct)) {
       continue;
@@ -210,7 +225,9 @@ export function currentTer(
     if (t.terPct < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(t.asOf)) continue;
     const source = resolveSource(terFile.sources, t.src);
     if (!source) continue;
-    if (!best || t.asOf > best.asOf) best = { pct: t.terPct, asOf: t.asOf, source };
+    const berPct =
+      typeof t.berPct === "number" && Number.isFinite(t.berPct) && t.berPct >= 0 ? t.berPct : null;
+    if (!best || t.asOf > best.asOf) best = { pct: t.terPct, berPct, asOf: t.asOf, source };
   }
   return best;
 }

@@ -108,6 +108,11 @@ describe("buildSifRows", () => {
       const ter = currentTer(r.code);
       expect(r.ter).toEqual(ter ? { v: ter.pct } : { absent: "not-captured" });
       expect(r.terAsOf).toBe(ter?.asOf ?? null);
+      /* The base ratio comes from the same dated row as the total, or not at all. */
+      expect(r.ber).toEqual(
+        ter && ter.berPct !== null ? { v: ter.berPct } : { absent: "not-captured" },
+      );
+      if (ter && ter.berPct !== null) expect(ter.berPct).toBeLessThanOrEqual(ter.pct);
       const isCap = d?.expenseRatioIsCap === true && typeof d.expenseRatio === "number";
       expect(r.terMax).toEqual(isCap ? { v: d!.expenseRatio } : { absent: "not-captured" });
     }

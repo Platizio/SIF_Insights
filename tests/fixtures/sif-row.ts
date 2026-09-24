@@ -48,6 +48,7 @@ export function makeRow(
     amcAumCr: NONE,
     ter: NONE,
     terAsOf: null,
+    ber: NONE,
     terMax: NONE,
     exitLoad: { applicable: null, pct: null, periodDays: null, tiered: false, text: null },
     liquidity: null,

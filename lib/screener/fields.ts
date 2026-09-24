@@ -691,7 +691,7 @@ export const FIELDS: Field[] = [
   /* ---- cost ---- */
   {
     id: "ter",
-    label: "TER (charged)",
+    label: "Total TER (incl. levies)",
     group: "cost",
     source: "AMC disclosure",
     methodology: "#ter",
@@ -706,8 +706,23 @@ export const FIELDS: Field[] = [
     sort: { asc: "Lowest first", desc: "Highest first" },
   },
   {
+    id: "ber",
+    label: "Base expense ratio",
+    group: "cost",
+    source: "AMC disclosure",
+    methodology: "#ter",
+    column: { align: "right" },
+    compare: { section: "cost" },
+    kind: "number",
+    unit: "pct",
+    get: (r) => valueOf(r.ber),
+    absent: (r) => reasonOf(r.ber),
+    filter: { type: "range", step: 0.05 },
+    sort: { asc: "Lowest first", desc: "Highest first" },
+  },
+  {
     id: "termax",
-    label: "Max TER (ISID cap)",
+    label: "Max base expense ratio (cap)",
     group: "cost",
     source: "Scheme document",
     methodology: "#ter",

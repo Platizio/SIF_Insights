@@ -139,6 +139,7 @@ function buildRow(s: Strategy): SifRow {
 
     ter: ter ? { v: ter.pct } : { absent: "not-captured" },
     terAsOf: ter?.asOf ?? null,
+    ber: ter && ter.berPct !== null ? { v: ter.berPct } : { absent: "not-captured" },
     terMax:
       s.expenseRatio !== null && s.expenseRatioIsCap === true
         ? { v: s.expenseRatio }

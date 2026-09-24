@@ -379,10 +379,13 @@ export type SifRow = {
   /** Only when every scheme of the house is counted — a partial sum is not the house's AUM. */
   amcAumCr: Cell<number>;
 
-  /** Charged TER (Regular plan), dated. Never the cap. */
+  /** Total TER charged (Regular plan), dated: base ratio + brokerage +
+      transaction costs + statutory levies. Never the cap. */
   ter: Cell<number>;
   terAsOf: string | null;
-  /** The ISID's maximum permissible TER. Never mixed with `ter`. */
+  /** Base expense ratio from the same dated TER row — the figure SEBI's cap limits. */
+  ber: Cell<number>;
+  /** The ISID/addendum cap on the base expense ratio. Never mixed with `ter`. */
   terMax: Cell<number>;
 
   exitLoad: ExitLoad;
