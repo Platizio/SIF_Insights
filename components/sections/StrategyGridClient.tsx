@@ -298,7 +298,7 @@ function StrategyCard({ card }: { card: GridCard }) {
       <dl className="mt-10 border-t border-hairline">
         {/* Full grouping — ₹10,00,000 — not the compact "₹10 L" this card used
             to print. It is the same figure /amc/[id], /sif-tracker,
-            /nav-tracker and /strategies/[category] all render in full, and
+            /sif/[id] and /strategies/[category] all render in full, and
             /strategies embeds THIS GRID directly beneath its own prose saying
             "₹10,00,000 floor for every SIF" (app/strategies/page.tsx) — so the
             shorthand put one number on one page in two shapes. A minimum is

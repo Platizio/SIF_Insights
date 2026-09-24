@@ -1,46 +1,57 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import type { ReactNode } from "react";
+import {
+  BookIcon,
+  ChartIcon,
+  CompareIcon,
+  LayersIcon,
+  MailIcon,
+  PhoneIcon,
+  SearchIcon,
+  ShieldIcon,
+  UsersIcon,
+  WhatsAppIcon,
+} from "@/components/icons";
 import { LineReveal } from "@/components/motion/LineReveal";
-import { Odometer } from "@/components/motion/Odometer";
 import { Group, GroupItem, Rise, Rule, Wipe } from "@/components/motion/Reveal";
-import { ConsultCta } from "@/components/ConsultCta";
 import { PageHeader } from "@/components/PageHeader";
-import { Card, Eyebrow, Section, Shell } from "@/components/primitives";
-import { formatUpdated, navLastUpdated, stats } from "@/lib/data";
+import { Button, Card, Eyebrow, Section, Shell } from "@/components/primitives";
+import { stats } from "@/lib/data";
+import { PRIMARY_CTA } from "@/lib/nav";
+import { SITE, mailtoHref, whatsappHref } from "@/lib/site";
 
 /**
- * /about
+ * /about — PRD pp.69–74, in the PRD's own order:
+ * About SIF Insight → Why We Built SIF Insight → Our Vision → Our Mission →
+ * What We Do → Meet Our Founder (#founder) → Why SIF Insight? →
+ * SIF Insight by Platizio → Have Questions About SIFs? (#connect).
  *
- * The page this replaces carried "Vision / Mission / Goal" copy lifted from a
- * social-network template — "connect with others who share their interests and
- * passions", "real-time chat". None of it described this business. It is gone.
- *
- * Everything below is either a verified fact about the firm and its founder or
- * a count derived from `@/lib/data`. No awards, no client numbers, no AUM, no
- * testimonials, no team roster, no offices — because none of those are known.
+ * Copy is the PRD's, verbatim, except where the guardrails require a word to
+ * change (noted inline). Founder facts are only the ones this page already
+ * published — nothing added. No team roster, no testimonials, no "real-time
+ * chat", no "personalised recommendations": none of those exist.
  */
 
-/* The trailing "We track every Specialised Investment Fund scheme in the
-   Indian market" ran the description to 207 characters — Google cuts at
-   about 160, so the sentence naming the firm and its founder was the part
-   being thrown away. `openGraph` repeats siteName/locale/type because Next
-   merges metadata shallowly: declaring the key replaces the root layout's
-   block rather than merging into it. */
+const STANDFIRST =
+  "SIF Insight is a dedicated platform focused on India’s Specialised Investment Fund ecosystem — bringing together research, data, expert insights and educational content to help investors better understand, track and compare SIFs.";
+
+const DESCRIPTION =
+  "SIF Insight, by Platizio Services LLP, brings together research, data, expert insights and education on India’s Specialised Investment Funds.";
+
 export const metadata: Metadata = {
   title: "About",
-  description:
-    "SIF Insight is operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
+  description: DESCRIPTION,
   alternates: { canonical: "/about" },
+  /* Next merges metadata shallowly: declaring `openGraph` replaces the root
+     layout's block, so siteName/locale/type/images are restated. */
   openGraph: {
-    title: "About SIF Insight — who tracks these funds",
-    description:
-      "Operated by Platizio Services LLP, a certified distributor of Mutual Funds and SIFs, founded by Vividh Chaturvedi, CFP®.",
+    title: "About SIF Insight",
+    description: DESCRIPTION,
     url: "/about",
-    /* Declaring `openGraph` also drops the image the root app/opengraph-image.png
-       file convention contributes, which silently downgrades the card to
-       twitter:card=summary. Restated, not inherited. */
     images: "/opengraph-image.png",
-    siteName: "SIF Insight",
+    siteName: SITE.name,
     locale: "en_IN",
     type: "website",
   },
@@ -49,123 +60,250 @@ export const metadata: Metadata = {
 /** The founder photo is a 400×400 asset; dimensions are explicit for CLS. */
 const FOUNDER_PHOTO = { width: 400, height: 400 } as const;
 
-/** ₹10,00,000 expressed in lakh — the unit SEBI's framework is quoted in. */
-const MIN_LAKH = stats.minInvestment / 100_000;
+type IconCard = { icon: ReactNode; title: string; body: string };
 
-/* Same derivation as the site footer, for the same reason: this page carried
-   "official AMC documentation for several SIFs is still awaited" as a flat
-   assertion long after the last document landed. Counted, it cannot go stale
-   in either direction. `disclosedCount` — "have we read a document" — not
-   `fullyDisclosedCount`, which asks the different question of whether that
-   document happened to state all four headline fields. */
-const undisclosedSchemes = stats.strategyCount - stats.disclosedCount;
-
-const WHAT_WE_DO = [
+/* PRD p.70–71. Card 2 has no heading in the PRD — only its body — so it takes
+   the name of the tools it describes. */
+const WHAT_WE_DO: IconCard[] = [
   {
-    title: "Track every scheme",
-    body: `All ${stats.strategyCount} SIF strategies from ${stats.amcCount} asset managers, held in one place rather than scattered across eight AMC sites.`,
+    icon: <ChartIcon size={20} />,
+    title: "Research, Track and Understand SIF",
+    body: "Track SIFs, NFOs, NAVs, performance, AUM and developments across the market.",
   },
   {
-    title: "Publish the NAVs",
-    body: "Net asset values as they are filed with AMFI — and an honest blank where a scheme has not launched yet.",
+    icon: <CompareIcon size={20} />,
+    title: "Screen & Compare",
+    body: "Use data-led tools to filter SIFs and compare shortlisted strategies across relevant investment parameters.",
   },
   {
-    title: "Surface the disclosures",
-    body: "Risk band, exit load, expense ratio and minimum investment on every scheme we cover. That is the material detail, not decoration.",
+    icon: <BookIcon size={20} />,
+    title: "Learn",
+    body: "Understand SIFs through videos, articles, explainers and FAQs.",
   },
   {
-    title: "Help you shortlist",
-    body: "We map your goals and risk comfort to the schemes that fit, then show you the disclosures behind each one.",
+    icon: <UsersIcon size={20} />,
+    title: "Expert Insights",
+    body: "Access conversations and perspectives from fund managers, AMCs and industry experts.",
+  },
+  {
+    icon: <ShieldIcon size={20} />,
+    title: "Investor Guidance",
+    body: "Connect with the SIF Insight team when you need help understanding available SIF options and the investment process.",
   },
 ];
 
+/* PRD p.72. */
+const WHY: IconCard[] = [
+  {
+    icon: <SearchIcon size={20} />,
+    title: "Focused on SIFs",
+    body: "A platform built specifically around India’s developing Specialised Investment Fund ecosystem.",
+  },
+  {
+    icon: <ChartIcon size={20} />,
+    title: "Data & Research",
+    body: "Track and evaluate SIFs through structured market data and research tools.",
+  },
+  {
+    icon: <UsersIcon size={20} />,
+    title: "Expert Guidance",
+    body: "Access expert perspectives and support when understanding different SIF strategies and options.",
+  },
+  {
+    icon: <BookIcon size={20} />,
+    title: "Education",
+    body: "Learn through videos, articles, expert conversations and easy-to-understand explainers.",
+  },
+  {
+    icon: <LayersIcon size={20} />,
+    title: "One SIF Ecosystem",
+    body: "Bringing together AMCs, fund managers, experts and investors on one platform.",
+  },
+];
+
+/* The credentials this page already carried — unchanged. */
 const CREDENTIALS = [
   { term: "CFP®", detail: "Certified Financial Planner" },
   { term: "MBA", detail: "Master of Business Administration" },
-  {
-    term: "Over 25 years",
-    detail: "Across financial services and international business",
-  },
+  { term: "Over 25 years", detail: "Across financial services and international business" },
 ];
 
-type Figure = {
-  value: number;
-  prefix?: string;
-  suffix?: string;
-  label: string;
-};
-
-const COVERAGE: Figure[] = [
-  { value: stats.amcCount, label: "Asset managers covered" },
-  { value: stats.strategyCount, label: "Strategies tracked" },
-  {
-    value: MIN_LAKH,
-    prefix: "₹",
-    suffix: " L",
-    label: "Minimum investment, set by SEBI",
-  },
-  {
-    value: stats.maxUnhedgedShortPct,
-    suffix: "%",
-    label: "Max unhedged short exposure",
-  },
-];
+const H2 = "mt-5 text-[clamp(32px,4vw,48px)] font-medium leading-[1.16] text-ink";
 
 export default function AboutPage() {
   return (
     <>
       <PageHeader
-        eyebrow="About"
-        lines={["India’s independent", "record of the SIF market."]}
-        standfirst={
-          <>
-            SIF Insight is operated by Platizio Services LLP, a certified
-            distributor of Mutual Funds and SIFs. We follow every Specialised
-            Investment Fund scheme in the market, publish the NAVs as AMFI files
-            them, and put the disclosures where you can read them side by side.
-          </>
-        }
+        eyebrow="About Us"
+        lines={["About", "SIF Insight"]}
+        standfirst={STANDFIRST}
         meta={[
-          "Platizio Services LLP",
-          `${stats.strategyCount} schemes tracked`,
-          `${stats.amcCount} asset managers`,
+          SITE.legalEntity,
+          SITE.arnLine,
+          <>
+            <span className="tabular">{stats.strategyCount}</span> SIFs tracked
+            across <span className="tabular">{stats.amcCount}</span> AMCs
+          </>,
         ]}
-        aside={
-          <Card className="p-8">
-            <p className="text-[14px] leading-[20px] text-muted">Our role</p>
-            <p className="mt-4 text-[17px] leading-[30px] text-body">
-              A certified distributor of Mutual Funds and SIFs. We are not an
-              asset manager and not an investment adviser, and nothing here is
-              advice or a recommendation to buy a scheme.
-            </p>
-          </Card>
-        }
       />
 
+      <Story />
+      <VisionMission />
+      <CardSection
+        eyebrow="What We Do"
+        lines={["What We Do"]}
+        intro="The different ways SIF Insight helps you find your way around the SIF market."
+        cards={WHAT_WE_DO}
+      />
       <Founder />
-      <WhatWeDo />
-      <Coverage />
-      <ConsultCta lines={["Consult us before", "you commit."]} />
+      <CardSection
+        eyebrow="Why SIF Insight"
+        lines={["Why SIF Insight?"]}
+        cards={WHY}
+      />
+      <Platizio />
+      <Connect />
     </>
   );
 }
 
-/**
- * The founder block. The photo is the page's one piece of media, so it gets
- * the clip-path <Wipe> — the frame opens and the portrait settles, rather
- * than a fade, which is the technique this tier is built on.
- */
-function Founder() {
+/* ============================================================
+   1 — Our Story
+   ============================================================ */
+
+function Story() {
   return (
     <Section>
       <Shell>
+        <div className="grid gap-8 lg:grid-cols-[460px_1fr] lg:gap-24">
+          <div>
+            <Rise>
+              <Eyebrow>Our Story</Eyebrow>
+            </Rise>
+            <LineReveal as="h2" lines={["Why We Built", "SIF Insight"]} className={H2} />
+          </div>
+          <Rise delay={0.12} className="lg:self-end">
+            <p className="max-w-[58ch] text-[17px] leading-[30px] text-body">
+              Specialised Investment Funds are creating a new investment
+              category in India, but understanding the different strategies,
+              products, risks and opportunities can be complex.
+            </p>
+            <p className="mt-5 max-w-[58ch] text-[17px] leading-[30px] text-body">
+              SIF Insight was created to bring this information together on
+              one platform and make the SIF ecosystem easier to understand and
+              navigate.
+            </p>
+          </Rise>
+        </div>
+      </Shell>
+    </Section>
+  );
+}
+
+/* ============================================================
+   2 + 3 — Vision and Mission, side by side
+   ============================================================ */
+
+function VisionMission() {
+  const items = [
+    {
+      eyebrow: "Our Vision",
+      body: "To become a trusted destination for understanding and researching Specialised Investment Funds in India, bringing greater clarity, transparency and accessibility to the SIF ecosystem.",
+    },
+    {
+      eyebrow: "Our Mission",
+      body: "To bring SIF data, research, education and expert perspectives together on one platform, helping investors understand different strategies, evaluate available options and make more informed investment decisions.",
+    },
+  ];
+
+  return (
+    <Section>
+      <Shell>
+        <Group className="grid gap-x-16 md:grid-cols-2">
+          {items.map((item) => (
+            <GroupItem key={item.eyebrow} className="border-t border-hairline py-10">
+              <h2 className="text-[12px] font-semibold uppercase leading-[14px] tracking-[0.08em] text-accent">
+                {item.eyebrow}
+              </h2>
+              <p className="mt-6 max-w-[40ch] text-[clamp(22px,2.2vw,28px)] font-medium leading-[1.36] text-ink">
+                {item.body}
+              </p>
+            </GroupItem>
+          ))}
+        </Group>
+      </Shell>
+    </Section>
+  );
+}
+
+/* ============================================================
+   Icon card grid — What We Do (4) and Why SIF Insight? (5)
+   ============================================================ */
+
+function CardSection({
+  eyebrow,
+  lines,
+  intro,
+  cards,
+}: {
+  eyebrow: string;
+  lines: string[];
+  intro?: string;
+  cards: IconCard[];
+}) {
+  return (
+    <Section>
+      <Shell>
+        <div className="grid gap-8 lg:grid-cols-[460px_1fr] lg:gap-24">
+          <div>
+            <Rise>
+              <Eyebrow>{eyebrow}</Eyebrow>
+            </Rise>
+            <LineReveal as="h2" lines={lines} className={H2} />
+          </div>
+          {intro ? (
+            <Rise delay={0.12} className="lg:self-end">
+              <p className="max-w-[52ch] text-[17px] leading-[30px] text-body">{intro}</p>
+            </Rise>
+          ) : null}
+        </div>
+
+        <Group className="mt-16 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          {cards.map((card) => (
+            <GroupItem key={card.title} className="h-full">
+              <Card className="flex h-full flex-col p-7">
+                <span
+                  aria-hidden="true"
+                  className="inline-flex h-10 w-10 items-center justify-center border border-hairline text-accent"
+                >
+                  {card.icon}
+                </span>
+                <h3 className="mt-8 text-[20px] font-medium leading-[28px] text-ink">
+                  {card.title}
+                </h3>
+                <p className="mt-3 text-[15px] leading-[26px] text-body">{card.body}</p>
+              </Card>
+            </GroupItem>
+          ))}
+        </Group>
+      </Shell>
+    </Section>
+  );
+}
+
+/* ============================================================
+   5 — Meet Our Founder (#founder)
+   ============================================================ */
+
+function Founder() {
+  return (
+    <Section id="founder">
+      <Shell>
         <div className="grid gap-12 lg:grid-cols-[400px_1fr] lg:gap-20">
-          {/* self-start: the grid row is as tall as the bio beside it, and a
-              stretched panel left ~90px of empty surface under the portrait. */}
           <Wipe className="border border-hairline bg-surface-2 lg:self-start">
             <Image
               src="/founder.png"
-              alt="Vividh Chaturvedi, Founder and CEO of SIF Insight"
+              alt="Mr. Vividh Chaturvedi, Founder and CEO of SIF Insight"
               width={FOUNDER_PHOTO.width}
               height={FOUNDER_PHOTO.height}
               className="block h-auto w-full"
@@ -174,18 +312,13 @@ function Founder() {
 
           <div>
             <Rise>
-              <Eyebrow>Founder</Eyebrow>
+              <Eyebrow>Meet Our Founder</Eyebrow>
             </Rise>
-
-            <LineReveal
-              as="h2"
-              lines={["Vividh Chaturvedi"]}
-              className="mt-5 text-[clamp(32px,4vw,48px)] font-medium leading-[1.16] text-ink"
-            />
+            <LineReveal as="h2" lines={["Mr. Vividh Chaturvedi"]} className={H2} />
 
             <Rise delay={0.1}>
-              <p className="mt-4 text-[17px] leading-[30px] text-body">
-                Founder &amp; CEO
+              <p className="mt-4 text-[17px] leading-[30px] text-muted">
+                {SITE.founder.title}
               </p>
               <p className="mt-6 max-w-[58ch] text-[17px] leading-[30px] text-body">
                 Vividh is a Certified Financial Planner (CFP®) and an MBA, with
@@ -196,25 +329,37 @@ function Founder() {
                 His working knowledge of Indian markets spans equities, bonds
                 and commodities, with an active interest in equity derivatives
                 and algorithmic trading — the machinery a long-short SIF is
-                actually built from.
+                built from.
+              </p>
+              <p className="mt-5 max-w-[58ch] text-[17px] leading-[30px] text-body">
+                He started SIF Insight to bring the new SIF category’s
+                strategies, products and risks together on one platform, so
+                investors can understand and navigate it more easily.
               </p>
             </Rise>
 
-            <Group className="mt-12 grid gap-x-10 gap-y-0 sm:grid-cols-3">
+            <Group className="mt-12 grid gap-x-10 sm:grid-cols-3">
               {CREDENTIALS.map((item) => (
-                <GroupItem
-                  key={item.term}
-                  className="border-t border-hairline py-6"
-                >
-                  <p className="text-[17px] font-medium leading-[26px] text-ink">
-                    {item.term}
-                  </p>
-                  <p className="mt-2 text-[14px] leading-[20px] text-muted">
-                    {item.detail}
-                  </p>
+                <GroupItem key={item.term} className="border-t border-hairline py-6">
+                  <p className="text-[17px] font-medium leading-[26px] text-ink">{item.term}</p>
+                  <p className="mt-2 text-[14px] leading-[20px] text-muted">{item.detail}</p>
                 </GroupItem>
               ))}
             </Group>
+
+            {SITE.socials.linkedin ? (
+              <Rise delay={0.1} className="mt-8">
+                <a
+                  href={SITE.socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[15px] font-medium text-accent underline decoration-hairline underline-offset-4 hover:decoration-current"
+                >
+                  View profile on LinkedIn
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </a>
+              </Rise>
+            ) : null}
           </div>
         </div>
       </Shell>
@@ -222,127 +367,133 @@ function Founder() {
   );
 }
 
-function WhatWeDo() {
+/* ============================================================
+   7 — SIF Insight by Platizio
+   ============================================================ */
+
+function Platizio() {
   return (
     <Section>
       <Shell>
         <div className="grid gap-8 lg:grid-cols-[460px_1fr] lg:gap-24">
           <div>
             <Rise>
-              <Eyebrow>What we do</Eyebrow>
+              <Eyebrow>{SITE.legalEntity}</Eyebrow>
             </Rise>
-            <LineReveal
-              as="h2"
-              lines={["Four jobs, and", "nothing else."]}
-              className="mt-5 text-[clamp(32px,4vw,48px)] font-medium leading-[1.16] text-ink"
-            />
+            <LineReveal as="h2" lines={["SIF Insight", "by Platizio"]} className={H2} />
           </div>
-          <Rise delay={0.12} className="lg:self-end">
-            <p className="max-w-[52ch] text-[17px] leading-[30px] text-body">
-              SIF Insight is a distributor. We do not run money and we do not
-              rate schemes — we make the market legible, then help you choose
-              inside it.
-            </p>
-          </Rise>
+          <div className="lg:self-end">
+            <Rise delay={0.12}>
+              <p className="max-w-[58ch] text-[17px] leading-[30px] text-body">
+                SIF Insight is an initiative of Platizio Services LLP, created
+                to build a dedicated research, education and discovery platform
+                for India’s Specialised Investment Fund ecosystem.
+              </p>
+            </Rise>
+            <Rule className="mt-10" delay={0.18} />
+            <Rise delay={0.22}>
+              <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <dt className="text-[14px] leading-[20px] text-muted">Registration</dt>
+                  <dd className="mt-1 text-[15px] leading-[24px] text-ink">{SITE.arnLine}</dd>
+                </div>
+                <div>
+                  <dt className="text-[14px] leading-[20px] text-muted">Our role</dt>
+                  <dd className="mt-1 text-[15px] leading-[24px] text-ink">
+                    Distributor, not an investment adviser.{" "}
+                    <Link
+                      href="/regulatory-disclosures"
+                      className="text-accent underline decoration-hairline underline-offset-4 hover:decoration-current"
+                    >
+                      Regulatory disclosures
+                    </Link>
+                  </dd>
+                </div>
+              </dl>
+            </Rise>
+          </div>
         </div>
-
-        <ol className="mt-16 grid list-none gap-x-16 sm:grid-cols-2">
-          {WHAT_WE_DO.map((item, i) => (
-            <li key={item.title} className="border-t border-hairline">
-              <Rise delay={i * 0.06} className="py-8">
-                {/* A label, not a quantity — static tabular type, never an
-                    odometer. Rolling "02" would imply it was measured. */}
-                <p aria-hidden="true" className="tabular text-[14px] leading-[20px] text-muted">
-                  0{i + 1}
-                </p>
-                <h3 className="mt-4 text-[22px] font-medium leading-[30px] text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-[17px] leading-[30px] text-body">
-                  {item.body}
-                </p>
-              </Rise>
-            </li>
-          ))}
-        </ol>
-
-        <Rise delay={0.1}>
-          <p className="mt-12 max-w-[80ch] text-[14px] leading-[24px] text-muted">
-            NAV data fetched from AMFI. Latest values as of{" "}
-            {formatUpdated(navLastUpdated)} — see the{" "}
-            <a
-              href="https://www.amfiindia.com/sif"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-body underline decoration-hairline underline-offset-4 transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] hover:text-accent"
-            >
-              AMFI SIF portal
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-            . Scheme terms are read from each scheme&apos;s own information
-            document; where a document does not state a field, we mark it not
-            captured rather than fill it in.
-            {undisclosedSchemes > 0 ? (
-              <>
-                {" "}
-                Official AMC documentation is still awaited for{" "}
-                <span className="tabular">{undisclosedSchemes}</span> of the{" "}
-                <span className="tabular">{stats.strategyCount}</span> schemes,
-                which carry nothing beyond AMFI&apos;s feed.
-              </>
-            ) : null}
-          </p>
-        </Rise>
       </Shell>
     </Section>
   );
 }
 
-/**
- * The coverage strip. Odometers fire once, land on the real value and stop —
- * a figure that keeps ticking implies live data, which for SIF disclosure is
- * a compliance problem. Hence the as-of line beneath.
- */
-function Coverage() {
+/* ============================================================
+   8 — Have Questions About SIFs? (#connect)
+   A simple closing section, ConsultCta-shaped, with three plain actions.
+   ============================================================ */
+
+/* Same pill as <Button> (primitives BUTTON_BASE + glass), written out for the
+   two actions that leave the site — <Button> is a next/link. */
+const PILL =
+  "group inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-[15px] font-medium transition-colors duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] glass glass-ghost text-ink";
+
+function Connect() {
   return (
-    <Section>
+    <Section id="connect">
       <Shell>
-        <Rise>
-          <Eyebrow>Coverage</Eyebrow>
-        </Rise>
-        <LineReveal
-          as="h2"
-          lines={["The market we cover,", "counted."]}
-          className="mt-5 text-[clamp(32px,4vw,48px)] font-medium leading-[1.16] text-ink"
-        />
-
-        <Group className="mt-16 grid gap-x-12 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
-          {COVERAGE.map((item) => (
-            <GroupItem
-              key={item.label}
-              className="border-t border-hairline pt-7 pb-2"
-            >
-              <Odometer
-                value={item.value}
-                prefix={item.prefix}
-                suffix={item.suffix}
-                className="text-[clamp(40px,4.4vw,60px)] font-medium leading-[1.06] text-ink"
+        <div className="border border-hairline bg-accent-wash p-8 sm:p-14">
+          <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+            <div>
+              <Rise>
+                <Eyebrow>Connect With Us</Eyebrow>
+              </Rise>
+              <LineReveal
+                as="h2"
+                lines={["Have Questions", "About SIFs?"]}
+                className="mt-6 text-[clamp(28px,3.4vw,40px)] font-medium leading-[1.22] text-ink"
               />
-              <p className="mt-4 text-[17px] leading-[26px] text-body">
-                {item.label}
-              </p>
-            </GroupItem>
-          ))}
-        </Group>
+              <Rise delay={0.14}>
+                <p className="mt-6 max-w-[52ch] text-[17px] leading-[30px] text-body">
+                  Connect with the SIF Insight team to understand the SIF
+                  ecosystem, explore available options or learn more about the
+                  platform.
+                </p>
+              </Rise>
+            </div>
 
-        <Rule className="mt-14" delay={0.2} />
-        <Rise delay={0.26}>
-          <p className="mt-6 max-w-[80ch] text-[14px] leading-[24px] text-muted">
-            Counts as of {formatUpdated(navLastUpdated)}, derived from the
-            schemes we track. The ₹10 lakh minimum and the 25% cap on unhedged
-            short exposure are set by SEBI’s SIF framework, not by us.
-          </p>
-        </Rise>
+            <Rise delay={0.22}>
+              <ul className="flex list-none flex-col items-start gap-3 sm:flex-row sm:flex-wrap lg:flex-col lg:items-stretch">
+                <li>
+                  <Button href={PRIMARY_CTA.href} className="w-full justify-between">
+                    {PRIMARY_CTA.label}
+                  </Button>
+                </li>
+                <li>
+                  <a
+                    href={whatsappHref()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${PILL} w-full justify-between`}
+                  >
+                    <span>WhatsApp Us</span>
+                    <WhatsAppIcon size={16} />
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </li>
+                <li>
+                  <a href={mailtoHref} className={`${PILL} w-full justify-between`}>
+                    <span>Email Us</span>
+                    <MailIcon size={16} />
+                  </a>
+                </li>
+              </ul>
+            </Rise>
+          </div>
+
+          <Rise delay={0.28}>
+            <p className="mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-hairline pt-6 text-[14px] leading-[20px] text-muted">
+              <span className="inline-flex items-center gap-2">
+                <PhoneIcon size={14} />
+                <span className="tabular">{SITE.phoneDisplay}</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <MailIcon size={14} />
+                {SITE.email}
+              </span>
+            </p>
+          </Rise>
+        </div>
       </Shell>
     </Section>
   );
